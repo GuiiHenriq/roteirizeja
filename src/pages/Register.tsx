@@ -1,21 +1,22 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
 import { UserPlus } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Register = () => {
-  const navigate = useNavigate();
+  const { signUp } = useAuth();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement Supabase registration
-    toast.success("Registration successful!");
-    navigate("/login");
+    setLoading(true);
+    await signUp(email, password, name);
+    setLoading(false);
   };
 
   return (
@@ -38,6 +39,7 @@ const Register = () => {
               onChange={(e) => setName(e.target.value)}
               required
               placeholder="Enter your name"
+              disabled={loading}
             />
           </div>
 
@@ -52,6 +54,7 @@ const Register = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="Enter your email"
+              disabled={loading}
             />
           </div>
 
@@ -66,12 +69,13 @@ const Register = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
               placeholder="Choose a password"
+              disabled={loading}
             />
           </div>
 
-          <Button type="submit" className="w-full" size="lg">
+          <Button type="submit" className="w-full" size="lg" disabled={loading}>
             <UserPlus className="w-4 h-4 mr-2" />
-            Sign Up
+            {loading ? 'Creating account...' : 'Sign Up'}
           </Button>
         </form>
 
