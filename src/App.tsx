@@ -4,7 +4,7 @@ import { Toaster } from "./components/ui/sonner";
 import { Route, Routes } from "react-router-dom";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
-import Home from "./pages/Home"; // Assumed Home is a component for the main page
+import Home from "./pages/Home";
 
 function App() {
   return (
