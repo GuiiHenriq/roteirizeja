@@ -50,9 +50,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
 
       if (error) throw error;
+
+      // Create profile entry
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .insert([{ id: user?.id, name }]);
+
+      if (profileError) throw profileError;
+
       toast.success('Registration successful! Please check your email for verification.');
       navigate('/login');
     } catch (error: any) {
+      console.error('Registration error:', error);
       toast.error(error.message);
     }
   };
@@ -68,6 +77,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       toast.success('Successfully logged in!');
       navigate('/');
     } catch (error: any) {
+      console.error('Login error:', error);
       toast.error(error.message);
     }
   };
@@ -79,6 +89,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       toast.success('Successfully logged out!');
       navigate('/login');
     } catch (error: any) {
+      console.error('Logout error:', error);
       toast.error(error.message);
     }
   };
