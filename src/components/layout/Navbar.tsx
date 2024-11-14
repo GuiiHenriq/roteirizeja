@@ -11,7 +11,7 @@ const Navbar = () => {
         <Link to="/" className={`nav-link ${isActive("/") ? "active" : ""}`}>
           <Home className="w-6 h-6" />
         </Link>
-        <Link to="/explore" className={`nav-link ${isActive("/explore") ? "active" : ""}`}>
+        <Link to="/create-itinerary" className={`nav-link ${isActive("/create-itinerary") ? "active" : ""}`}>
           <Map className="w-6 h-6" />
         </Link>
         <Link to="/itineraries" className={`nav-link ${isActive("/itineraries") ? "active" : ""}`}>
