@@ -27,6 +27,8 @@ serve(async (req) => {
     
     Format the response in a clear, easy-to-read structure.`;
 
+    console.log("Sending request to OpenAI with prompt:", prompt);
+
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -48,7 +50,19 @@ serve(async (req) => {
       }),
     });
 
+    if (!response.ok) {
+      const error = await response.json();
+      console.error("OpenAI API error:", error);
+      throw new Error(`OpenAI API error: ${error.error?.message || 'Unknown error'}`);
+    }
+
     const data = await response.json();
+    console.log("OpenAI response:", data);
+
+    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      throw new Error('Invalid response format from OpenAI');
+    }
+
     return new Response(JSON.stringify({ 
       itinerary: data.choices[0].message.content 
     }), {
@@ -57,7 +71,9 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('Error:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ 
+      error: error.message || 'An error occurred while generating the itinerary' 
+    }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
