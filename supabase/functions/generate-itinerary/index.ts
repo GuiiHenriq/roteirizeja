@@ -78,7 +78,7 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: "gpt-4",
         messages: [
           {
             role: "system",
@@ -111,16 +111,21 @@ serve(async (req) => {
     const data = await response.json();
     console.log("OpenAI response:", data);
 
-    if (!data.choices || !data.choices[0] || !data.choices[0].function_call) {
+    if (!data.choices?.[0]?.function_call?.arguments) {
+      console.error("Invalid OpenAI response format:", data);
       throw new Error('Invalid response format from OpenAI');
     }
 
-    // Parse the function call arguments as JSON
-    const itineraryData: ItineraryResponse = JSON.parse(data.choices[0].function_call.arguments);
-
-    return new Response(JSON.stringify(itineraryData), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    try {
+      // Parse the function call arguments as JSON
+      const itineraryData: ItineraryResponse = JSON.parse(data.choices[0].function_call.arguments);
+      return new Response(JSON.stringify(itineraryData), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    } catch (parseError) {
+      console.error("Error parsing OpenAI response:", parseError);
+      throw new Error('Failed to parse OpenAI response as JSON');
+    }
 
   } catch (error) {
     console.error('Error:', error);
