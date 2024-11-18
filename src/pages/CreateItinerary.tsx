@@ -15,7 +15,9 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
+import { GeneratedItinerary } from "@/types/itinerary";
+import ItineraryDisplay from "@/components/itinerary/ItineraryDisplay";
 
 const CreateItinerary = () => {
   const navigate = useNavigate();
@@ -24,7 +26,7 @@ const CreateItinerary = () => {
   const [returnDate, setReturnDate] = useState<Date>();
   const [interests, setInterests] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [generatedItinerary, setGeneratedItinerary] = useState("");
+  const [generatedItinerary, setGeneratedItinerary] = useState<GeneratedItinerary | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,17 +78,10 @@ const CreateItinerary = () => {
     }
   };
 
-  const formatItineraryContent = (content: string) => {
-    // Divide o conteúdo em dias
-    const days = content.split(/Dia \d+:/g).filter(Boolean);
-    if (days.length === 0) return [content]; // Retorna o conteúdo original se não encontrar dias
-    return days;
-  };
-
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto space-y-8">
-        <div className="glass-card p-8">
+        <Card className="p-8">
           <h1 className="text-3xl font-bold mb-6">Criar Novo Roteiro</h1>
           
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -187,34 +182,10 @@ const CreateItinerary = () => {
               )}
             </Button>
           </form>
-        </div>
+        </Card>
 
         {generatedItinerary && (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold">Seu Roteiro Personalizado</h2>
-            <div className="grid gap-6">
-              {formatItineraryContent(generatedItinerary).map((day, index) => (
-                <Card key={index} className="hover-scale">
-                  <CardHeader>
-                    <h3 className="text-xl font-semibold">
-                      Dia {index + 1}
-                    </h3>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="prose prose-sm max-w-none">
-                      {day.split('\n').map((line, lineIndex) => (
-                        line.trim() && (
-                          <p key={lineIndex} className="mb-2">
-                            {line.trim()}
-                          </p>
-                        )
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
+          <ItineraryDisplay itinerary={generatedItinerary} />
         )}
       </div>
     </div>

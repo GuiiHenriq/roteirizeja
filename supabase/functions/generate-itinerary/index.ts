@@ -6,6 +6,85 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+const functionSchema = {
+  name: "generate_travel_itinerary",
+  description: "Generate a detailed travel itinerary for a trip, with activities for each day divided into Morning, Afternoon, and Evening, including their Name, Description, and Cost.",
+  parameters: {
+    type: "object",
+    required: ["destination", "dates", "itinerary"],
+    properties: {
+      destination: {
+        type: "string",
+        description: "The destination of the trip"
+      },
+      dates: {
+        type: "object",
+        required: ["start", "end"],
+        properties: {
+          start: {
+            type: "string",
+            format: "date",
+            description: "The start date of the trip in YYYY-MM-DD format"
+          },
+          end: {
+            type: "string",
+            format: "date",
+            description: "The end date of the trip in YYYY-MM-DD format"
+          }
+        }
+      },
+      itinerary: {
+        type: "array",
+        description: "List of daily activities during the trip",
+        items: {
+          type: "object",
+          required: ["day", "activities"],
+          properties: {
+            day: {
+              type: "string",
+              format: "date",
+              description: "The date for this day's itinerary in YYYY-MM-DD format"
+            },
+            activities: {
+              type: "object",
+              required: ["morning", "afternoon", "evening"],
+              properties: {
+                morning: {
+                  type: "object",
+                  required: ["Name", "Description", "Cost"],
+                  properties: {
+                    Name: { type: "string" },
+                    Description: { type: "string" },
+                    Cost: { type: "number" }
+                  }
+                },
+                afternoon: {
+                  type: "object",
+                  required: ["Name", "Description", "Cost"],
+                  properties: {
+                    Name: { type: "string" },
+                    Description: { type: "string" },
+                    Cost: { type: "number" }
+                  }
+                },
+                evening: {
+                  type: "object",
+                  required: ["Name", "Description", "Cost"],
+                  properties: {
+                    Name: { type: "string" },
+                    Description: { type: "string" },
+                    Cost: { type: "number" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -18,14 +97,14 @@ serve(async (req) => {
     Datas da viagem: de ${departureDate} até ${returnDate}.
     Interesses do viajante: ${interests}
 
-    Por favor, forneça um roteiro dia a dia incluindo:
-    - Atividades e atrações recomendadas
-    - Restaurantes sugeridos e culinária local
-    - Dicas de transporte
-    - Sugestões de horários
-    - Costumes locais e considerações culturais
+    Por favor, forneça um roteiro dia a dia incluindo atividades para manhã, tarde e noite.
+    Para cada atividade, inclua:
+    - Nome da atividade
+    - Descrição detalhada
+    - Custo estimado em USD
     
-    Formate a resposta em uma estrutura clara e fácil de ler.`;
+    Responda APENAS no formato JSON especificado, sem texto adicional.
+    Todas as respostas devem estar em português do Brasil.`;
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -38,32 +117,32 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: "Você é um planejador de viagens especializado em criar roteiros personalizados. Responda sempre em português do Brasil."
+            content: "Você é um planejador de viagens especializado em criar roteiros personalizados. Responda sempre em português do Brasil e siga estritamente o formato JSON especificado na função."
           },
           {
             role: "user",
             content: prompt
           }
         ],
+        functions: [functionSchema],
+        function_call: { name: "generate_travel_itinerary" },
       }),
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      console.error("OpenAI API error:", error);
-      throw new Error(`OpenAI API error: ${error.error?.message || 'Unknown error'}`);
+      throw new Error(`OpenAI API error: ${response.statusText}`);
     }
 
     const data = await response.json();
     console.log("OpenAI response:", data);
 
-    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+    if (!data.choices?.[0]?.message?.function_call?.arguments) {
       throw new Error('Invalid response format from OpenAI');
     }
 
-    return new Response(JSON.stringify({ 
-      itinerary: data.choices[0].message.content 
-    }), {
+    const itineraryData = JSON.parse(data.choices[0].message.function_call.arguments);
+
+    return new Response(JSON.stringify({ itinerary: itineraryData }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
