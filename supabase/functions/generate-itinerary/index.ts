@@ -14,18 +14,38 @@ serve(async (req) => {
   try {
     const { destination, departureDate, returnDate, interests } = await req.json();
 
-    const prompt = `Create a detailed travel itinerary for a trip to ${destination}. 
+    const prompt = `Create a detailed day-by-day travel itinerary for a trip to ${destination}. 
     Trip dates: from ${departureDate} to ${returnDate}.
     Traveler interests: ${interests}
 
-    Please provide a day-by-day itinerary including:
+    Please provide the response in the following JSON format:
+    {
+      "days": [
+        {
+          "day": 1,
+          "activities": [
+            {
+              "time": "Morning",
+              "description": "Activity description"
+            },
+            {
+              "time": "Afternoon",
+              "description": "Activity description"
+            },
+            {
+              "time": "Evening",
+              "description": "Activity description"
+            }
+          ]
+        }
+      ]
+    }
+
+    Make sure to include:
     - Recommended activities and attractions
     - Suggested restaurants and local cuisine
     - Transportation tips
-    - Time management suggestions
-    - Local customs and cultural considerations
-    
-    Format the response in a clear, easy-to-read structure.`;
+    - Time management suggestions`;
 
     console.log("Sending request to OpenAI with prompt:", prompt);
 
@@ -40,7 +60,7 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: "You are a knowledgeable travel planner with expertise in creating personalized travel itineraries."
+            content: "You are a travel planner that generates detailed itineraries in JSON format."
           },
           {
             role: "user",
@@ -63,8 +83,11 @@ serve(async (req) => {
       throw new Error('Invalid response format from OpenAI');
     }
 
+    // Parse the response content as JSON
+    const itineraryData = JSON.parse(data.choices[0].message.content);
+
     return new Response(JSON.stringify({ 
-      itinerary: data.choices[0].message.content 
+      itinerary: itineraryData 
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
