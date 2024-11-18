@@ -14,20 +14,18 @@ serve(async (req) => {
   try {
     const { destination, departureDate, returnDate, interests } = await req.json();
 
-    const prompt = `Create a detailed travel itinerary for a trip to ${destination}. 
-    Trip dates: from ${departureDate} to ${returnDate}.
-    Traveler interests: ${interests}
+    const prompt = `Crie um roteiro de viagem detalhado para ${destination}. 
+    Datas da viagem: de ${departureDate} até ${returnDate}.
+    Interesses do viajante: ${interests}
 
-    Please provide a day-by-day itinerary including:
-    - Recommended activities and attractions
-    - Suggested restaurants and local cuisine
-    - Transportation tips
-    - Time management suggestions
-    - Local customs and cultural considerations
+    Por favor, forneça um roteiro dia a dia incluindo:
+    - Atividades e atrações recomendadas
+    - Restaurantes sugeridos e culinária local
+    - Dicas de transporte
+    - Sugestões de horários
+    - Costumes locais e considerações culturais
     
-    Format the response in a clear, easy-to-read structure.`;
-
-    console.log("Sending request to OpenAI with prompt:", prompt);
+    Formate a resposta em uma estrutura clara e fácil de ler.`;
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -36,11 +34,11 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: "gpt-4",
         messages: [
           {
             role: "system",
-            content: "You are a knowledgeable travel planner with expertise in creating personalized travel itineraries."
+            content: "Você é um planejador de viagens especializado em criar roteiros personalizados. Responda sempre em português do Brasil."
           },
           {
             role: "user",
@@ -72,7 +70,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error:', error);
     return new Response(JSON.stringify({ 
-      error: error.message || 'An error occurred while generating the itinerary' 
+      error: error.message || 'Ocorreu um erro ao gerar o roteiro' 
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

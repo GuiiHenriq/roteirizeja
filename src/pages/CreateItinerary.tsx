@@ -12,8 +12,10 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 const CreateItinerary = () => {
   const navigate = useNavigate();
@@ -30,13 +32,13 @@ const CreateItinerary = () => {
     
     try {
       if (!departureDate || !returnDate) {
-        toast.error("Please select both departure and return dates");
+        toast.error("Por favor, selecione as datas de ida e volta");
         return;
       }
 
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        toast.error("Please login to create an itinerary");
+        toast.error("Por favor, faça login para criar um roteiro");
         navigate("/login");
         return;
       }
@@ -59,44 +61,51 @@ const CreateItinerary = () => {
       );
 
       if (!response.ok) {
-        throw new Error("Failed to generate itinerary");
+        throw new Error("Falha ao gerar o roteiro");
       }
 
       const data = await response.json();
       setGeneratedItinerary(data.itinerary);
-      toast.success("Itinerary generated successfully!");
+      toast.success("Roteiro gerado com sucesso!");
       
     } catch (error) {
-      console.error("Error generating itinerary:", error);
-      toast.error("Failed to generate itinerary. Please try again.");
+      console.error("Erro ao gerar roteiro:", error);
+      toast.error("Falha ao gerar o roteiro. Por favor, tente novamente.");
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const formatItineraryContent = (content: string) => {
+    // Divide o conteúdo em dias
+    const days = content.split(/Dia \d+:/g).filter(Boolean);
+    if (days.length === 0) return [content]; // Retorna o conteúdo original se não encontrar dias
+    return days;
   };
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto space-y-8">
         <div className="glass-card p-8">
-          <h1 className="text-3xl font-bold mb-6">Create New Itinerary</h1>
+          <h1 className="text-3xl font-bold mb-6">Criar Novo Roteiro</h1>
           
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
               <label htmlFor="destination" className="text-sm font-medium">
-                Destination
+                Destino
               </label>
               <Input
                 id="destination"
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
-                placeholder="Where do you want to go?"
+                placeholder="Para onde você quer ir?"
                 required
               />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Departure Date</label>
+                <label className="text-sm font-medium">Data de Ida</label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
@@ -107,7 +116,7 @@ const CreateItinerary = () => {
                       )}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {departureDate ? format(departureDate, "PPP") : "Pick a date"}
+                      {departureDate ? format(departureDate, "PPP", { locale: ptBR }) : "Escolha uma data"}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
@@ -116,13 +125,14 @@ const CreateItinerary = () => {
                       selected={departureDate}
                       onSelect={setDepartureDate}
                       initialFocus
+                      locale={ptBR}
                     />
                   </PopoverContent>
                 </Popover>
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">Return Date</label>
+                <label className="text-sm font-medium">Data de Volta</label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
@@ -133,7 +143,7 @@ const CreateItinerary = () => {
                       )}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {returnDate ? format(returnDate, "PPP") : "Pick a date"}
+                      {returnDate ? format(returnDate, "PPP", { locale: ptBR }) : "Escolha uma data"}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
@@ -142,6 +152,7 @@ const CreateItinerary = () => {
                       selected={returnDate}
                       onSelect={setReturnDate}
                       initialFocus
+                      locale={ptBR}
                     />
                   </PopoverContent>
                 </Popover>
@@ -150,13 +161,13 @@ const CreateItinerary = () => {
 
             <div className="space-y-2">
               <label htmlFor="interests" className="text-sm font-medium">
-                Interests
+                Interesses
               </label>
               <Textarea
                 id="interests"
                 value={interests}
                 onChange={(e) => setInterests(e.target.value)}
-                placeholder="What are you interested in? (e.g., culture, food, adventure)"
+                placeholder="Quais são seus interesses? (ex: cultura, gastronomia, aventura)"
                 className="min-h-[100px]"
                 required
               />
@@ -166,12 +177,12 @@ const CreateItinerary = () => {
               {isLoading ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Generating Itinerary...
+                  Gerando Roteiro...
                 </>
               ) : (
                 <>
                   <Plane className="w-4 h-4 mr-2" />
-                  Generate Itinerary
+                  Gerar Roteiro
                 </>
               )}
             </Button>
@@ -179,9 +190,30 @@ const CreateItinerary = () => {
         </div>
 
         {generatedItinerary && (
-          <div className="glass-card p-8">
-            <h2 className="text-2xl font-bold mb-4">Generated Itinerary</h2>
-            <div className="whitespace-pre-wrap">{generatedItinerary}</div>
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold">Seu Roteiro Personalizado</h2>
+            <div className="grid gap-6">
+              {formatItineraryContent(generatedItinerary).map((day, index) => (
+                <Card key={index} className="hover-scale">
+                  <CardHeader>
+                    <h3 className="text-xl font-semibold">
+                      Dia {index + 1}
+                    </h3>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="prose prose-sm max-w-none">
+                      {day.split('\n').map((line, lineIndex) => (
+                        line.trim() && (
+                          <p key={lineIndex} className="mb-2">
+                            {line.trim()}
+                          </p>
+                        )
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
         )}
       </div>
