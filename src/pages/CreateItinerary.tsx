@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { Json } from "@/integrations/supabase/types";
 
 interface Activity {
   time: string;
@@ -61,7 +62,7 @@ const CreateItinerary = () => {
       const itineraryResponse = data as ItineraryData;
       setItineraryData(itineraryResponse);
 
-      // Save to database
+      // Save to database with proper type casting
       const { error: saveError } = await supabase
         .from('itineraries')
         .insert({
@@ -70,7 +71,7 @@ const CreateItinerary = () => {
           departure_date: format(departureDate, 'yyyy-MM-dd'),
           return_date: format(returnDate, 'yyyy-MM-dd'),
           interests,
-          itinerary_data: itineraryResponse
+          itinerary_data: itineraryResponse as unknown as Json
         });
 
       if (saveError) throw saveError;
