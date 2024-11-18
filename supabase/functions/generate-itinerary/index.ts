@@ -6,6 +6,18 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+interface ItineraryDay {
+  day: number;
+  activities: {
+    time: string;
+    description: string;
+  }[];
+}
+
+interface ItineraryResponse {
+  days: ItineraryDay[];
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -14,40 +26,50 @@ serve(async (req) => {
   try {
     const { destination, departureDate, returnDate, interests } = await req.json();
 
-    const prompt = `Create a detailed day-by-day travel itinerary for a trip to ${destination}. 
-    Trip dates: from ${departureDate} to ${returnDate}.
-    Traveler interests: ${interests}
-
-    Please provide the response in the following JSON format:
-    {
-      "days": [
-        {
-          "day": 1,
-          "activities": [
-            {
-              "time": "Morning",
-              "description": "Activity description"
-            },
-            {
-              "time": "Afternoon",
-              "description": "Activity description"
-            },
-            {
-              "time": "Evening",
-              "description": "Activity description"
+    const functionSchema = {
+      name: "generate_itinerary",
+      description: "Generate a travel itinerary based on user preferences",
+      parameters: {
+        type: "object",
+        properties: {
+          days: {
+            type: "array",
+            description: "Array of daily itineraries",
+            items: {
+              type: "object",
+              properties: {
+                day: {
+                  type: "integer",
+                  description: "Day number of the itinerary"
+                },
+                activities: {
+                  type: "array",
+                  description: "Array of activities for the day",
+                  items: {
+                    type: "object",
+                    properties: {
+                      time: {
+                        type: "string",
+                        description: "Time of the activity (e.g., 'Morning', '9:00 AM')"
+                      },
+                      description: {
+                        type: "string",
+                        description: "Description of the activity"
+                      }
+                    },
+                    required: ["time", "description"]
+                  }
+                }
+              },
+              required: ["day", "activities"]
             }
-          ]
-        }
-      ]
-    }
+          }
+        },
+        required: ["days"]
+      }
+    };
 
-    Make sure to include:
-    - Recommended activities and attractions
-    - Suggested restaurants and local cuisine
-    - Transportation tips
-    - Time management suggestions`;
-
-    console.log("Sending request to OpenAI with prompt:", prompt);
+    console.log("Sending request to OpenAI with structured output format");
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -60,13 +82,23 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: "You are a travel planner that generates detailed itineraries in JSON format."
+            content: "You are a travel planner that generates detailed itineraries. Always respond with valid JSON following the specified format."
           },
           {
             role: "user",
-            content: prompt
+            content: `Create a detailed day-by-day travel itinerary for a trip to ${destination}. 
+            Trip dates: from ${departureDate} to ${returnDate}.
+            Traveler interests: ${interests}
+            
+            Include:
+            - Recommended activities and attractions
+            - Suggested restaurants and local cuisine
+            - Transportation tips
+            - Time management suggestions`
           }
         ],
+        functions: [functionSchema],
+        function_call: { name: "generate_itinerary" }
       }),
     });
 
@@ -79,16 +111,14 @@ serve(async (req) => {
     const data = await response.json();
     console.log("OpenAI response:", data);
 
-    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+    if (!data.choices || !data.choices[0] || !data.choices[0].function_call) {
       throw new Error('Invalid response format from OpenAI');
     }
 
-    // Parse the response content as JSON
-    const itineraryData = JSON.parse(data.choices[0].message.content);
+    // Parse the function call arguments as JSON
+    const itineraryData: ItineraryResponse = JSON.parse(data.choices[0].function_call.arguments);
 
-    return new Response(JSON.stringify({ 
-      itinerary: itineraryData 
-    }), {
+    return new Response(JSON.stringify(itineraryData), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
