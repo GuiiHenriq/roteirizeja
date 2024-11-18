@@ -1,4 +1,4 @@
-import { GeneratedItinerary, ItineraryActivity } from "@/types/itinerary";
+import { GeneratedItinerary, ItineraryActivity, DayActivities } from "@/types/itinerary";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -23,7 +23,7 @@ const ActivityCard = ({ title, activity }: { title: string; activity: ItineraryA
   </Card>
 );
 
-const DayCard = ({ date, activities }: { date: string; activities: Record<string, ItineraryActivity> }) => (
+const DayCard = ({ date, activities }: { date: string; activities: DayActivities }) => (
   <Card className="hover-scale">
     <CardHeader>
       <CardTitle>{format(new Date(date), "dd 'de' MMMM, yyyy", { locale: ptBR })}</CardTitle>
