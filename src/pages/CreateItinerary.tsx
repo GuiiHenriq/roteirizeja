@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
-import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { Plane, Calendar as CalendarIcon, Loader2 } from "lucide-react";
 import {
@@ -19,12 +19,19 @@ import { Card } from "@/components/ui/card";
 import { GeneratedItinerary } from "@/types/itinerary";
 import ItineraryDisplay from "@/components/itinerary/ItineraryDisplay";
 
+const interestOptions = [
+  { id: "gastronomia", label: "Gastronomia" },
+  { id: "praias", label: "Praias" },
+  { id: "aventuras", label: "Aventuras" },
+  { id: "festas", label: "Festas" },
+];
+
 const CreateItinerary = () => {
   const navigate = useNavigate();
   const [destination, setDestination] = useState("");
   const [departureDate, setDepartureDate] = useState<Date>();
   const [returnDate, setReturnDate] = useState<Date>();
-  const [interests, setInterests] = useState("");
+  const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [generatedItinerary, setGeneratedItinerary] = useState<GeneratedItinerary | null>(null);
 
@@ -35,6 +42,11 @@ const CreateItinerary = () => {
     try {
       if (!departureDate || !returnDate) {
         toast.error("Por favor, selecione as datas de ida e volta");
+        return;
+      }
+
+      if (selectedInterests.length === 0) {
+        toast.error("Por favor, selecione pelo menos um interesse");
         return;
       }
 
@@ -57,7 +69,7 @@ const CreateItinerary = () => {
             destination,
             departureDate: format(departureDate, "yyyy-MM-dd"),
             returnDate: format(returnDate, "yyyy-MM-dd"),
-            interests,
+            interests: selectedInterests.join(", "),
           }),
         }
       );
@@ -154,18 +166,33 @@ const CreateItinerary = () => {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label htmlFor="interests" className="text-sm font-medium">
+            <div className="space-y-4">
+              <label className="text-sm font-medium block">
                 Interesses
               </label>
-              <Textarea
-                id="interests"
-                value={interests}
-                onChange={(e) => setInterests(e.target.value)}
-                placeholder="Quais são seus interesses? (ex: cultura, gastronomia, aventura)"
-                className="min-h-[100px]"
-                required
-              />
+              <div className="grid grid-cols-2 gap-4">
+                {interestOptions.map((interest) => (
+                  <div key={interest.id} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={interest.id}
+                      checked={selectedInterests.includes(interest.id)}
+                      onCheckedChange={(checked) => {
+                        setSelectedInterests(prev =>
+                          checked
+                            ? [...prev, interest.id]
+                            : prev.filter(i => i !== interest.id)
+                        );
+                      }}
+                    />
+                    <label
+                      htmlFor={interest.id}
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      {interest.label}
+                    </label>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <Button type="submit" size="lg" className="w-full" disabled={isLoading}>

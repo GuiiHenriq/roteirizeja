@@ -42,7 +42,7 @@ const functionSchema = {
                   properties: {
                     Name: { type: "string" },
                     Description: { type: "string" },
-                    Cost: { type: "number" }
+                    Cost: { type: "number", description: "Cost in BRL" }
                   }
                 },
                 afternoon: {
@@ -51,7 +51,7 @@ const functionSchema = {
                   properties: {
                     Name: { type: "string" },
                     Description: { type: "string" },
-                    Cost: { type: "number" }
+                    Cost: { type: "number", description: "Cost in BRL" }
                   }
                 },
                 evening: {
@@ -60,7 +60,7 @@ const functionSchema = {
                   properties: {
                     Name: { type: "string" },
                     Description: { type: "string" },
-                    Cost: { type: "number" }
+                    Cost: { type: "number", description: "Cost in BRL" }
                   }
                 }
               }
@@ -80,11 +80,11 @@ serve(async (req) => {
   try {
     const { destination, departureDate, returnDate, interests } = await req.json();
 
-    // Simplified prompt to reduce tokens
     const prompt = `Crie um roteiro curto para ${destination} de ${departureDate} a ${returnDate}.
     Foco: ${interests}
     Forneça apenas atividades essenciais para manhã, tarde e noite.
-    Mantenha descrições concisas.`;
+    Mantenha descrições concisas.
+    Importante: Todos os custos devem ser em Reais (BRL).`;
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -97,7 +97,7 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: "Você é um planejador de viagens conciso. Mantenha as respostas curtas e objetivas."
+            content: "Você é um planejador de viagens conciso. Mantenha as respostas curtas e objetivas. Use sempre valores em Reais (BRL)."
           },
           {
             role: "user",
@@ -106,8 +106,8 @@ serve(async (req) => {
         ],
         functions: [functionSchema],
         function_call: { name: "generate_travel_itinerary" },
-        max_tokens: 1000, // Limitando o número máximo de tokens
-        temperature: 0.7 // Reduzindo a temperatura para respostas mais diretas
+        max_tokens: 1000,
+        temperature: 0.7
       }),
     });
 

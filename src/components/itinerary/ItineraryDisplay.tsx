@@ -17,7 +17,7 @@ const ActivityCard = ({ title, activity }: { title: string; activity: ItineraryA
       <p className="text-sm text-muted-foreground mb-2">{activity.Description}</p>
       <div className="flex items-center text-sm text-primary">
         <DollarSign className="w-4 h-4 mr-1" />
-        <span>USD {activity.Cost.toFixed(2)}</span>
+        <span>R$ {activity.Cost.toFixed(2)}</span>
       </div>
     </CardContent>
   </Card>
