@@ -8,43 +8,30 @@ const corsHeaders = {
 
 const functionSchema = {
   name: "generate_travel_itinerary",
-  description: "Generate a detailed travel itinerary for a trip, with activities for each day divided into Morning, Afternoon, and Evening, including their Name, Description, and Cost.",
+  description: "Generate a travel itinerary with daily activities",
   parameters: {
     type: "object",
     required: ["destination", "dates", "itinerary"],
     properties: {
       destination: {
         type: "string",
-        description: "The destination of the trip"
+        description: "Trip destination"
       },
       dates: {
         type: "object",
         required: ["start", "end"],
         properties: {
-          start: {
-            type: "string",
-            format: "date",
-            description: "The start date of the trip in YYYY-MM-DD format"
-          },
-          end: {
-            type: "string",
-            format: "date",
-            description: "The end date of the trip in YYYY-MM-DD format"
-          }
+          start: { type: "string", format: "date" },
+          end: { type: "string", format: "date" }
         }
       },
       itinerary: {
         type: "array",
-        description: "List of daily activities during the trip",
         items: {
           type: "object",
           required: ["day", "activities"],
           properties: {
-            day: {
-              type: "string",
-              format: "date",
-              description: "The date for this day's itinerary in YYYY-MM-DD format"
-            },
+            day: { type: "string", format: "date" },
             activities: {
               type: "object",
               required: ["morning", "afternoon", "evening"],
@@ -93,18 +80,11 @@ serve(async (req) => {
   try {
     const { destination, departureDate, returnDate, interests } = await req.json();
 
-    const prompt = `Crie um roteiro de viagem detalhado para ${destination}. 
-    Datas da viagem: de ${departureDate} até ${returnDate}.
-    Interesses do viajante: ${interests}
-
-    Por favor, forneça um roteiro dia a dia incluindo atividades para manhã, tarde e noite.
-    Para cada atividade, inclua:
-    - Nome da atividade
-    - Descrição detalhada
-    - Custo estimado em USD
-    
-    Responda APENAS no formato JSON especificado, sem texto adicional.
-    Todas as respostas devem estar em português do Brasil.`;
+    // Simplified prompt to reduce tokens
+    const prompt = `Crie um roteiro curto para ${destination} de ${departureDate} a ${returnDate}.
+    Foco: ${interests}
+    Forneça apenas atividades essenciais para manhã, tarde e noite.
+    Mantenha descrições concisas.`;
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -113,11 +93,11 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-4",
+        model: "gpt-4o-mini",
         messages: [
           {
             role: "system",
-            content: "Você é um planejador de viagens especializado em criar roteiros personalizados. Responda sempre em português do Brasil e siga estritamente o formato JSON especificado na função."
+            content: "Você é um planejador de viagens conciso. Mantenha as respostas curtas e objetivas."
           },
           {
             role: "user",
@@ -126,6 +106,8 @@ serve(async (req) => {
         ],
         functions: [functionSchema],
         function_call: { name: "generate_travel_itinerary" },
+        max_tokens: 1000, // Limitando o número máximo de tokens
+        temperature: 0.7 // Reduzindo a temperatura para respostas mais diretas
       }),
     });
 
