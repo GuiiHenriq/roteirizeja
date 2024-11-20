@@ -1,52 +1,44 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
-  const { user, signOut } = useAuth();
-  const navigate = useNavigate();
+  const { user } = useAuth();
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Bem-vindo ao Viajai</h1>
-        {user && (
-          <Button onClick={() => signOut()} variant="outline">
-            Sair
-          </Button>
+      <div className="max-w-4xl mx-auto text-center space-y-8">
+        <h1 className="text-4xl font-bold tracking-tight">
+          Bem-vindo ao Itinerary Genius
+        </h1>
+        <p className="text-xl text-muted-foreground">
+          Crie roteiros de viagem personalizados com a ajuda da IA
+        </p>
+
+        {user ? (
+          <div className="space-y-4">
+            <Button asChild size="lg">
+              <Link to="/create-itinerary">Criar Novo Roteiro</Link>
+            </Button>
+            <div className="flex justify-center space-x-4">
+              <Button variant="outline" asChild>
+                <Link to="/itineraries">Ver Meus Roteiros</Link>
+              </Button>
+              <Button variant="outline" asChild>
+                <Link to="/profile">Meu Perfil</Link>
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="space-x-4">
+            <Button asChild size="lg">
+              <Link to="/register">Criar Conta</Link>
+            </Button>
+            <Button variant="outline" asChild size="lg">
+              <Link to="/login">Entrar</Link>
+            </Button>
+          </div>
         )}
-      </div>
-      
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <div className="p-6 rounded-lg bg-card shadow-lg">
-          <h2 className="text-xl font-semibold mb-4">Criar Novo Roteiro</h2>
-          <p className="text-muted-foreground mb-4">
-            Planeje sua próxima aventura com nosso gerador de roteiros com IA.
-          </p>
-          <Button onClick={() => navigate("/create-itinerary")} className="w-full">
-            Começar
-          </Button>
-        </div>
-
-        <div className="p-6 rounded-lg bg-card shadow-lg">
-          <h2 className="text-xl font-semibold mb-4">Meus Roteiros</h2>
-          <p className="text-muted-foreground mb-4">
-            Visualize e gerencie seus planos de viagem salvos.
-          </p>
-          <Button onClick={() => navigate("/itineraries")} variant="outline" className="w-full">
-            Ver Todos
-          </Button>
-        </div>
-
-        <div className="p-6 rounded-lg bg-card shadow-lg">
-          <h2 className="text-xl font-semibold mb-4">Destinos Populares</h2>
-          <p className="text-muted-foreground mb-4">
-            Explore locais em alta e inspire-se para sua próxima viagem.
-          </p>
-          <Button onClick={() => navigate("/destinations")} variant="outline" className="w-full">
-            Explorar
-          </Button>
-        </div>
       </div>
     </div>
   );
