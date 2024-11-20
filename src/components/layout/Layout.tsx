@@ -16,7 +16,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
           </div>
           
           {/* Main Content */}
-          <main className="flex-1 pb-24 lg:pb-8 page-transition">
+          <main className="flex-1 pb-24 lg:pb-8 page-transition lg:pl-64">
             <div className="container mx-auto px-4 py-8">
               {children}
             </div>

@@ -21,7 +21,7 @@ const DesktopSidebar = () => {
       <div className="flex flex-col h-full">
         {/* Logo/Brand */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-primary">Wanderlust AI</h1>
+          <h1 className="text-2xl font-bold text-primary">Viajai</h1>
         </div>
 
         {/* Navigation Links */}
