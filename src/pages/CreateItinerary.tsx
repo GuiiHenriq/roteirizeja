@@ -6,11 +6,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { Plane, Calendar as CalendarIcon, Loader2 } from "lucide-react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
@@ -18,6 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { GeneratedItinerary } from "@/types/itinerary";
 import ItineraryDisplay from "@/components/itinerary/ItineraryDisplay";
+import { useAuth } from "@/contexts/AuthContext";
 
 const interestOptions = [
   { id: "gastronomia", label: "Gastronomia" },
@@ -28,12 +25,38 @@ const interestOptions = [
 
 const CreateItinerary = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [destination, setDestination] = useState("");
   const [departureDate, setDepartureDate] = useState<Date>();
   const [returnDate, setReturnDate] = useState<Date>();
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [generatedItinerary, setGeneratedItinerary] = useState<GeneratedItinerary | null>(null);
+
+  const saveItinerary = async (itineraryData: GeneratedItinerary) => {
+    if (!user) {
+      toast.error("Você precisa estar logado para salvar o roteiro");
+      return;
+    }
+
+    try {
+      const { error } = await supabase.from('itineraries').insert({
+        user_id: user.id,
+        destination: itineraryData.destination,
+        departure_date: itineraryData.dates.start,
+        return_date: itineraryData.dates.end,
+        interests: selectedInterests.join(", "),
+        itinerary_data: itineraryData
+      });
+
+      if (error) throw error;
+      toast.success("Roteiro salvo com sucesso!");
+      navigate('/itineraries');
+    } catch (error: any) {
+      console.error('Erro ao salvar roteiro:', error);
+      toast.error("Erro ao salvar o roteiro");
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -212,7 +235,16 @@ const CreateItinerary = () => {
         </Card>
 
         {generatedItinerary && (
-          <ItineraryDisplay itinerary={generatedItinerary} />
+          <div className="space-y-4">
+            <ItineraryDisplay itinerary={generatedItinerary} />
+            <Button 
+              onClick={() => saveItinerary(generatedItinerary)}
+              className="w-full"
+              size="lg"
+            >
+              Salvar Roteiro
+            </Button>
+          </div>
         )}
       </div>
     </div>
