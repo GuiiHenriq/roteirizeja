@@ -34,10 +34,16 @@ const CreateItinerary = () => {
       // First, generate the itinerary using our API
       const { data: generatedItinerary } = await api.post("/api/generate-itinerary", {
         destination,
-        departureDate,
-        returnDate,
+        dates: {
+          start: departureDate.toISOString(),
+          end: returnDate.toISOString(),
+        },
         interests: interests.join(", "),
       });
+
+      if (!generatedItinerary) {
+        throw new Error("Não foi possível gerar o roteiro");
+      }
 
       // Then, save it to Supabase
       const { data: savedItinerary, error } = await supabase
@@ -57,9 +63,9 @@ const CreateItinerary = () => {
 
       toast.success("Roteiro criado com sucesso!");
       navigate(`/itineraries/${savedItinerary.id}`);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error creating itinerary:", error);
-      toast.error("Erro ao criar roteiro. Por favor, tente novamente.");
+      toast.error(error.message || "Erro ao criar roteiro. Por favor, tente novamente.");
     } finally {
       setIsLoading(false);
     }
