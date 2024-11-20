@@ -11,7 +11,6 @@ import { Loader2, User, Lock, Mail } from "lucide-react";
 const Profile = () => {
   const { user } = useAuth();
   const [name, setName] = useState("");
-  const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -58,7 +57,6 @@ const Profile = () => {
       if (error) throw error;
 
       toast.success("Senha atualizada com sucesso!");
-      setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
     } catch (error) {
