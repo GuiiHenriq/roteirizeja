@@ -25,16 +25,18 @@ const ItineraryDetails = () => {
         // Fetch additional details if needed using axios
         const { data: enrichedData } = await api.get(`/api/itineraries/${id}/enrich`);
 
-        if (itineraryData && enrichedData) {
-          setItinerary({
-            ...itineraryData.itinerary_data,
+        if (itineraryData) {
+          const combinedData: GeneratedItinerary = {
             destination: itineraryData.destination,
             dates: {
               start: itineraryData.departure_date,
               end: itineraryData.return_date,
             },
-            ...enrichedData,
-          } as GeneratedItinerary);
+            itinerary: itineraryData.itinerary_data.itinerary,
+            ...enrichedData
+          };
+          
+          setItinerary(combinedData);
         }
       } catch (error) {
         console.error("Error fetching itinerary:", error);
