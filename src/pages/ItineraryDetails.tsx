@@ -22,18 +22,19 @@ const ItineraryDetails = () => {
 
         if (error) throw error;
 
-        // Fetch additional details if needed using axios
-        const { data: enrichedData } = await api.get(`/api/itineraries/${id}/enrich`);
+        if (itineraryData && itineraryData.itinerary_data) {
+          const itineraryJson = typeof itineraryData.itinerary_data === 'string' 
+            ? JSON.parse(itineraryData.itinerary_data) 
+            : itineraryData.itinerary_data;
 
-        if (itineraryData) {
+          // Construct the itinerary object with the correct shape
           const combinedData: GeneratedItinerary = {
             destination: itineraryData.destination,
             dates: {
               start: itineraryData.departure_date,
               end: itineraryData.return_date,
             },
-            itinerary: itineraryData.itinerary_data.itinerary,
-            ...enrichedData
+            itinerary: itineraryJson.itinerary || [],
           };
           
           setItinerary(combinedData);
