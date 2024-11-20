@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Home, Map, Calendar, Heart, Settings, LogOut } from "lucide-react";
+import { Home, Map, Calendar, Settings, LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -15,7 +15,6 @@ const DesktopSidebar = () => {
     { path: "/", icon: Home, label: "Início" },
     { path: "/create-itinerary", icon: Map, label: "Criar Roteiro" },
     { path: "/itineraries", icon: Calendar, label: "Meus Roteiros" },
-    { path: "/saved", icon: Heart, label: "Favoritos" },
     { path: "/profile", icon: Settings, label: "Configurações" },
   ];
 

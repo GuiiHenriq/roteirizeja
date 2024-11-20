@@ -1,19 +1,30 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import DesktopSidebar from "./DesktopSidebar";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { useAuth } from "@/contexts/AuthContext";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 
 const Layout = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const protectedRoutes = ['/create-itinerary', '/itineraries', '/profile'];
+
+  useEffect(() => {
+    if (!user && protectedRoutes.some(route => location.pathname.startsWith(route))) {
+      toast.error("Efetue seu login");
+      navigate('/login');
+    }
+  }, [user, location.pathname, navigate]);
 
   return (
     <ThemeProvider defaultTheme="light" storageKey="app-theme">
       <div className="min-h-screen bg-background">
-        <ThemeToggle className="fixed top-4 right-4 z-50" />
-        
         {/* Header for logged out users */}
         {!user && (
           <header className="fixed top-0 left-0 right-0 h-16 bg-background/80 backdrop-blur-lg border-b border-border z-50">
@@ -21,12 +32,15 @@ const Layout = ({ children }: { children: ReactNode }) => {
               <Link to="/" className="text-2xl font-bold text-primary hover:text-primary/90 transition-colors">
                 Viajai
               </Link>
-              <Link 
-                to="/login"
-                className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-              >
-                Entrar
-              </Link>
+              <div className="flex items-center gap-4">
+                <Link 
+                  to="/login"
+                  className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                >
+                  Entrar
+                </Link>
+                <ThemeToggle />
+              </div>
             </div>
           </header>
         )}
@@ -53,6 +67,9 @@ const Layout = ({ children }: { children: ReactNode }) => {
             <Navbar />
           </div>
         )}
+
+        {/* Theme toggle for logged in users */}
+        {user && <ThemeToggle className="fixed top-4 right-4 z-50" />}
       </div>
     </ThemeProvider>
   );

@@ -10,13 +10,9 @@ const Home = () => {
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Bem-vindo ao Viajai</h1>
-        {user ? (
+        {user && (
           <Button onClick={() => signOut()} variant="outline">
             Sair
-          </Button>
-        ) : (
-          <Button onClick={() => navigate("/login")} variant="outline">
-            Entrar
           </Button>
         )}
       </div>

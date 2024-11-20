@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Map, Calendar, Heart, Settings } from "lucide-react";
+import { Home, Map, Calendar, Settings } from "lucide-react";
 
 const Navbar = () => {
   const location = useLocation();
@@ -16,9 +16,6 @@ const Navbar = () => {
         </Link>
         <Link to="/itineraries" className={`nav-link ${isActive("/itineraries") ? "active" : ""}`}>
           <Calendar className="w-6 h-6" />
-        </Link>
-        <Link to="/saved" className={`nav-link ${isActive("/saved") ? "active" : ""}`}>
-          <Heart className="w-6 h-6" />
         </Link>
         <Link to="/profile" className={`nav-link ${isActive("/profile") ? "active" : ""}`}>
           <Settings className="w-6 h-6" />
