@@ -1,47 +1,31 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { GeneratedItinerary } from "@/types/itinerary";
-import ItineraryDisplay from "@/components/itinerary/ItineraryDisplay";
 import { toast } from "sonner";
-import api from "@/lib/axios";
+import ItineraryDisplay from "@/components/itinerary/ItineraryDisplay";
+import { GeneratedItinerary } from "@/types/itinerary";
 
 const ItineraryDetails = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams();
   const [itinerary, setItinerary] = useState<GeneratedItinerary | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchItinerary = async () => {
       try {
-        const { data: itineraryData, error } = await supabase
-          .from("itineraries")
-          .select("*")
-          .eq("id", id)
+        const { data, error } = await supabase
+          .from('itineraries')
+          .select('itinerary_data')
+          .eq('id', id)
           .single();
 
         if (error) throw error;
-
-        if (itineraryData && itineraryData.itinerary_data) {
-          const itineraryJson = typeof itineraryData.itinerary_data === 'string' 
-            ? JSON.parse(itineraryData.itinerary_data) 
-            : itineraryData.itinerary_data;
-
-          // Construct the itinerary object with the correct shape
-          const combinedData: GeneratedItinerary = {
-            destination: itineraryData.destination,
-            dates: {
-              start: itineraryData.departure_date,
-              end: itineraryData.return_date,
-            },
-            itinerary: itineraryJson.itinerary || [],
-          };
-          
-          setItinerary(combinedData);
+        if (data?.itinerary_data) {
+          setItinerary(data.itinerary_data as unknown as GeneratedItinerary);
         }
       } catch (error) {
-        console.error("Error fetching itinerary:", error);
-        toast.error("Erro ao carregar o roteiro");
+        console.error('Error fetching itinerary:', error);
+        toast.error('Erro ao carregar o roteiro');
       } finally {
         setIsLoading(false);
       }
@@ -53,14 +37,30 @@ const ItineraryDetails = () => {
   }, [id]);
 
   if (isLoading) {
-    return <div>Carregando...</div>;
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center">Carregando roteiro...</div>
+      </div>
+    );
   }
 
   if (!itinerary) {
-    return <div>Roteiro não encontrado</div>;
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center text-muted-foreground">
+          Roteiro não encontrado
+        </div>
+      </div>
+    );
   }
 
-  return <ItineraryDisplay itinerary={itinerary} />;
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <div className="max-w-4xl mx-auto">
+        <ItineraryDisplay itinerary={itinerary} />
+      </div>
+    </div>
+  );
 };
 
 export default ItineraryDetails;

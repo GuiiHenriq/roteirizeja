@@ -27,25 +27,25 @@
   }
 
   .dark {
-    --background: 222 47% 11%;        /* #111827 gray-900 */
-    --foreground: 0 0% 100%;          /* #FFFFFF white */
-    --card: 215 28% 17%;              /* #1F2937 gray-800 */
-    --card-foreground: 0 0% 100%;     /* #FFFFFF white */
-    --popover: 215 28% 17%;           /* #1F2937 gray-800 */
-    --popover-foreground: 210 40% 98%; /* Slightly adjusted for contrast */
-    --primary: 142 69% 45%;           /* #22C55E green-500 */
-    --primary-foreground: 210 40% 98%;
-    --secondary: 217 19% 27%;         /* #374151 gray-700 */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 217.2 32.6% 17.5%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 142.1 70.6% 45.3%;
+    --primary-foreground: 144.9 80.4% 10%;
+    --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 217 19% 27%;             /* #374151 gray-700 */
-    --muted-foreground: 215 20% 65%;  /* #9CA3AF gray-400 */
-    --accent: 217 19% 27%;            /* #374151 gray-700 */
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-    --border: 217 19% 27%;            /* #374151 gray-700 */
-    --input: 217 19% 27%;             /* #374151 gray-700 */
-    --ring: 151 58% 52%;              /* #34D399 green-400 */
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 142.4 71.8% 29.2%;
   }
 
   * {
@@ -94,6 +94,7 @@
     @apply rounded-xl border border-border bg-card p-4 shadow-sm transition-all duration-200 hover:shadow-md;
   }
 
+  /* Desktop Layout Utilities */
   .desktop-container {
     @apply lg:ml-64 lg:px-8;
   }

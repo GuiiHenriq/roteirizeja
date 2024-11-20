@@ -1,71 +1,64 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card } from "@/components/ui/card";
+import { Loader2 } from "lucide-react";
 import { DatePickerInput } from "@/components/form/DatePickerInput";
 import { InterestsSelect } from "@/components/form/InterestsSelect";
-import { Input } from "@/components/ui/input";
-import api from "@/lib/axios";
-import { supabase } from "@/integrations/supabase/client";
 
 const CreateItinerary = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
   const [destination, setDestination] = useState("");
-  const [departureDate, setDepartureDate] = useState<Date>();
-  const [returnDate, setReturnDate] = useState<Date>();
-  const [interests, setInterests] = useState<string[]>([]);
+  const [startDate, setStartDate] = useState<Date>();
+  const [endDate, setEndDate] = useState<Date>();
+  const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const toggleInterest = (interest: string) => {
+    setSelectedInterests(current =>
+      current.includes(interest)
+        ? current.filter(i => i !== interest)
+        : [...current, interest]
+    );
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
-
-    if (!destination || !departureDate || !returnDate || interests.length === 0) {
-      toast.error("Por favor, preencha todos os campos");
+    if (!startDate || !endDate) {
+      toast.error("Por favor, selecione as datas de ida e volta");
       return;
     }
-
+    
     setIsLoading(true);
 
     try {
-      // First, generate the itinerary using our API
-      const { data: generatedItinerary } = await api.post("/api/generate-itinerary", {
+      const { error } = await supabase.from('itineraries').insert({
+        user_id: user?.id,
         destination,
-        dates: {
-          start: departureDate.toISOString(),
-          end: returnDate.toISOString(),
-        },
-        interests: interests.join(", "),
-      });
-
-      if (!generatedItinerary) {
-        throw new Error("Não foi possível gerar o roteiro");
-      }
-
-      // Then, save it to Supabase
-      const { data: savedItinerary, error } = await supabase
-        .from("itineraries")
-        .insert({
-          user_id: user.id,
-          destination,
-          departure_date: departureDate.toISOString(),
-          return_date: returnDate.toISOString(),
-          interests: interests.join(", "),
-          itinerary_data: generatedItinerary,
+        departure_date: startDate.toISOString().split('T')[0],
+        return_date: endDate.toISOString().split('T')[0],
+        interests: selectedInterests.join(", "),
+        itinerary_data: JSON.stringify({
+          dates: {
+            start: startDate.toISOString().split('T')[0],
+            end: endDate.toISOString().split('T')[0]
+          }
         })
-        .select()
-        .single();
+      });
 
       if (error) throw error;
 
-      toast.success("Roteiro criado com sucesso!");
-      navigate(`/itineraries/${savedItinerary.id}`);
-    } catch (error: any) {
-      console.error("Error creating itinerary:", error);
-      toast.error(error.message || "Erro ao criar roteiro. Por favor, tente novamente.");
+      toast.success('Roteiro gerado com sucesso!');
+      navigate('/itineraries');
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error('Erro ao gerar roteiro. Por favor, tente novamente.');
     } finally {
       setIsLoading(false);
     }
@@ -73,53 +66,49 @@ const CreateItinerary = () => {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <Card>
-        <CardHeader>
-          <CardTitle>Criar Novo Roteiro</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label htmlFor="destination" className="block text-sm font-medium mb-2">
-                Destino
-              </label>
-              <Input
-                id="destination"
-                placeholder="Para onde você quer ir?"
-                value={destination}
-                onChange={(e) => setDestination(e.target.value)}
-              />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <DatePickerInput
-                label="Data de Ida"
-                date={departureDate}
-                setDate={setDepartureDate}
-              />
-              <DatePickerInput
-                label="Data de Volta"
-                date={returnDate}
-                setDate={setReturnDate}
-              />
-            </div>
-
-            <InterestsSelect
-              selectedInterests={interests}
-              toggleInterest={(interest) => {
-                setInterests((prev) =>
-                  prev.includes(interest)
-                    ? prev.filter((i) => i !== interest)
-                    : [...prev, interest]
-                )
-              }}
+      <h1 className="text-3xl font-bold mb-8">Criar Novo Roteiro</h1>
+      <Card className="p-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="destination">Destino</Label>
+            <Input
+              id="destination"
+              placeholder="Para onde você quer ir?"
+              value={destination}
+              onChange={(e) => setDestination(e.target.value)}
+              required
             />
+          </div>
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Gerando roteiro..." : "Gerar Roteiro"}
-            </Button>
-          </form>
-        </CardContent>
+          <div className="grid grid-cols-2 gap-4">
+            <DatePickerInput
+              date={startDate}
+              setDate={setStartDate}
+              label="Data de Ida"
+            />
+            <DatePickerInput
+              date={endDate}
+              setDate={setEndDate}
+              label="Data de Volta"
+            />
+          </div>
+
+          <InterestsSelect
+            selectedInterests={selectedInterests}
+            toggleInterest={toggleInterest}
+          />
+
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Gerando roteiro...
+              </>
+            ) : (
+              'Gerar Roteiro'
+            )}
+          </Button>
+        </form>
       </Card>
     </div>
   );
