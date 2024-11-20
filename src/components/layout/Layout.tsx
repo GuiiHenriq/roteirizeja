@@ -11,7 +11,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
         <ThemeToggle />
         <div className="flex">
           {/* Desktop Sidebar - hidden on mobile */}
-          <div className="hidden lg:block">
+          <div className="hidden lg:block fixed left-0 top-0 h-full">
             <DesktopSidebar />
           </div>
           

@@ -17,7 +17,7 @@ const DesktopSidebar = () => {
   ];
 
   return (
-    <aside className="w-64 h-screen bg-card fixed left-0 top-0 border-r border-border p-6">
+    <aside className="w-64 h-screen bg-card fixed left-0 top-0 border-r border-border p-6 z-50">
       <div className="flex flex-col h-full">
         {/* Logo/Brand */}
         <div className="mb-8">
