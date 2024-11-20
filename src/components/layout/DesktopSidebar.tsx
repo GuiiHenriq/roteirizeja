@@ -9,7 +9,7 @@ const DesktopSidebar = () => {
   const isActive = (path: string) => location.pathname === path;
 
   const menuItems = [
-    { path: "/", icon: Home, label: "Home" },
+    { path: "/", icon: Home, label: "Início" },
     { path: "/create-itinerary", icon: Map, label: "Criar Roteiro" },
     { path: "/itineraries", icon: Calendar, label: "Meus Roteiros" },
     { path: "/saved", icon: Heart, label: "Favoritos" },
@@ -19,12 +19,10 @@ const DesktopSidebar = () => {
   return (
     <aside className="w-64 h-screen bg-card fixed left-0 top-0 border-r border-border p-6 z-50">
       <div className="flex flex-col h-full">
-        {/* Logo/Brand */}
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-primary">Viajai</h1>
         </div>
 
-        {/* Navigation Links */}
         <nav className="space-y-2 flex-1">
           {menuItems.map((item) => (
             <Link
@@ -42,7 +40,6 @@ const DesktopSidebar = () => {
           ))}
         </nav>
 
-        {/* Logout Button */}
         <Button
           variant="ghost"
           className="w-full justify-start space-x-3"

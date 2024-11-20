@@ -23,14 +23,14 @@ const Register = () => {
     <div className="container mx-auto px-4 h-screen flex items-center justify-center">
       <div className="w-full max-w-md space-y-8 glass-card p-8">
         <div className="text-center">
-          <h2 className="text-3xl font-bold">Create Account</h2>
-          <p className="text-muted-foreground mt-2">Sign up for a new account</p>
+          <h2 className="text-3xl font-bold">Criar Conta</h2>
+          <p className="text-muted-foreground mt-2">Cadastre-se para uma nova conta</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <label htmlFor="name" className="text-sm font-medium">
-              Name
+              Nome
             </label>
             <Input
               id="name"
@@ -38,14 +38,14 @@ const Register = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              placeholder="Enter your name"
+              placeholder="Digite seu nome"
               disabled={loading}
             />
           </div>
 
           <div className="space-y-2">
             <label htmlFor="email" className="text-sm font-medium">
-              Email
+              E-mail
             </label>
             <Input
               id="email"
@@ -53,14 +53,14 @@ const Register = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              placeholder="Enter your email"
+              placeholder="Digite seu e-mail"
               disabled={loading}
             />
           </div>
 
           <div className="space-y-2">
             <label htmlFor="password" className="text-sm font-medium">
-              Password
+              Senha
             </label>
             <Input
               id="password"
@@ -68,21 +68,21 @@ const Register = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              placeholder="Choose a password"
+              placeholder="Escolha uma senha"
               disabled={loading}
             />
           </div>
 
           <Button type="submit" className="w-full" size="lg" disabled={loading}>
             <UserPlus className="w-4 h-4 mr-2" />
-            {loading ? 'Creating account...' : 'Sign Up'}
+            {loading ? 'Criando conta...' : 'Cadastrar'}
           </Button>
         </form>
 
         <p className="text-center text-sm">
-          Already have an account?{" "}
+          Já tem uma conta?{" "}
           <Link to="/login" className="text-primary hover:underline">
-            Sign in
+            Entre
           </Link>
         </p>
       </div>

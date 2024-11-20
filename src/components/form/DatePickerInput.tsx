@@ -4,6 +4,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar as CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { ptBR } from "date-fns/locale";
 
 interface DatePickerInputProps {
   date: Date | undefined;
@@ -27,7 +28,7 @@ export const DatePickerInput = ({ date, setDate, label }: DatePickerInputProps) 
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
-            {date ? format(date, "PPP") : <span>Selecione uma data</span>}
+            {date ? format(date, "PPP", { locale: ptBR }) : <span>Selecione uma data</span>}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">
@@ -36,6 +37,7 @@ export const DatePickerInput = ({ date, setDate, label }: DatePickerInputProps) 
             selected={date}
             onSelect={setDate}
             initialFocus
+            locale={ptBR}
           />
         </PopoverContent>
       </Popover>

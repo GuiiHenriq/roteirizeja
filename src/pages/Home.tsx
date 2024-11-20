@@ -9,46 +9,46 @@ const Home = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Welcome to Itinerary Genius</h1>
+        <h1 className="text-3xl font-bold">Bem-vindo ao Viajai</h1>
         {user ? (
           <Button onClick={() => signOut()} variant="outline">
-            Sign Out
+            Sair
           </Button>
         ) : (
           <Button onClick={() => navigate("/login")} variant="outline">
-            Sign In
+            Entrar
           </Button>
         )}
       </div>
       
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <div className="p-6 rounded-lg bg-card shadow-lg">
-          <h2 className="text-xl font-semibold mb-4">Create New Itinerary</h2>
+          <h2 className="text-xl font-semibold mb-4">Criar Novo Roteiro</h2>
           <p className="text-muted-foreground mb-4">
-            Plan your next adventure with our AI-powered itinerary generator.
+            Planeje sua próxima aventura com nosso gerador de roteiros com IA.
           </p>
           <Button onClick={() => navigate("/create-itinerary")} className="w-full">
-            Get Started
+            Começar
           </Button>
         </div>
 
         <div className="p-6 rounded-lg bg-card shadow-lg">
-          <h2 className="text-xl font-semibold mb-4">My Itineraries</h2>
+          <h2 className="text-xl font-semibold mb-4">Meus Roteiros</h2>
           <p className="text-muted-foreground mb-4">
-            View and manage your saved travel plans.
+            Visualize e gerencie seus planos de viagem salvos.
           </p>
           <Button onClick={() => navigate("/itineraries")} variant="outline" className="w-full">
-            View All
+            Ver Todos
           </Button>
         </div>
 
         <div className="p-6 rounded-lg bg-card shadow-lg">
-          <h2 className="text-xl font-semibold mb-4">Popular Destinations</h2>
+          <h2 className="text-xl font-semibold mb-4">Destinos Populares</h2>
           <p className="text-muted-foreground mb-4">
-            Explore trending locations and travel inspiration.
+            Explore locais em alta e inspire-se para sua próxima viagem.
           </p>
           <Button onClick={() => navigate("/destinations")} variant="outline" className="w-full">
-            Explore
+            Explorar
           </Button>
         </div>
       </div>
