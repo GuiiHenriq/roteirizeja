@@ -93,4 +93,13 @@
   .card {
     @apply rounded-xl border border-border bg-card p-4 shadow-sm transition-all duration-200 hover:shadow-md;
   }
+
+  /* Desktop Layout Utilities */
+  .desktop-container {
+    @apply lg:ml-64 lg:px-8;
+  }
+
+  .desktop-sidebar-link {
+    @apply flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200;
+  }
 }

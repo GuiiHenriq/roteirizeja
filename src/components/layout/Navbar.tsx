@@ -6,7 +6,7 @@ const Navbar = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-lg border-t border-border p-4 z-50">
+    <nav className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-lg border-t border-border p-4 z-50 lg:hidden">
       <div className="max-w-screen-xl mx-auto flex justify-around items-center">
         <Link to="/" className={`nav-link ${isActive("/") ? "active" : ""}`}>
           <Home className="w-6 h-6" />
