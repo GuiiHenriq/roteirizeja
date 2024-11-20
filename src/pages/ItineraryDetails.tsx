@@ -21,7 +21,7 @@ const ItineraryDetails = () => {
 
         if (error) throw error;
         if (data?.itinerary_data) {
-          setItinerary(data.itinerary_data as GeneratedItinerary);
+          setItinerary(data.itinerary_data as unknown as GeneratedItinerary);
         }
       } catch (error) {
         console.error('Error fetching itinerary:', error);

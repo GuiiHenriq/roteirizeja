@@ -46,7 +46,7 @@ const CreateItinerary = () => {
         departure_date: itineraryData.dates.start,
         return_date: itineraryData.dates.end,
         interests: selectedInterests.join(", "),
-        itinerary_data: itineraryData
+        itinerary_data: itineraryData as unknown as Json
       });
 
       if (error) throw error;
