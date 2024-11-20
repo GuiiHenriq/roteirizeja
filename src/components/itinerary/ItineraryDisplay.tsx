@@ -4,8 +4,8 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Clock, DollarSign } from "lucide-react";
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import api from "@/lib/axios";
 
 interface ItineraryDisplayProps {
   itinerary: GeneratedItinerary;
@@ -67,21 +67,12 @@ const ItineraryDisplay = ({ itinerary }: ItineraryDisplayProps) => {
     const generateImage = async () => {
       try {
         setIsLoadingImage(true);
-        console.log('Calling generate-destination-image function...');
-        
-        const { data, error } = await supabase.functions.invoke('generate-destination-image', {
-          body: { destination: itinerary.destination }
+        const { data } = await api.post('/api/generate-destination-image', {
+          destination: itinerary.destination
         });
 
-        console.log('Function response:', { data, error });
-
-        if (error) {
-          console.error('Supabase function error:', error);
-          throw error;
-        }
-
         if (!data?.imageUrl) {
-          throw new Error('No image URL received from the function');
+          throw new Error('No image URL received from the API');
         }
 
         setDestinationImage(data.imageUrl);
