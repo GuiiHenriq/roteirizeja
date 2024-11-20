@@ -3,6 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Clock, DollarSign } from "lucide-react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 interface ItineraryDisplayProps {
   itinerary: GeneratedItinerary;
@@ -57,14 +60,49 @@ const DayCard = ({ date, activities }: { date: string; activities: DayActivities
 );
 
 const ItineraryDisplay = ({ itinerary }: ItineraryDisplayProps) => {
+  const [destinationImage, setDestinationImage] = useState<string | null>(null);
+  const [isLoadingImage, setIsLoadingImage] = useState(true);
+
+  useEffect(() => {
+    const generateImage = async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke('generate-destination-image', {
+          body: { destination: itinerary.destination }
+        });
+
+        if (error) throw error;
+        setDestinationImage(data.imageUrl);
+      } catch (error) {
+        console.error('Error generating image:', error);
+        toast.error('Não foi possível gerar a imagem do destino');
+      } finally {
+        setIsLoadingImage(false);
+      }
+    };
+
+    generateImage();
+  }, [itinerary.destination]);
+
   return (
     <div className="space-y-8">
       <div className="text-center">
         <h2 className="text-2xl font-bold mb-2">Roteiro para {itinerary.destination}</h2>
-        <p className="text-muted-foreground">
+        <p className="text-muted-foreground mb-4">
           {format(new Date(itinerary.dates.start), "dd 'de' MMMM", { locale: ptBR })} -{" "}
           {format(new Date(itinerary.dates.end), "dd 'de' MMMM, yyyy", { locale: ptBR })}
         </p>
+        
+        {isLoadingImage ? (
+          <div className="w-full h-64 bg-muted animate-pulse rounded-lg" />
+        ) : destinationImage && (
+          <div className="relative w-full h-64 rounded-lg overflow-hidden">
+            <img
+              src={destinationImage}
+              alt={`Paisagem de ${itinerary.destination}`}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        )}
       </div>
       
       <div className="grid gap-6">
