@@ -5,6 +5,7 @@ import { Route, Routes } from "react-router-dom";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
+import Dashboard from "./pages/Dashboard";
 import CreateItinerary from "./pages/CreateItinerary";
 import Itineraries from "./pages/Itineraries";
 import ItineraryDetails from "./pages/ItineraryDetails";
@@ -18,6 +19,7 @@ function App() {
         <Layout>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route path="/create-itinerary" element={<CreateItinerary />} />
