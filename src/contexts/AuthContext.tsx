@@ -20,13 +20,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
     });
 
-    // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -51,7 +49,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (error) throw error;
 
-      // Create profile entry
       const { error: profileError } = await supabase
         .from('profiles')
         .insert([{ id: user?.id, name }]);
@@ -84,8 +81,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async () => {
     try {
+      if (!session) {
+        // If there's no session, just clear local state and redirect
+        setSession(null);
+        setUser(null);
+        navigate('/login');
+        return;
+      }
+
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
+      
+      setSession(null);
+      setUser(null);
       toast.success('Successfully logged out!');
       navigate('/login');
     } catch (error: any) {
