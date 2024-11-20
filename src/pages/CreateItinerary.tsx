@@ -4,8 +4,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import DatePickerInput from "@/components/form/DatePickerInput";
-import InterestsSelect from "@/components/form/InterestsSelect";
+import { DatePickerInput } from "@/components/form/DatePickerInput";
+import { InterestsSelect } from "@/components/form/InterestsSelect";
 import { Input } from "@/components/ui/input";
 import api from "@/lib/axios";
 import { supabase } from "@/integrations/supabase/client";
@@ -89,18 +89,24 @@ const CreateItinerary = () => {
               <DatePickerInput
                 label="Data de Ida"
                 date={departureDate}
-                onSelect={setDepartureDate}
+                setDate={setDepartureDate}
               />
               <DatePickerInput
                 label="Data de Volta"
                 date={returnDate}
-                onSelect={setReturnDate}
+                setDate={setReturnDate}
               />
             </div>
 
             <InterestsSelect
               selectedInterests={interests}
-              onChange={setInterests}
+              toggleInterest={(interest) => {
+                setInterests((prev) =>
+                  prev.includes(interest)
+                    ? prev.filter((i) => i !== interest)
+                    : [...prev, interest]
+                )
+              }}
             />
 
             <Button type="submit" className="w-full" disabled={isLoading}>

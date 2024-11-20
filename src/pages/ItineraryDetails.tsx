@@ -25,15 +25,17 @@ const ItineraryDetails = () => {
         // Fetch additional details if needed using axios
         const { data: enrichedData } = await api.get(`/api/itineraries/${id}/enrich`);
 
-        setItinerary({
-          ...itineraryData.itinerary_data,
-          destination: itineraryData.destination,
-          dates: {
-            start: itineraryData.departure_date,
-            end: itineraryData.return_date,
-          },
-          ...enrichedData,
-        });
+        if (itineraryData && enrichedData) {
+          setItinerary({
+            ...itineraryData.itinerary_data,
+            destination: itineraryData.destination,
+            dates: {
+              start: itineraryData.departure_date,
+              end: itineraryData.return_date,
+            },
+            ...enrichedData,
+          } as GeneratedItinerary);
+        }
       } catch (error) {
         console.error("Error fetching itinerary:", error);
         toast.error("Erro ao carregar o roteiro");
