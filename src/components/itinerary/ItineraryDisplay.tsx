@@ -66,21 +66,36 @@ const ItineraryDisplay = ({ itinerary }: ItineraryDisplayProps) => {
   useEffect(() => {
     const generateImage = async () => {
       try {
+        setIsLoadingImage(true);
+        console.log('Calling generate-destination-image function...');
+        
         const { data, error } = await supabase.functions.invoke('generate-destination-image', {
           body: { destination: itinerary.destination }
         });
 
-        if (error) throw error;
+        console.log('Function response:', { data, error });
+
+        if (error) {
+          console.error('Supabase function error:', error);
+          throw error;
+        }
+
+        if (!data?.imageUrl) {
+          throw new Error('No image URL received from the function');
+        }
+
         setDestinationImage(data.imageUrl);
       } catch (error) {
         console.error('Error generating image:', error);
-        toast.error('Não foi possível gerar a imagem do destino');
+        toast.error('Não foi possível gerar a imagem do destino. Por favor, tente novamente mais tarde.');
       } finally {
         setIsLoadingImage(false);
       }
     };
 
-    generateImage();
+    if (itinerary.destination) {
+      generateImage();
+    }
   }, [itinerary.destination]);
 
   return (
