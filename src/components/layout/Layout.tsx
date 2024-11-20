@@ -12,7 +12,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
   return (
     <ThemeProvider defaultTheme="light" storageKey="app-theme">
       <div className="min-h-screen bg-background">
-        <ThemeToggle />
+        <ThemeToggle className="fixed top-4 right-4 z-50" />
         
         {/* Header for logged out users */}
         {!user && (
@@ -34,13 +34,13 @@ const Layout = ({ children }: { children: ReactNode }) => {
         <div className="flex">
           {/* Desktop Sidebar - only shown when logged in */}
           {user && (
-            <div className="hidden lg:block fixed left-0 top-0 h-full">
+            <div className="hidden lg:block">
               <DesktopSidebar />
             </div>
           )}
           
           {/* Main Content */}
-          <main className={`flex-1 pb-24 lg:pb-8 page-transition ${user ? 'lg:pl-64' : 'pt-16'}`}>
+          <main className={`flex-1 ${user ? 'lg:pl-64' : 'pt-16'}`}>
             <div className="container mx-auto px-4 py-8">
               {children}
             </div>
