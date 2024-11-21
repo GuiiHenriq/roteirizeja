@@ -1,6 +1,5 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { addDays, format } from "https://deno.land/x/date_fns@v2.22.1/index.js";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -86,6 +85,20 @@ const functionSchema = {
   }
 };
 
+function getDaysBetweenDates(startDate: string, endDate: string): string[] {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const dates: string[] = [];
+  
+  let currentDate = start;
+  while (currentDate <= end) {
+    dates.push(currentDate.toISOString().split('T')[0]);
+    currentDate = new Date(currentDate.setDate(currentDate.getDate() + 1));
+  }
+  
+  return dates;
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -109,7 +122,7 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: "gpt-4",
         messages: [
           {
             role: "system",
