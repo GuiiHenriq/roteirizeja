@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import ItineraryDisplay from "@/components/itinerary/ItineraryDisplay";
-import { GeneratedItinerary, ItineraryDay } from "@/types/itinerary";
+import { GeneratedItinerary } from "@/types/itinerary";
 
 const ItineraryDetails = () => {
   const { id } = useParams();
@@ -22,9 +22,6 @@ const ItineraryDetails = () => {
         if (error) throw error;
 
         if (data) {
-          // First cast to unknown, then to the expected type to avoid TypeScript errors
-          const itineraryData = (data.itinerary_data as unknown) as { itinerary: ItineraryDay[] } | null;
-          
           // Transform the data into the expected GeneratedItinerary format
           const formattedItinerary: GeneratedItinerary = {
             destination: data.destination,
@@ -32,9 +29,10 @@ const ItineraryDetails = () => {
               start: data.departure_date,
               end: data.return_date
             },
-            itinerary: itineraryData?.itinerary || []
+            itinerary: data.itinerary_data?.itinerary || []
           };
           
+          console.log('Fetched itinerary:', formattedItinerary);
           setItinerary(formattedItinerary);
         }
       } catch (error) {

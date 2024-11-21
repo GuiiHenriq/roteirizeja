@@ -8,14 +8,14 @@ const corsHeaders = {
 
 const functionSchema = {
   name: "generate_travel_itinerary",
-  description: "Generate a travel itinerary with daily activities",
+  description: "Generate a detailed travel itinerary for a trip",
   parameters: {
     type: "object",
     required: ["destination", "dates", "itinerary"],
     properties: {
       destination: {
         type: "string",
-        description: "Trip destination"
+        description: "The destination of the trip"
       },
       dates: {
         type: "object",
@@ -42,7 +42,7 @@ const functionSchema = {
                   properties: {
                     Name: { type: "string" },
                     Description: { type: "string" },
-                    Cost: { type: "number", description: "Cost in BRL" }
+                    Cost: { type: "number" }
                   }
                 },
                 afternoon: {
@@ -51,7 +51,7 @@ const functionSchema = {
                   properties: {
                     Name: { type: "string" },
                     Description: { type: "string" },
-                    Cost: { type: "number", description: "Cost in BRL" }
+                    Cost: { type: "number" }
                   }
                 },
                 evening: {
@@ -60,7 +60,7 @@ const functionSchema = {
                   properties: {
                     Name: { type: "string" },
                     Description: { type: "string" },
-                    Cost: { type: "number", description: "Cost in BRL" }
+                    Cost: { type: "number" }
                   }
                 }
               }
@@ -80,11 +80,14 @@ serve(async (req) => {
   try {
     const { destination, departureDate, returnDate, interests } = await req.json();
 
-    const prompt = `Crie um roteiro curto para ${destination} de ${departureDate} a ${returnDate}.
-    Foco: ${interests}
-    Forneça apenas atividades essenciais para manhã, tarde e noite.
-    Mantenha descrições concisas.
-    Importante: Todos os custos devem ser em Reais (BRL).`;
+    console.log('Generating itinerary for:', { destination, departureDate, returnDate, interests });
+
+    const prompt = `Create a travel itinerary for ${destination} from ${departureDate} to ${returnDate}.
+    Focus: ${interests || 'General tourism'}
+    Please provide essential activities for morning, afternoon, and evening.
+    Keep descriptions concise.
+    All costs must be in Brazilian Reais (BRL).
+    Make sure to follow the exact format with morning, afternoon, and evening activities.`;
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -97,7 +100,7 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: "Você é um planejador de viagens conciso. Mantenha as respostas curtas e objetivas. Use sempre valores em Reais (BRL)."
+            content: "You are a travel planner that creates detailed itineraries. Always use lowercase 'morning', 'afternoon', and 'evening' in the response structure."
           },
           {
             role: "user",
@@ -106,7 +109,6 @@ serve(async (req) => {
         ],
         functions: [functionSchema],
         function_call: { name: "generate_travel_itinerary" },
-        max_tokens: 1000,
         temperature: 0.7
       }),
     });
@@ -116,13 +118,14 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    console.log("OpenAI response:", data);
+    console.log('OpenAI response:', data);
 
     if (!data.choices?.[0]?.message?.function_call?.arguments) {
       throw new Error('Invalid response format from OpenAI');
     }
 
     const itineraryData = JSON.parse(data.choices[0].message.function_call.arguments);
+    console.log('Parsed itinerary data:', itineraryData);
 
     return new Response(JSON.stringify({ itinerary: itineraryData }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -131,7 +134,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error:', error);
     return new Response(JSON.stringify({ 
-      error: error.message || 'Ocorreu um erro ao gerar o roteiro' 
+      error: error.message || 'Erro ao gerar o roteiro' 
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
