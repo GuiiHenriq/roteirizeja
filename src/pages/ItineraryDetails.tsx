@@ -22,8 +22,8 @@ const ItineraryDetails = () => {
         if (error) throw error;
 
         if (data) {
-          // Safely type and access the itinerary data
-          const itineraryData = data.itinerary_data as { itinerary: ItineraryDay[] } | null;
+          // First cast to unknown, then to the expected type to avoid TypeScript errors
+          const itineraryData = (data.itinerary_data as unknown) as { itinerary: ItineraryDay[] } | null;
           
           // Transform the data into the expected GeneratedItinerary format
           const formattedItinerary: GeneratedItinerary = {
