@@ -1,5 +1,6 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { addDays, format } from "https://deno.land/x/date_fns@v2.22.1/index.js";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -92,7 +93,6 @@ serve(async (req) => {
 
   try {
     const { destination, departureDate, returnDate, interests } = await req.json();
-
     console.log('Generating itinerary for:', { destination, departureDate, returnDate, interests });
 
     const prompt = `Create a detailed travel itinerary for ${destination} from ${departureDate} to ${returnDate}.

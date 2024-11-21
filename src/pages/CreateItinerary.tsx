@@ -38,21 +38,29 @@ const CreateItinerary = () => {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.from('itineraries').insert({
+      // First, generate the itinerary using the OpenAI function
+      const { data: generatedItinerary, error: generationError } = await supabase.functions.invoke('generate-itinerary', {
+        body: {
+          destination,
+          departureDate: startDate.toISOString().split('T')[0],
+          returnDate: endDate.toISOString().split('T')[0],
+          interests: selectedInterests.join(", ")
+        }
+      });
+
+      if (generationError) throw generationError;
+
+      // Then, save the itinerary to the database
+      const { error: saveError } = await supabase.from('itineraries').insert({
         user_id: user?.id,
         destination,
         departure_date: startDate.toISOString().split('T')[0],
         return_date: endDate.toISOString().split('T')[0],
         interests: selectedInterests.join(", "),
-        itinerary_data: JSON.stringify({
-          dates: {
-            start: startDate.toISOString().split('T')[0],
-            end: endDate.toISOString().split('T')[0]
-          }
-        })
+        itinerary_data: generatedItinerary
       });
 
-      if (error) throw error;
+      if (saveError) throw saveError;
 
       toast.success('Roteiro gerado com sucesso!');
       navigate('/itineraries');
