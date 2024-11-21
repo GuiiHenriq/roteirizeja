@@ -98,6 +98,15 @@ const ItineraryDisplay = ({ itinerary }: ItineraryDisplayProps) => {
     }
   }, [itinerary.destination]);
 
+  // Ensure we have all required data before rendering
+  if (!itinerary || !itinerary.destination || !itinerary.dates || !Array.isArray(itinerary.itinerary)) {
+    return (
+      <div className="text-center text-muted-foreground">
+        Dados do roteiro incompletos ou inválidos
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       <div className="text-center">

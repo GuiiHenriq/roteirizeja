@@ -15,13 +15,24 @@ const ItineraryDetails = () => {
       try {
         const { data, error } = await supabase
           .from('itineraries')
-          .select('itinerary_data')
+          .select('*')
           .eq('id', id)
           .single();
 
         if (error) throw error;
-        if (data?.itinerary_data) {
-          setItinerary(data.itinerary_data as unknown as GeneratedItinerary);
+
+        if (data) {
+          // Transform the data into the expected GeneratedItinerary format
+          const formattedItinerary: GeneratedItinerary = {
+            destination: data.destination,
+            dates: {
+              start: data.departure_date,
+              end: data.return_date
+            },
+            itinerary: data.itinerary_data?.itinerary || []
+          };
+          
+          setItinerary(formattedItinerary);
         }
       } catch (error) {
         console.error('Error fetching itinerary:', error);
