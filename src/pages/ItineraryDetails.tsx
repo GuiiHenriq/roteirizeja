@@ -29,7 +29,10 @@ const ItineraryDetails = () => {
               start: data.departure_date,
               end: data.return_date
             },
-            itinerary: data.itinerary_data?.itinerary || []
+            // Safely access and type the itinerary data
+            itinerary: data.itinerary_data && typeof data.itinerary_data === 'object' 
+              ? (data.itinerary_data as any).itinerary || []
+              : []
           };
           
           console.log('Fetched itinerary:', formattedItinerary);
