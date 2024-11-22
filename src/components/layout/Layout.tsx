@@ -9,18 +9,31 @@ import { Link } from "react-router-dom";
 import { toast } from "sonner";
 
 const Layout = ({ children }: { children: ReactNode }) => {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
   const protectedRoutes = ['/create-itinerary', '/itineraries', '/profile'];
+  const publicRoutes = ['/login', '/register'];
 
   useEffect(() => {
-    if (!user && protectedRoutes.some(route => location.pathname.startsWith(route))) {
-      toast.error("Efetue seu login");
-      navigate('/login');
+    if (!isLoading) {
+      if (!user && protectedRoutes.some(route => location.pathname.startsWith(route))) {
+        toast.error("Efetue seu login");
+        navigate('/login');
+      } else if (user && publicRoutes.includes(location.pathname)) {
+        navigate('/');
+      }
     }
-  }, [user, location.pathname, navigate]);
+  }, [user, location.pathname, navigate, isLoading]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <ThemeProvider defaultTheme="light" storageKey="app-theme">
