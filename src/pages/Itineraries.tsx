@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
-import { Calendar, MapPin } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Calendar, MapPin, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -21,29 +22,50 @@ const Itineraries = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuth();
 
+  const fetchItineraries = async () => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('itineraries')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setItineraries(data || []);
+    } catch (error) {
+      console.error('Error fetching itineraries:', error);
+      toast.error('Erro ao carregar os roteiros');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchItineraries = async () => {
-      if (!user) return;
-
-      try {
-        const { data, error } = await supabase
-          .from('itineraries')
-          .select('*')
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: false });
-
-        if (error) throw error;
-        setItineraries(data || []);
-      } catch (error) {
-        console.error('Error fetching itineraries:', error);
-        toast.error('Erro ao carregar os roteiros');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchItineraries();
   }, [user]);
+
+  const handleDelete = async (id: string, e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent navigation when clicking delete
+    e.stopPropagation(); // Prevent event bubbling
+
+    try {
+      const { error } = await supabase
+        .from('itineraries')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast.success('Roteiro excluído com sucesso');
+      // Update the local state to remove the deleted itinerary
+      setItineraries(prev => prev.filter(itinerary => itinerary.id !== id));
+    } catch (error) {
+      console.error('Error deleting itinerary:', error);
+      toast.error('Erro ao excluir o roteiro');
+    }
+  };
 
   if (isLoading) {
     return (
@@ -73,7 +95,7 @@ const Itineraries = () => {
           <Link
             key={itinerary.id}
             to={`/itineraries/${itinerary.id}`}
-            className="hover-scale"
+            className="hover-scale relative group"
           >
             <Card className="overflow-hidden">
               <div className="relative h-48">
@@ -84,6 +106,15 @@ const Itineraries = () => {
                     {itinerary.destination}
                   </h3>
                 </div>
+                {/* Delete button */}
+                <Button
+                  variant="destructive"
+                  size="icon"
+                  className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                  onClick={(e) => handleDelete(itinerary.id, e)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
               </div>
               <CardContent className="p-4">
                 <div className="flex items-center text-sm text-muted-foreground">
