@@ -6,86 +6,6 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const functionSchema = {
-  name: "generate_travel_itinerary",
-  description: "Generate travel itinerary with daily activities",
-  parameters: {
-    type: "object",
-    required: ["destination", "dates", "itinerary"],
-    properties: {
-      destination: {
-        type: "string",
-        description: "Trip destination"
-      },
-      dates: {
-        type: "object",
-        required: ["start", "end"],
-        properties: {
-          start: { type: "string", format: "date" },
-          end: { type: "string", format: "date" }
-        }
-      },
-      itinerary: {
-        type: "array",
-        items: {
-          type: "object",
-          required: ["day", "activities"],
-          properties: {
-            day: { type: "string", format: "date" },
-            activities: {
-              type: "object",
-              required: ["morning", "afternoon", "evening"],
-              properties: {
-                morning: {
-                  type: "object",
-                  required: ["Name", "Description", "Cost"],
-                  properties: {
-                    Name: { type: "string" },
-                    Description: { type: "string" },
-                    Cost: { type: "number" }
-                  }
-                },
-                afternoon: {
-                  type: "object",
-                  required: ["Name", "Description", "Cost"],
-                  properties: {
-                    Name: { type: "string" },
-                    Description: { type: "string" },
-                    Cost: { type: "number" }
-                  }
-                },
-                evening: {
-                  type: "object",
-                  required: ["Name", "Description", "Cost"],
-                  properties: {
-                    Name: { type: "string" },
-                    Description: { type: "string" },
-                    Cost: { type: "number" }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-};
-
-function getDaysBetweenDates(startDate: string, endDate: string): string[] {
-  const start = new Date(startDate);
-  const end = new Date(endDate);
-  const dates: string[] = [];
-  
-  let currentDate = start;
-  while (currentDate <= end) {
-    dates.push(currentDate.toISOString().split('T')[0]);
-    currentDate = new Date(currentDate.setDate(currentDate.getDate() + 1));
-  }
-  
-  return dates;
-}
-
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -95,12 +15,19 @@ serve(async (req) => {
     const { destination, departureDate, returnDate, interests } = await req.json();
     console.log('Generating itinerary for:', { destination, departureDate, returnDate, interests });
 
-    // Otimizado o prompt para usar menos tokens
-    const prompt = `Plan ${destination} trip ${departureDate} to ${returnDate}.
-    Focus: ${interests || 'tourism'}
-    Include: morning/afternoon/evening activities
-    For each: name, brief description, cost (BRL)
-    Keep activities relevant to location`;
+    const systemPrompt = `Você é um planejador de viagens especializado em criar roteiros detalhados em português do Brasil.
+    Algumas regras importantes:
+    - Use sempre português do Brasil
+    - Todos os valores monetários devem ser em Reais (BRL)
+    - Mantenha as descrições concisas mas informativas
+    - Sugira atividades realistas e apropriadas para o horário do dia
+    - Os custos devem ser realistas para o Brasil e a região`;
+
+    const prompt = `Crie um roteiro para ${destination} de ${departureDate} até ${returnDate}.
+    Foco: ${interests || 'turismo geral'}
+    Inclua: atividades para manhã, tarde e noite
+    Para cada atividade: nome, breve descrição, custo em Reais (BRL)
+    Mantenha as atividades relevantes para a localização`;
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -111,13 +38,74 @@ serve(async (req) => {
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
-          {
-            role: "system",
-            content: "You are a travel planner. Generate itineraries following the exact schema."
-          },
+          { role: "system", content: systemPrompt },
           { role: "user", content: prompt }
         ],
-        functions: [functionSchema],
+        functions: [{
+          name: "generate_travel_itinerary",
+          description: "Generate travel itinerary with daily activities",
+          parameters: {
+            type: "object",
+            required: ["destination", "dates", "itinerary"],
+            properties: {
+              destination: {
+                type: "string",
+                description: "Trip destination"
+              },
+              dates: {
+                type: "object",
+                required: ["start", "end"],
+                properties: {
+                  start: { type: "string", format: "date" },
+                  end: { type: "string", format: "date" }
+                }
+              },
+              itinerary: {
+                type: "array",
+                items: {
+                  type: "object",
+                  required: ["day", "activities"],
+                  properties: {
+                    day: { type: "string", format: "date" },
+                    activities: {
+                      type: "object",
+                      required: ["morning", "afternoon", "evening"],
+                      properties: {
+                        morning: {
+                          type: "object",
+                          required: ["Name", "Description", "Cost"],
+                          properties: {
+                            Name: { type: "string" },
+                            Description: { type: "string" },
+                            Cost: { type: "number" }
+                          }
+                        },
+                        afternoon: {
+                          type: "object",
+                          required: ["Name", "Description", "Cost"],
+                          properties: {
+                            Name: { type: "string" },
+                            Description: { type: "string" },
+                            Cost: { type: "number" }
+                          }
+                        },
+                        evening: {
+                          type: "object",
+                          required: ["Name", "Description", "Cost"],
+                          properties: {
+                            Name: { type: "string" },
+                            Description: { type: "string" },
+                            Cost: { type: "number" }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }],
         function_call: { name: "generate_travel_itinerary" },
         temperature: 0.7
       }),
