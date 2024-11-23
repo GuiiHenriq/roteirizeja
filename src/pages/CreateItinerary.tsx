@@ -28,6 +28,18 @@ const CreateItinerary = () => {
     );
   };
 
+  const formatDateToUTC = (date: Date) => {
+    return new Date(Date.UTC(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      12, // Definindo meio-dia UTC para garantir que a data local seja mantida
+      0,
+      0,
+      0
+    )).toISOString().split('T')[0];
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!startDate || !endDate) {
@@ -38,12 +50,16 @@ const CreateItinerary = () => {
     setIsLoading(true);
 
     try {
+      // Formatando as datas corretamente para UTC
+      const departureDate = formatDateToUTC(startDate);
+      const returnDate = formatDateToUTC(endDate);
+
       // First, generate the itinerary using the OpenAI function
       const { data: generatedItinerary, error: generationError } = await supabase.functions.invoke('generate-itinerary', {
         body: {
           destination,
-          departureDate: startDate.toISOString().split('T')[0],
-          returnDate: endDate.toISOString().split('T')[0],
+          departureDate,
+          returnDate,
           interests: selectedInterests.join(", ")
         }
       });
@@ -54,8 +70,8 @@ const CreateItinerary = () => {
       const { error: saveError } = await supabase.from('itineraries').insert({
         user_id: user?.id,
         destination,
-        departure_date: startDate.toISOString().split('T')[0],
-        return_date: endDate.toISOString().split('T')[0],
+        departure_date: departureDate,
+        return_date: returnDate,
         interests: selectedInterests.join(", "),
         itinerary_data: generatedItinerary
       });
