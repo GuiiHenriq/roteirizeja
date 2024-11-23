@@ -28,22 +28,14 @@ const CreateItinerary = () => {
     );
   };
 
-  const formatDateToUTC = (date: Date) => {
-    // Ajusta para o fuso horário de Brasília (UTC-3)
-    const brasiliaOffset = -3;
-    return new Date(Date.UTC(
-      date.getFullYear(),
-      date.getMonth(),
-      date.getDate(),
-      12 + brasiliaOffset, // Ajustando para meio-dia UTC-3
-      0,
-      0,
-      0
-    )).toISOString().split('T')[0];
+  const formatDate = (date: Date) => {
+    // Formata a data mantendo o fuso horário local (Brasília)
+    return date.toLocaleDateString('en-CA'); // Formato YYYY-MM-DD
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
     if (!startDate || !endDate) {
       toast.error("Por favor, selecione as datas de ida e volta");
       return;
@@ -52,9 +44,8 @@ const CreateItinerary = () => {
     setIsLoading(true);
 
     try {
-      // Formatando as datas corretamente para UTC-3
-      const departureDate = formatDateToUTC(startDate);
-      const returnDate = formatDateToUTC(endDate);
+      const departureDate = formatDate(startDate);
+      const returnDate = formatDate(endDate);
 
       // First, generate the itinerary using the OpenAI function
       const { data: generatedItinerary, error: generationError } = await supabase.functions.invoke('generate-itinerary', {
