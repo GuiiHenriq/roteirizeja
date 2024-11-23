@@ -29,11 +29,13 @@ const CreateItinerary = () => {
   };
 
   const formatDateToUTC = (date: Date) => {
+    // Ajusta para o fuso horário de Brasília (UTC-3)
+    const brasiliaOffset = -3;
     return new Date(Date.UTC(
       date.getFullYear(),
       date.getMonth(),
       date.getDate(),
-      12, // Definindo meio-dia UTC para garantir que a data local seja mantida
+      12 + brasiliaOffset, // Ajustando para meio-dia UTC-3
       0,
       0,
       0
@@ -50,7 +52,7 @@ const CreateItinerary = () => {
     setIsLoading(true);
 
     try {
-      // Formatando as datas corretamente para UTC
+      // Formatando as datas corretamente para UTC-3
       const departureDate = formatDateToUTC(startDate);
       const returnDate = formatDateToUTC(endDate);
 
