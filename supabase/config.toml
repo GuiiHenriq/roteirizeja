@@ -1,4 +1,1 @@
 project_id = "vqvgiuabjfozqbgpnlwh"
-
-[functions.generate-destination-image]
-verify_jwt = false
