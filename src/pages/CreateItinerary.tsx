@@ -14,6 +14,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import ItineraryDisplay from "@/components/itinerary/ItineraryDisplay";
 import { GeneratedItinerary, isJsonSerializable } from "@/types/itinerary";
+import type { Json } from "@/integrations/supabase/types";
 
 const CreateItinerary = () => {
   const navigate = useNavigate();
