@@ -17,6 +17,14 @@ interface SavedItinerary {
   created_at: string;
 }
 
+const getDestinationInitials = (destination: string): string => {
+  return destination
+    .split(' ')
+    .map(word => word[0])
+    .join('')
+    .toUpperCase();
+};
+
 const Itineraries = () => {
   const [itineraries, setItineraries] = useState<SavedItinerary[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -47,8 +55,8 @@ const Itineraries = () => {
   }, [user]);
 
   const handleDelete = async (id: string, e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent navigation when clicking delete
-    e.stopPropagation(); // Prevent event bubbling
+    e.preventDefault();
+    e.stopPropagation();
 
     try {
       const { error } = await supabase
@@ -59,7 +67,6 @@ const Itineraries = () => {
       if (error) throw error;
 
       toast.success('Roteiro excluído com sucesso');
-      // Update the local state to remove the deleted itinerary
       setItineraries(prev => prev.filter(itinerary => itinerary.id !== id));
     } catch (error) {
       console.error('Error deleting itinerary:', error);
@@ -100,13 +107,15 @@ const Itineraries = () => {
             <Card className="overflow-hidden">
               <div className="relative h-48">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white">
+                  <span className="text-3xl font-bold">{getDestinationInitials(itinerary.destination)}</span>
+                </div>
                 <div className="absolute bottom-4 left-4 text-white">
                   <h3 className="text-xl font-semibold flex items-center">
                     <MapPin className="w-4 h-4 mr-2" />
                     {itinerary.destination}
                   </h3>
                 </div>
-                {/* Delete button */}
                 <Button
                   variant="destructive"
                   size="icon"
