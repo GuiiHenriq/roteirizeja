@@ -1,15 +1,13 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { UserPlus } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Register = () => {
-  const navigate = useNavigate();
   const { signUp } = useAuth();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -21,29 +19,9 @@ const Register = () => {
     setIsLoading(true);
 
     try {
-      const { data: authData, error: signUpError } = await signUp(email, password);
-      
-      if (signUpError) throw signUpError;
-
-      if (authData.user) {
-        // Insert into profiles table
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .insert([
-            {
-              id: authData.user.id,
-              name: name,
-            }
-          ]);
-
-        if (profileError) throw profileError;
-      }
-
-      toast.success("Conta criada com sucesso!");
-      navigate("/login");
+      await signUp(email, password, name);
     } catch (error) {
       console.error("Registration error:", error);
-      toast.error("Erro ao criar conta. Por favor, tente novamente.");
     } finally {
       setIsLoading(false);
     }
@@ -92,9 +70,17 @@ const Register = () => {
           </div>
 
           <Button type="submit" className="w-full" disabled={isLoading}>
+            <UserPlus className="w-4 h-4 mr-2" />
             {isLoading ? "Criando conta..." : "Criar Conta"}
           </Button>
         </form>
+
+        <p className="text-center text-sm mt-4">
+          Já tem uma conta?{" "}
+          <Link to="/login" className="text-primary hover:underline">
+            Entre
+          </Link>
+        </p>
       </Card>
     </div>
   );
