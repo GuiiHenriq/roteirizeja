@@ -22,17 +22,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
       setIsLoading(false);
     });
 
-    // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
       setIsLoading(false);
@@ -43,28 +41,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signUp = async (email: string, password: string, name: string) => {
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          data: {
-            name,
-          },
+          data: { name },
         },
       });
 
       if (error) throw error;
 
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert([{ id: user?.id, name }]);
+      if (data.user) {
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert([{ id: data.user.id, name }]);
 
-      if (profileError) throw profileError;
+        if (profileError) throw profileError;
+      }
 
-      toast.success('Registration successful! Please check your email for verification.');
+      toast.success('Cadastro realizado com sucesso! Verifique seu email.');
       navigate('/login');
     } catch (error: any) {
-      console.error('Registration error:', error);
+      console.error('Erro no cadastro:', error);
       toast.error(error.message);
     }
   };
@@ -77,10 +75,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
 
       if (error) throw error;
-      toast.success('Successfully logged in!');
+      
+      toast.success('Login realizado com sucesso!');
       navigate('/');
     } catch (error: any) {
-      console.error('Login error:', error);
+      console.error('Erro no login:', error);
       toast.error(error.message);
     }
   };
@@ -92,10 +91,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       setSession(null);
       setUser(null);
-      toast.success('Successfully logged out!');
       navigate('/login');
+      toast.success('Sessão encerrada com sucesso!');
     } catch (error: any) {
-      console.error('Logout error:', error);
+      console.error('Erro ao sair:', error);
       toast.error(error.message);
     }
   };
