@@ -8,6 +8,14 @@ interface ItineraryDisplayProps {
   itinerary: GeneratedItinerary;
 }
 
+const getDestinationInitials = (destination: string): string => {
+  return destination
+    .split(' ')
+    .map(word => word[0])
+    .join('')
+    .toUpperCase();
+};
+
 const ActivityCard = ({ title, activity }: { title: string; activity: ItineraryActivity }) => (
   <Card className="bg-white/5 hover:bg-white/10 transition-colors">
     <CardHeader className="pb-2">
@@ -66,10 +74,15 @@ const ItineraryDisplay = ({ itinerary }: ItineraryDisplayProps) => {
     );
   }
 
+  const initials = getDestinationInitials(itinerary.destination);
+
   return (
     <div className="space-y-8">
-      <div className="text-center">
-        <h2 className="text-2xl font-bold mb-2">Roteiro para {itinerary.destination}</h2>
+      <div className="text-center relative">
+        <div className="absolute left-1/2 -translate-x-1/2 -top-16 w-24 h-24 rounded-full bg-gradient-to-br from-primary/20 to-primary/40 flex items-center justify-center">
+          <span className="text-3xl font-bold text-primary">{initials}</span>
+        </div>
+        <h2 className="text-2xl font-bold mb-2 pt-12">{itinerary.destination}</h2>
         <p className="text-muted-foreground mb-4">
           {format(new Date(itinerary.dates.start), "dd 'de' MMMM", { locale: ptBR })} -{" "}
           {format(new Date(itinerary.dates.end), "dd 'de' MMMM, yyyy", { locale: ptBR })}
