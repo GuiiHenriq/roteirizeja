@@ -13,7 +13,7 @@ import { InterestsSelect } from "@/components/form/InterestsSelect";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import ItineraryDisplay from "@/components/itinerary/ItineraryDisplay";
-import { GeneratedItinerary } from "@/types/itinerary";
+import { GeneratedItinerary, isJsonSerializable } from "@/types/itinerary";
 
 const CreateItinerary = () => {
   const navigate = useNavigate();
@@ -40,7 +40,10 @@ const CreateItinerary = () => {
   };
 
   const handleSaveItinerary = async () => {
-    if (!generatedItinerary) return;
+    if (!generatedItinerary || !isJsonSerializable(generatedItinerary)) {
+      toast.error('Erro: Dados do roteiro inválidos');
+      return;
+    }
 
     try {
       const departureDate = formatDate(startDate!);
@@ -52,7 +55,7 @@ const CreateItinerary = () => {
         departure_date: departureDate,
         return_date: returnDate,
         interests: selectedInterests.join(", "),
-        itinerary_data: generatedItinerary
+        itinerary_data: generatedItinerary as Json
       });
 
       if (saveError) throw saveError;
