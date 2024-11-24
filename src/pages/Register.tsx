@@ -1,91 +1,101 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { UserPlus } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
+import { Label } from "@/components/ui/label";
+import { Card } from "@/components/ui/card";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const Register = () => {
+  const navigate = useNavigate();
   const { signUp } = useAuth();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    await signUp(email, password, name);
-    setLoading(false);
+    setIsLoading(true);
+
+    try {
+      const { data: authData, error: signUpError } = await signUp(email, password);
+      
+      if (signUpError) throw signUpError;
+
+      if (authData.user) {
+        // Insert into profiles table
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert([
+            {
+              id: authData.user.id,
+              name: name,
+            }
+          ]);
+
+        if (profileError) throw profileError;
+      }
+
+      toast.success("Conta criada com sucesso!");
+      navigate("/login");
+    } catch (error) {
+      console.error("Registration error:", error);
+      toast.error("Erro ao criar conta. Por favor, tente novamente.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div className="container mx-auto px-4 h-screen flex items-center justify-center">
-      <div className="w-full max-w-md space-y-8 glass-card p-8">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold">Criar Conta</h2>
-          <p className="text-muted-foreground mt-2">Cadastre-se para uma nova conta</p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-6">
+    <div className="container max-w-lg mx-auto p-4">
+      <Card className="p-6">
+        <h1 className="text-2xl font-bold mb-6">Criar Conta</h1>
+        
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <label htmlFor="name" className="text-sm font-medium">
-              Nome
-            </label>
+            <Label htmlFor="name">Nome</Label>
             <Input
               id="name"
               type="text"
+              placeholder="Seu nome completo"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              placeholder="Digite seu nome"
-              disabled={loading}
             />
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="email" className="text-sm font-medium">
-              E-mail
-            </label>
+            <Label htmlFor="email">Email</Label>
             <Input
               id="email"
               type="email"
+              placeholder="seu@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              placeholder="Digite seu e-mail"
-              disabled={loading}
             />
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="password" className="text-sm font-medium">
-              Senha
-            </label>
+            <Label htmlFor="password">Senha</Label>
             <Input
               id="password"
               type="password"
+              placeholder="********"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              placeholder="Escolha uma senha"
-              disabled={loading}
             />
           </div>
 
-          <Button type="submit" className="w-full" size="lg" disabled={loading}>
-            <UserPlus className="w-4 h-4 mr-2" />
-            {loading ? 'Criando conta...' : 'Cadastrar'}
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? "Criando conta..." : "Criar Conta"}
           </Button>
         </form>
-
-        <p className="text-center text-sm">
-          Já tem uma conta?{" "}
-          <Link to="/login" className="text-primary hover:underline">
-            Entre
-          </Link>
-        </p>
-      </div>
+      </Card>
     </div>
   );
 };
