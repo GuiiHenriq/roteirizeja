@@ -23,22 +23,3 @@ export interface GeneratedItinerary {
   };
   itinerary: ItineraryDay[];
 }
-
-// Type guard to ensure the data is JSON serializable
-export function isJsonSerializable(value: unknown): value is Json {
-  try {
-    JSON.parse(JSON.stringify(value));
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-// JSON type from Supabase
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[]
