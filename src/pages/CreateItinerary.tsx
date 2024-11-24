@@ -10,6 +10,10 @@ import { Card } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { DatePickerInput } from "@/components/form/DatePickerInput";
 import { InterestsSelect } from "@/components/form/InterestsSelect";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import ItineraryDisplay from "@/components/itinerary/ItineraryDisplay";
+import { GeneratedItinerary } from "@/types/itinerary";
 
 const CreateItinerary = () => {
   const navigate = useNavigate();
@@ -19,6 +23,9 @@ const CreateItinerary = () => {
   const [endDate, setEndDate] = useState<Date>();
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [generatedItinerary, setGeneratedItinerary] = useState<GeneratedItinerary | null>(null);
 
   const toggleInterest = (interest: string) => {
     setSelectedInterests(current =>
@@ -29,8 +36,33 @@ const CreateItinerary = () => {
   };
 
   const formatDate = (date: Date) => {
-    // Formata a data mantendo o fuso horário local (Brasília)
-    return date.toLocaleDateString('en-CA'); // Formato YYYY-MM-DD
+    return date.toLocaleDateString('en-CA');
+  };
+
+  const handleSaveItinerary = async () => {
+    if (!generatedItinerary) return;
+
+    try {
+      const departureDate = formatDate(startDate!);
+      const returnDate = formatDate(endDate!);
+
+      const { error: saveError } = await supabase.from('itineraries').insert({
+        user_id: user?.id,
+        destination,
+        departure_date: departureDate,
+        return_date: returnDate,
+        interests: selectedInterests.join(", "),
+        itinerary_data: generatedItinerary
+      });
+
+      if (saveError) throw saveError;
+
+      toast.success('Roteiro salvo com sucesso!');
+      navigate('/itineraries');
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error('Erro ao salvar roteiro. Por favor, tente novamente.');
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -47,8 +79,7 @@ const CreateItinerary = () => {
       const departureDate = formatDate(startDate);
       const returnDate = formatDate(endDate);
 
-      // First, generate the itinerary using the OpenAI function
-      const { data: generatedItinerary, error: generationError } = await supabase.functions.invoke('generate-itinerary', {
+      const { data: itineraryData, error: generationError } = await supabase.functions.invoke('generate-itinerary', {
         body: {
           destination,
           departureDate,
@@ -59,26 +90,20 @@ const CreateItinerary = () => {
 
       if (generationError) throw generationError;
 
-      // Then, save the itinerary to the database
-      const { error: saveError } = await supabase.from('itineraries').insert({
-        user_id: user?.id,
-        destination,
-        departure_date: departureDate,
-        return_date: returnDate,
-        interests: selectedInterests.join(", "),
-        itinerary_data: generatedItinerary
-      });
-
-      if (saveError) throw saveError;
-
-      toast.success('Roteiro gerado com sucesso!');
-      navigate('/itineraries');
+      setGeneratedItinerary(itineraryData);
+      setShowPreview(true);
     } catch (error) {
       console.error('Error:', error);
       toast.error('Erro ao gerar roteiro. Por favor, tente novamente.');
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleCancel = () => {
+    setShowPreview(false);
+    setShowConfirmation(false);
+    setGeneratedItinerary(null);
   };
 
   return (
@@ -127,6 +152,51 @@ const CreateItinerary = () => {
           </Button>
         </form>
       </Card>
+
+      <Dialog open={showPreview} onOpenChange={setShowPreview}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Preview do Roteiro</DialogTitle>
+            <DialogDescription>
+              Revise seu roteiro gerado antes de salvar
+            </DialogDescription>
+          </DialogHeader>
+          
+          {generatedItinerary && (
+            <div className="py-4">
+              <ItineraryDisplay itinerary={generatedItinerary} />
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => handleCancel()}>
+              Cancelar
+            </Button>
+            <Button onClick={() => setShowConfirmation(true)}>
+              Salvar Roteiro
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <AlertDialog open={showConfirmation} onOpenChange={setShowConfirmation}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Salvar Roteiro</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja salvar este roteiro?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setShowConfirmation(false)}>
+              Cancelar
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleSaveItinerary}>
+              Salvar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
