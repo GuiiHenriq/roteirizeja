@@ -29,8 +29,10 @@ const CreateItinerary = () => {
   };
 
   const formatDate = (date: Date) => {
-    // Formata a data mantendo o fuso horário local (Brasília)
-    return date.toLocaleDateString('en-CA'); // Formato YYYY-MM-DD
+    // Ajusta a data para meia-noite no fuso horário local
+    const localDate = new Date(date);
+    localDate.setHours(12, 0, 0, 0);
+    return localDate.toISOString().split('T')[0];
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
