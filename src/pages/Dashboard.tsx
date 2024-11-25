@@ -9,7 +9,9 @@ const Dashboard = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Bem-vindo ao Viajai</h1>
+        <h1 className="text-3xl font-bold">
+          Bem-vindo{user?.user_metadata?.name ? `, ${user.user_metadata.name}` : " ao Viajai"}
+        </h1>
         {user && (
           <Button onClick={() => signOut()} variant="outline">
             Sair
