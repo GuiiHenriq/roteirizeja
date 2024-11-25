@@ -31,13 +31,14 @@ export const DatePickerInput = ({ date, setDate, label }: DatePickerInputProps) 
             {date ? format(date, "PPP", { locale: ptBR }) : <span>Selecione uma data</span>}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0">
+        <PopoverContent className="w-auto p-0 bg-background border">
           <Calendar
             mode="single"
             selected={date}
             onSelect={setDate}
             initialFocus
             locale={ptBR}
+            className="bg-background rounded-md"
           />
         </PopoverContent>
       </Popover>

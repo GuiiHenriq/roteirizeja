@@ -19,7 +19,7 @@ const Dashboard = () => {
         )}
       </div>
       
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-2">
         <div className="p-6 rounded-lg bg-card shadow-lg">
           <h2 className="text-xl font-semibold mb-4">Criar Novo Roteiro</h2>
           <p className="text-muted-foreground mb-4">
@@ -37,16 +37,6 @@ const Dashboard = () => {
           </p>
           <Button onClick={() => navigate("/itineraries")} variant="outline" className="w-full">
             Ver Todos
-          </Button>
-        </div>
-
-        <div className="p-6 rounded-lg bg-card shadow-lg">
-          <h2 className="text-xl font-semibold mb-4">Destinos Populares</h2>
-          <p className="text-muted-foreground mb-4">
-            Explore locais em alta e inspire-se para sua próxima viagem.
-          </p>
-          <Button onClick={() => navigate("/destinations")} variant="outline" className="w-full">
-            Explorar
           </Button>
         </div>
       </div>
