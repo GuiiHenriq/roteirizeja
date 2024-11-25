@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, MapPin, Trash2 } from "lucide-react";
 import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
@@ -134,8 +135,8 @@ const Itineraries = () => {
                   <div className="flex items-center text-sm text-muted-foreground">
                     <Calendar className="w-4 h-4 mr-2" />
                     <span>
-                      {format(departureDate, "dd MMM")} -{" "}
-                      {format(returnDate, "dd MMM, yyyy")}
+                      {format(departureDate, "dd 'de' MMM", { locale: ptBR })} -{" "}
+                      {format(returnDate, "dd 'de' MMM',' yyyy", { locale: ptBR })}
                     </span>
                   </div>
                   <div className="mt-2 text-sm text-muted-foreground">
