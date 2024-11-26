@@ -1,22 +1,19 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { PopularDestinations } from "@/components/dashboard/PopularDestinations";
+import { TravelTips } from "@/components/dashboard/TravelTips";
 
 const Dashboard = () => {
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
+    <div className="container mx-auto px-4 py-8 space-y-8">
+      <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">
           Bem-vindo{user?.user_metadata?.name ? `, ${user.user_metadata.name}` : " ao Viajai"}
         </h1>
-        {user && (
-          <Button onClick={() => signOut()} variant="outline">
-            Sair
-          </Button>
-        )}
       </div>
       
       <div className="grid gap-6 md:grid-cols-2">
@@ -40,6 +37,9 @@ const Dashboard = () => {
           </Button>
         </div>
       </div>
+
+      <PopularDestinations />
+      <TravelTips />
     </div>
   );
 };
