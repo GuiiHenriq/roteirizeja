@@ -1,5 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import {
   Carousel,
   CarouselContent,
@@ -7,40 +5,43 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Card } from "@/components/ui/card";
 
-interface PopularDestination {
-  destination: string;
-  visit_count: number;
-  image_url: string;
-}
+const popularDestinations = [
+  {
+    destination: "Paris, França",
+    visit_count: "15.8M",
+    image_url: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+  },
+  {
+    destination: "Dubai, Emirados Árabes",
+    visit_count: "14.7M",
+    image_url: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+  },
+  {
+    destination: "Londres, Inglaterra",
+    visit_count: "14.2M",
+    image_url: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+  },
+  {
+    destination: "Bangkok, Tailândia",
+    visit_count: "13.5M",
+    image_url: "https://images.unsplash.com/photo-1563492065599-3520f775eeed?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+  },
+  {
+    destination: "Singapura",
+    visit_count: "12.8M",
+    image_url: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+  },
+];
 
 export const PopularDestinations = () => {
-  const { data: destinations, isLoading } = useQuery({
-    queryKey: ["popularDestinations"],
-    queryFn: async () => {
-      const { data, error } = await supabase.rpc('get_popular_destinations');
-      if (error) throw error;
-      return data as PopularDestination[];
-    },
-  });
-
-  if (isLoading) {
-    return (
-      <div className="space-y-3">
-        <Skeleton className="h-4 w-[250px]" />
-        <Skeleton className="h-[200px] w-full" />
-      </div>
-    );
-  }
-
   return (
     <div className="py-6">
-      <h2 className="text-2xl font-semibold mb-4">Destinos Populares</h2>
+      <h2 className="text-2xl font-semibold mb-4">Destinos Populares em 2024</h2>
       <Carousel className="w-full">
         <CarouselContent>
-          {destinations?.map((destination) => (
+          {popularDestinations.map((destination) => (
             <CarouselItem key={destination.destination} className="md:basis-1/2 lg:basis-1/3">
               <Card className="overflow-hidden">
                 <div className="relative h-48">
@@ -52,7 +53,7 @@ export const PopularDestinations = () => {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   <div className="absolute bottom-4 left-4 text-white">
                     <h3 className="text-xl font-semibold">{destination.destination}</h3>
-                    <p className="text-sm opacity-90">{destination.visit_count} viajantes</p>
+                    <p className="text-sm opacity-90">{destination.visit_count} visitantes</p>
                   </div>
                 </div>
               </Card>
