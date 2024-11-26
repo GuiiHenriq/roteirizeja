@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plane, Umbrella, CreditCard, Map, Shield } from "lucide-react";
+import { Plane, Umbrella, CreditCard, Map, Shield, Globe } from "lucide-react";
 
 const tips = [
   {
@@ -26,6 +26,11 @@ const tips = [
     icon: Shield,
     title: "Segurança",
     description: "Contrate um seguro viagem e mantenha documentos seguros",
+  },
+  {
+    icon: Globe,
+    title: "Cultura Local",
+    description: "Pesquise sobre costumes e tradições do seu destino",
   },
 ];
 
