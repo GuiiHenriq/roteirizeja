@@ -39,31 +39,33 @@ export const PopularDestinations = () => {
   return (
     <div className="py-6">
       <h2 className="text-2xl font-semibold mb-4">Destinos Populares em 2024</h2>
-      <div className="relative px-8">
-        <Carousel className="w-full">
-          <CarouselContent>
-            {popularDestinations.map((destination) => (
-              <CarouselItem key={destination.destination} className="md:basis-1/2 lg:basis-1/3">
-                <Card className="overflow-hidden">
-                  <div className="relative h-48">
-                    <img
-                      src={destination.image_url}
-                      alt={destination.destination}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    <div className="absolute bottom-4 left-4 text-white">
-                      <h3 className="text-xl font-semibold">{destination.destination}</h3>
-                      <p className="text-sm opacity-90">{destination.visit_count} visitantes</p>
+      <div className="relative flex items-center">
+        <CarouselPrevious className="relative left-0 translate-x-0 translate-y-0 mr-2.5" />
+        <div className="flex-1">
+          <Carousel className="w-full">
+            <CarouselContent>
+              {popularDestinations.map((destination) => (
+                <CarouselItem key={destination.destination} className="md:basis-1/2 lg:basis-1/3">
+                  <Card className="overflow-hidden">
+                    <div className="relative h-48">
+                      <img
+                        src={destination.image_url}
+                        alt={destination.destination}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                      <div className="absolute bottom-4 left-4 text-white">
+                        <h3 className="text-xl font-semibold">{destination.destination}</h3>
+                        <p className="text-sm opacity-90">{destination.visit_count} visitantes</p>
+                      </div>
                     </div>
-                  </div>
-                </Card>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious className="absolute left-0 top-1/2 -translate-y-1/2" />
-          <CarouselNext className="absolute right-0 top-1/2 -translate-y-1/2" />
-        </Carousel>
+                  </Card>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
+        </div>
+        <CarouselNext className="relative right-0 translate-x-0 translate-y-0 ml-2.5" />
       </div>
     </div>
   );
