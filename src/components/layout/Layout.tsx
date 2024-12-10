@@ -68,7 +68,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
           
           {/* Main Content */}
           <main className={`flex-1 ${user ? 'lg:pl-64' : 'pt-16'}`}>
-            <div className="container max-w-4xl mx-auto px-4 py-8">
+            <div className="container mx-auto px-4 py-8">
               {children}
             </div>
           </main>
