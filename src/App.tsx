@@ -14,8 +14,8 @@ import Layout from "./components/layout/Layout";
 
 function App() {
   return (
-    <Router>
-      <AuthProvider>
+    <AuthProvider>
+      <Router>
         <Layout>
           <Routes>
             <Route path="/" element={<Home />} />
@@ -29,8 +29,8 @@ function App() {
           </Routes>
         </Layout>
         <Toaster />
-      </AuthProvider>
-    </Router>
+      </Router>
+    </AuthProvider>
   );
 }
 
