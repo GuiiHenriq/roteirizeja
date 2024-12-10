@@ -8,7 +8,9 @@ export const authService = {
       email,
       password,
       options: {
-        data: { name },
+        data: { 
+          name,
+        },
       },
     });
 
@@ -18,6 +20,17 @@ export const authService = {
     }
 
     if (data.user) {
+      // Update user metadata with display name
+      const { error: updateError } = await supabase.auth.updateUser({
+        data: { name }
+      });
+
+      if (updateError) {
+        console.error('Update User Error:', updateError);
+        throw new Error(updateError.message || 'Erro ao atualizar nome do usuário');
+      }
+
+      // Create profile entry
       const { error: profileError } = await supabase
         .from('profiles')
         .insert([{ id: data.user.id, name }]);
@@ -74,5 +87,29 @@ export const authService = {
       callback(session);
     });
     return subscription;
+  },
+
+  updateUserName: async (name: string) => {
+    try {
+      // Update auth metadata
+      const { error: updateError } = await supabase.auth.updateUser({
+        data: { name }
+      });
+
+      if (updateError) throw updateError;
+
+      // Update profile table
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({ name })
+        .eq('id', (await supabase.auth.getUser()).data.user?.id);
+
+      if (profileError) throw profileError;
+
+      return true;
+    } catch (error: any) {
+      console.error('Error updating user name:', error);
+      throw new Error(error.message || 'Erro ao atualizar nome do usuário');
+    }
   }
 };

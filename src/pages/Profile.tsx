@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, User, Lock, Mail } from "lucide-react";
+import { authService } from "@/contexts/services/auth";
 
 const Profile = () => {
   const { user, refreshSession } = useAuth();
@@ -24,29 +25,12 @@ const Profile = () => {
 
     try {
       setLoading(true);
-      
-      // Atualiza o nome na tabela profiles
-      const { error: profileError } = await supabase
-        .from("profiles")
-        .update({ name: name.trim() })
-        .eq("id", user?.id);
-
-      if (profileError) throw profileError;
-
-      // Atualiza os metadados do usuário
-      const { error: userError } = await supabase.auth.updateUser({
-        data: { name: name.trim() }
-      });
-
-      if (userError) throw userError;
-
-      // Atualiza a sessão para refletir as mudanças imediatamente
+      await authService.updateUserName(name.trim());
       await refreshSession();
-
       toast.success("Nome atualizado com sucesso!");
       setName("");
-    } catch (error) {
-      toast.error("Erro ao atualizar o nome");
+    } catch (error: any) {
+      toast.error(error.message || "Erro ao atualizar o nome");
       console.error("Error updating name:", error);
     } finally {
       setLoading(false);
