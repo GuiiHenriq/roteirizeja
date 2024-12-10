@@ -12,14 +12,20 @@ export const authService = {
       },
     });
 
-    if (error) throw error;
+    if (error) {
+      console.error('Sign Up Error:', error);
+      throw new Error(error.message || 'Erro ao realizar cadastro');
+    }
 
     if (data.user) {
       const { error: profileError } = await supabase
         .from('profiles')
         .insert([{ id: data.user.id, name }]);
 
-      if (profileError) throw profileError;
+      if (profileError) {
+        console.error('Profile Creation Error:', profileError);
+        throw new Error(profileError.message || 'Erro ao criar perfil');
+      }
     }
 
     return data;
@@ -31,7 +37,19 @@ export const authService = {
       password,
     });
 
-    if (error) throw error;
+    if (error) {
+      console.error('Sign In Error:', error);
+      
+      // Specific error handling
+      switch (error.message) {
+        case 'Invalid login credentials':
+          throw new Error('E-mail ou senha incorretos. Verifique suas credenciais.');
+        case 'User not found':
+          throw new Error('Usuário não encontrado. Verifique o e-mail digitado.');
+        default:
+          throw new Error(error.message || 'Erro ao realizar login');
+      }
+    }
 
     return data;
   },
