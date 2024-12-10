@@ -10,6 +10,7 @@ interface AuthContextType {
   signUp: (email: string, password: string, name: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  refreshSession: () => Promise<void>;
   isLoading: boolean;
 }
 
@@ -38,6 +39,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const refreshSession = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      setSession(session);
+      setUser(session.user);
+    }
+  };
 
   const signUp = async (email: string, password: string, name: string) => {
     try {
@@ -100,7 +109,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ session, user, signUp, signIn, signOut, isLoading }}>
+    <AuthContext.Provider value={{ session, user, signUp, signIn, signOut, refreshSession, isLoading }}>
       {children}
     </AuthContext.Provider>
   );

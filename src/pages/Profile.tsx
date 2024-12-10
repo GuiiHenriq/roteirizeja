@@ -9,7 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Loader2, User, Lock, Mail } from "lucide-react";
 
 const Profile = () => {
-  const { user } = useAuth();
+  const { user, refreshSession } = useAuth();
   const [name, setName] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -24,12 +24,24 @@ const Profile = () => {
 
     try {
       setLoading(true);
-      const { error } = await supabase
+      
+      // Atualiza o nome na tabela profiles
+      const { error: profileError } = await supabase
         .from("profiles")
         .update({ name: name.trim() })
         .eq("id", user?.id);
 
-      if (error) throw error;
+      if (profileError) throw profileError;
+
+      // Atualiza os metadados do usuário
+      const { error: userError } = await supabase.auth.updateUser({
+        data: { name: name.trim() }
+      });
+
+      if (userError) throw userError;
+
+      // Atualiza a sessão para refletir as mudanças imediatamente
+      await refreshSession();
 
       toast.success("Nome atualizado com sucesso!");
       setName("");
