@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, User, Lock, Mail } from "lucide-react";
+import { Loader2, User, Lock, Mail, UserRound } from "lucide-react";
 import { authService } from "@/contexts/services/auth";
 
 const Profile = () => {
@@ -71,13 +71,17 @@ const Profile = () => {
         {/* Basic Info Card */}
         <Card className="p-6">
           <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-            <User className="w-5 h-5" />
+            <UserRound className="w-5 h-5" />
             Informações Básicas
           </h2>
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-muted-foreground">
               <Mail className="w-4 h-4" />
               <span>{user?.email}</span>
+            </div>
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <UserRound className="w-4 h-4" />
+              <span>{user?.user_metadata?.name || 'Nome não definido'}</span>
             </div>
           </div>
         </Card>
