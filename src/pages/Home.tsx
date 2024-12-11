@@ -1,8 +1,18 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
-import { Plane, Map, Calendar, Star } from "lucide-react";
+import {
+  Clock,
+  Compass,
+  Star,
+  Plane,
+  Check,
+  ChevronRight,
+  Smartphone,
+  Globe,
+  Calendar,
+} from "lucide-react";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -14,78 +24,427 @@ const Home = () => {
     }
   }, [user, navigate]);
 
+  const [destination, setDestination] = useState("");
+  const [showModal, setShowModal] = useState(false);
+
+  const handleDestinationSubmit = (e) => {
+    e.preventDefault();
+    if (destination.trim()) {
+      setShowModal(true);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setDestination("");
+  };
+
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen text-gray-900">
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm">
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+          <div className="flex items-center space-x-2">
+            <Plane className="text-emerald-600" size={32} />
+            <span className="text-2xl font-bold text-emerald-800">
+              ViagemAI
+            </span>
+          </div>
+          <div className="space-x-4">
+            <a href="#" className="hover:text-emerald-600 transition">
+              Recursos
+            </a>
+            <a href="#" className="hover:text-emerald-600 transition">
+              Como Funciona
+            </a>
+            <a
+              href="#"
+              className="bg-emerald-600 text-white px-4 py-2 rounded-xl hover:bg-emerald-700 transition"
+            >
+              Cadastrar
+            </a>
+          </div>
+        </div>
+      </nav>
+
       {/* Hero Section */}
-      <section className="relative py-20 px-4 bg-gradient-to-br from-primary/10 to-background">
-        <div className="container mx-auto text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            Planeje Viagens Incríveis com IA
-          </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Crie roteiros personalizados para suas viagens em segundos usando inteligência artificial.
+      <header className="bg-gradient-to-br from-indigo-50 to-emerald-100 pt-24 pb-16">
+        <div className="container mx-auto px-4 flex items-center">
+          <div className="md:w-1/2 space-y-6">
+            <h1 className="text-5xl font-bold leading-tight text-emerald-900">
+              Seu Próximo Destino, Planejado Perfeitamente com IA
+            </h1>
+            <p className="text-xl text-gray-600">
+              Chega de complicações para criar roteiros. Nossa IA transforma
+              suas ideias em uma viagem inesquecível em poucos cliques.
+            </p>
+            {/**<div className="flex space-x-4">
+              <button
+                className="bg-emerald-600 text-white px-6 py-3 rounded-xl hover:bg-emerald-700 transition flex items-center"
+                onClick={() => navigate("/login")}
+              >
+                Teste Agora 100% Grátis <ChevronRight className="ml-2" />
+              </button>
+            </div>**/}
+
+            <form onSubmit={handleDestinationSubmit} className="flex space-x-4">
+              <input
+                type="text"
+                placeholder="Para onde você quer viajar?"
+                value={destination}
+                onChange={(e) => setDestination(e.target.value)}
+                className="flex-grow px-4 py-3 border-2 border-emerald-300 rounded-lg focus:outline-none focus:border-emerald-600"
+                required
+              />
+              <button
+                onClick={() => navigate("/register")}
+                className="bg-emerald-600 text-white px-6 py-3 rounded-xl hover:bg-emerald-700 transition flex items-center"
+              >
+                Teste Agora 100% Grátis <ChevronRight className="ml-2" />
+              </button>
+            </form>
+          </div>
+          <div className="md:w-1/2 hidden md:flex justify-center relative">
+            <div className="bg-emerald-100/50 w-[500px] h-[500px] rounded-xl absolute -z-10 blur-2xl"></div>
+            <img
+              src="/api/placeholder/400/600"
+              alt="App Mockup"
+              className="rounded-3xl shadow-2xl transform hover:scale-105 transition duration-300"
+            />
+          </div>
+        </div>
+      </header>
+
+      {/* Proposta de Valor */}
+      <section className="container mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold mb-4 text-emerald-900">
+            Viajar Nunca Foi Tão Fácil e Divertido!
+          </h2>
+          <p className="text-xl text-gray-600">
+            Com a inteligência artificial, planejamos o roteiro ideal para você,
+            economizando tempo e maximizando sua experiência.
           </p>
-          <div className="flex gap-4 justify-center">
-            <Button size="lg" onClick={() => navigate("/register")}>
-              Começar Agora
-            </Button>
-            <Button size="lg" variant="outline" onClick={() => navigate("/login")}>
-              Fazer Login
-            </Button>
+        </div>
+        <div className="grid md:grid-cols-4 gap-8">
+          {[
+            {
+              icon: <Clock className="text-emerald-600" size={48} />,
+              title: "Planejamento Instantâneo",
+              description: "Roteiros prontos em segundos.",
+            },
+            {
+              icon: <Globe className="text-emerald-600" size={48} />,
+              title: "Totalmente Personalizado",
+              description: "Cada detalhe feito para você.",
+            },
+            {
+              icon: <Compass className="text-emerald-600" size={48} />,
+              title: "Descubra o Novo",
+              description: "Sugestões exclusivas e locais escondidos.",
+            },
+            {
+              icon: <Smartphone className="text-emerald-600" size={48} />,
+              title: "Acesse em Qualquer Lugar",
+              description: "Consulte ou edite seu roteiro a qualquer momento.",
+            },
+          ].map((feature, index) => (
+            <div
+              key={index}
+              className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition group text-center"
+            >
+              <div className="mb-6 flex justify-center">{feature.icon}</div>
+              <h3 className="font-bold text-xl mb-4 text-emerald-900">
+                {feature.title}
+              </h3>
+              <p className="text-gray-600">{feature.description}</p>
+            </div>
+          ))}
+        </div>
+        <div className="text-center mt-12">
+          <button className="bg-emerald-600 text-white px-6 py-3 rounded-xl hover:bg-emerald-700 transition">
+            Crie Seu Roteiro Agora
+          </button>
+        </div>
+      </section>
+
+      <section className="container mx-auto px-4 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="bg-white border border-gray-200 p-6 rounded-3xl shadow-inner">
+            <div className="flex justify-center mb-4">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6 text-gray-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+                />
+              </svg>
+            </div>
+            <h3 className="text-2xl font-bold text-center mb-2 text-gray-800">
+              Feature 1
+            </h3>
+            <p className="text-gray-500 text-center">
+              Generic description of the feature.
+            </p>
+          </div>
+
+          <div className="bg-white border border-gray-200 p-6 rounded-3xl shadow-inner">
+            <div className="flex justify-center mb-4">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6 text-gray-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+                />
+              </svg>
+            </div>
+            <h3 className="text-2xl font-bold text-center mb-2 text-gray-800">
+              Feature 2
+            </h3>
+            <p className="text-gray-500 text-center">
+              Generic description of the feature.
+            </p>
+          </div>
+
+          <div className="bg-white border border-gray-200 p-6 rounded-3xl shadow-inner">
+            <div className="flex justify-center mb-4">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6 text-gray-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+                />
+              </svg>
+            </div>
+            <h3 className="text-2xl font-bold text-center mb-2 text-gray-800">
+              Feature 3
+            </h3>
+            <p className="text-gray-500 text-center">
+              Generic description of the feature.
+            </p>
+          </div>
+
+          <div className="bg-white border border-gray-200 p-6 rounded-3xl shadow-inner">
+            <div className="flex justify-center mb-4">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6 text-gray-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+                />
+              </svg>
+            </div>
+            <h3 className="text-2xl font-bold text-center mb-2 text-gray-800">
+              Feature 4
+            </h3>
+            <p className="text-gray-500 text-center">
+              Generic description of the feature.
+            </p>
+          </div>
+
+          <div className="bg-white border border-gray-200 p-6 rounded-3xl shadow-inner">
+            <div className="flex justify-center mb-4">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6 text-gray-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+                />
+              </svg>
+            </div>
+            <h3 className="text-2xl font-bold text-center mb-2 text-gray-800">
+              Feature 5
+            </h3>
+            <p className="text-gray-500 text-center">
+              Generic description of the feature.
+            </p>
+          </div>
+
+          <div className="bg-white border border-gray-200 p-6 rounded-3xl shadow-inner">
+            <div className="flex justify-center mb-4">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6 text-gray-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+                />
+              </svg>
+            </div>
+            <h3 className="text-2xl font-bold text-center mb-2 text-gray-800">
+              Feature 6
+            </h3>
+            <p className="text-gray-500 text-center">
+              Generic description of the feature.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">
-            Por que escolher o Viajai?
+      {/* Experiência Transformadora */}
+      <section className="bg-gray-50 py-16">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-4xl font-bold mb-6 text-emerald-900">
+            Deixe Sua Viagem Fluir com Perfeição
           </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <FeatureCard
-              icon={<Plane className="w-10 h-10 text-primary" />}
-              title="IA Inteligente"
-              description="Roteiros personalizados gerados em segundos com base nas suas preferências"
-            />
-            <FeatureCard
-              icon={<Map className="w-10 h-10 text-primary" />}
-              title="Destinos Únicos"
-              description="Descubra lugares incríveis e experiências autênticas"
-            />
-            <FeatureCard
-              icon={<Calendar className="w-10 h-10 text-primary" />}
-              title="Planejamento Fácil"
-              description="Interface intuitiva para organizar suas viagens sem complicação"
-            />
-            <FeatureCard
-              icon={<Star className="w-10 h-10 text-primary" />}
-              title="Experiência Premium"
-              description="Acesso a recursos exclusivos para tornar sua viagem inesquecível"
-            />
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+            Sabemos o quanto planejar uma viagem pode ser estressante e
+            demorado. Com nosso app, você tem a tranquilidade de um roteiro
+            perfeito na palma da sua mão, para aproveitar cada segundo do seu
+            destino.
+          </p>
+          <p className="text-2xl italic text-emerald-700 font-semibold">
+            "Mais momentos incríveis, menos preocupações."
+          </p>
+        </div>
+      </section>
+
+      {/* Como Funciona */}
+      <section className="bg-gradient-to-br from-emerald-50 to-indigo-100 py-16">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold mb-4 text-emerald-900">
+              Seu Roteiro em 3 Passos Simples
+            </h2>
+            <p className="text-xl text-gray-600">
+              Planeje sua viagem com facilidade e rapidez
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                icon: <Calendar className="text-emerald-600" size={48} />,
+                title: "Preencha os Dados da Viagem",
+                description: "Escolha seu destino, datas e preferências.",
+              },
+              {
+                icon: <Plane className="text-emerald-600" size={48} />,
+                title: "Receba Sugestões da IA",
+                description: "Um roteiro completo em segundos.",
+              },
+              {
+                icon: <Star className="text-emerald-600" size={48} />,
+                title: "Aproveite ao Máximo",
+                description: "Viaje sem preocupações com um plano ideal.",
+              },
+            ].map((step, index) => (
+              <div
+                key={index}
+                className="bg-white p-8 rounded-2xl shadow-lg text-center hover:shadow-xl transition"
+              >
+                <div className="mb-6 flex justify-center">{step.icon}</div>
+                <h3 className="font-bold text-xl mb-4 text-emerald-900">
+                  {step.title}
+                </h3>
+                <p className="text-gray-600">{step.description}</p>
+              </div>
+            ))}
+          </div>
+          {/*<div className="text-center mt-12">
+            <button className="bg-emerald-600 text-white px-6 py-3 rounded-xl hover:bg-emerald-700 transition">
+              Teste Grátis Agora
+            </button>
+          </div>*/}
+        </div>
+      </section>
+
+      {/* Garantia e Segurança 
+      <section className="container mx-auto px-4 py-16 text-center">
+        <h2 className="text-4xl font-bold mb-6 text-emerald-900">
+          Sem Compromisso. Totalmente Seguro.
+        </h2>
+        <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+          Testar nosso app é grátis e não exige cartão de crédito. Garantimos
+          sua satisfação ou devolvemos seu dinheiro.
+        </p>
+        <div className="bg-emerald-100 p-6 rounded-2xl inline-block">
+          <p className="text-emerald-800 font-semibold">
+            Confiança garantida com IA de última geração
+          </p>
+        </div>
+      </section>*/}
+
+      {/* Última CTA */}
+      <section className="text-emerald py-20">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-5xl font-bold emerald-to-pink-gradient-text">
+            Pronto para Sua Próxima Aventura?
+          </h2>
+          <h3 className="text-5xl font-bold mb-8">
+            Deixe nossa IA cuidar de tudo.
+          </h3>
+          <p className="text-xl mb-10">Experimente grátis agora!</p>
+          {/*<p className="text-xl mb-10">
+            Deixe nossa IA cuidar de tudo. Experimente grátis agora!
+          </p>*/}
+          <div className="flex justify-center space-x-4">
+            <button className="bg-emerald-600 text-white px-8 py-4 rounded-xl hover:bg-emerald-700 transition flex items-center">
+              Teste Totalmente Gratuito <ChevronRight className="ml-2" />
+            </button>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 px-4 bg-primary/5">
-        <div className="container mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-6">
-            Pronto para começar sua próxima aventura?
-          </h2>
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Junte-se a milhares de viajantes que já estão usando o Viajai para criar memórias incríveis.
-          </p>
-          <Button size="lg" onClick={() => navigate("/register")}>
-            Criar Conta Gratuita
-          </Button>
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-8">
+        <div className="container mx-auto px-4 text-center">
+          <p>&copy; 2024 ViagemAI. Todos os direitos reservados.</p>
         </div>
-      </section>
+      </footer>
     </div>
   );
 };
 
-const FeatureCard = ({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) => {
+const FeatureCard = ({
+  icon,
+  title,
+  description,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}) => {
   return (
     <div className="p-6 rounded-lg bg-card text-center">
       <div className="mb-4 flex justify-center">{icon}</div>
