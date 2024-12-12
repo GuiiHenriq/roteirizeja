@@ -8,7 +8,7 @@ import { useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
-import { toPDF } from 'react-to-pdf';
+import toPDF from 'react-to-pdf';
 
 interface ItineraryDisplayProps {
   itinerary: GeneratedItinerary;
@@ -171,8 +171,10 @@ const ItineraryDisplay = ({ itinerary, itineraryId }: ItineraryDisplayProps) => 
         }
       };
 
-      await toPDF(contentRef, options);
-      toast.success('PDF exportado com sucesso!');
+      if (contentRef.current) {
+        await toPDF(contentRef.current, options);
+        toast.success('PDF exportado com sucesso!');
+      }
     } catch (error) {
       console.error('Error exporting PDF:', error);
       toast.error('Erro ao exportar o PDF');
