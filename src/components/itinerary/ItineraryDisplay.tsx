@@ -126,23 +126,35 @@ const ItineraryDisplay = ({ itinerary, itineraryId }: ItineraryDisplayProps) => 
     newItinerary.itinerary[dayIndex].activities[period] = updatedActivity;
     
     try {
-      // Create a plain object that matches the expected Json type
-      const updateData = {
-        itinerary_data: {
-          itinerary: newItinerary.itinerary.map(day => ({
-            day: day.day,
-            activities: {
-              morning: day.activities.morning,
-              afternoon: day.activities.afternoon,
-              evening: day.activities.evening
-            }
-          }))
+      // Convert the activity data to a plain object structure
+      const formattedItinerary = newItinerary.itinerary.map(day => ({
+        day: day.day,
+        activities: {
+          morning: {
+            Name: day.activities.morning.Name,
+            Description: day.activities.morning.Description,
+            Cost: day.activities.morning.Cost
+          },
+          afternoon: {
+            Name: day.activities.afternoon.Name,
+            Description: day.activities.afternoon.Description,
+            Cost: day.activities.afternoon.Cost
+          },
+          evening: {
+            Name: day.activities.evening.Name,
+            Description: day.activities.evening.Description,
+            Cost: day.activities.evening.Cost
+          }
         }
-      };
+      }));
 
       const { error } = await supabase
         .from('itineraries')
-        .update(updateData)
+        .update({
+          itinerary_data: {
+            itinerary: formattedItinerary
+          }
+        })
         .eq('id', itineraryId);
 
       if (error) throw error;
