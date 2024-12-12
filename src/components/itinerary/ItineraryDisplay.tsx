@@ -1,6 +1,6 @@
 import { GeneratedItinerary, ItineraryActivity, DayActivities } from "@/types/itinerary";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { format, parseISO } from "date-fns";
+import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Clock, DollarSign, Pencil } from "lucide-react";
 import { EditActivityDialog } from "./EditActivityDialog";
@@ -126,11 +126,23 @@ const ItineraryDisplay = ({ itinerary, itineraryId }: ItineraryDisplayProps) => 
     newItinerary.itinerary[dayIndex].activities[period] = updatedActivity;
     
     try {
+      // Create a plain object that matches the expected Json type
+      const updateData = {
+        itinerary_data: {
+          itinerary: newItinerary.itinerary.map(day => ({
+            day: day.day,
+            activities: {
+              morning: day.activities.morning,
+              afternoon: day.activities.afternoon,
+              evening: day.activities.evening
+            }
+          }))
+        }
+      };
+
       const { error } = await supabase
         .from('itineraries')
-        .update({ 
-          itinerary_data: { itinerary: newItinerary.itinerary }
-        })
+        .update(updateData)
         .eq('id', itineraryId);
 
       if (error) throw error;
