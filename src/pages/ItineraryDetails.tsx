@@ -22,20 +22,17 @@ const ItineraryDetails = () => {
         if (error) throw error;
 
         if (data) {
-          // Transform the data into the expected GeneratedItinerary format
           const formattedItinerary: GeneratedItinerary = {
             destination: data.destination,
             dates: {
               start: data.departure_date,
               end: data.return_date
             },
-            // Safely access and type the itinerary data
             itinerary: data.itinerary_data && typeof data.itinerary_data === 'object' 
               ? (data.itinerary_data as any).itinerary || []
               : []
           };
           
-          console.log('Fetched itinerary:', formattedItinerary);
           setItinerary(formattedItinerary);
         }
       } catch (error) {
@@ -72,7 +69,7 @@ const ItineraryDetails = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
-        <ItineraryDisplay itinerary={itinerary} />
+        <ItineraryDisplay itinerary={itinerary} itineraryId={id!} />
       </div>
     </div>
   );

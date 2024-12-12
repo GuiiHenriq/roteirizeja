@@ -2,29 +2,66 @@ import { GeneratedItinerary, ItineraryActivity, DayActivities } from "@/types/it
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Clock, DollarSign } from "lucide-react";
+import { Clock, DollarSign, Pencil } from "lucide-react";
+import { EditActivityDialog } from "./EditActivityDialog";
+import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { Button } from "../ui/button";
 
 interface ItineraryDisplayProps {
   itinerary: GeneratedItinerary;
+  itineraryId: string;
 }
 
-const ActivityCard = ({ title, activity }: { title: string; activity: ItineraryActivity }) => (
-  <Card className="bg-white/5 hover:bg-white/10 transition-colors">
-    <CardHeader className="pb-2">
-      <CardTitle className="text-lg font-medium">{activity.Name}</CardTitle>
-    </CardHeader>
-    <CardContent>
-      <p className="text-sm text-muted-foreground mb-2">{activity.Description}</p>
-      <div className="flex items-center text-sm text-primary">
-        <DollarSign className="w-4 h-4 mr-1" />
-        <span>R$ {activity.Cost.toFixed(2)}</span>
-      </div>
-    </CardContent>
-  </Card>
-);
+interface ActivityCardProps {
+  title: string;
+  activity: ItineraryActivity;
+  onActivityUpdate: (updatedActivity: ItineraryActivity) => void;
+}
 
-const DayCard = ({ date, activities }: { date: string; activities: DayActivities }) => {
-  // Garante que a data seja interpretada corretamente no fuso horário local
+const ActivityCard = ({ title, activity, onActivityUpdate }: ActivityCardProps) => {
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+
+  return (
+    <>
+      <Card className="bg-white/5 hover:bg-white/10 transition-colors">
+        <CardHeader className="pb-2">
+          <div className="flex justify-between items-start">
+            <CardTitle className="text-lg font-medium">{activity.Name}</CardTitle>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsEditDialogOpen(true)}
+              className="h-8 w-8"
+            >
+              <Pencil className="h-4 w-4" />
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground mb-2">{activity.Description}</p>
+          <div className="flex items-center text-sm text-emerald-500">
+            <DollarSign className="w-4 h-4 mr-1" />
+            <span>R$ {activity.Cost.toFixed(2)}</span>
+          </div>
+        </CardContent>
+      </Card>
+      <EditActivityDialog
+        isOpen={isEditDialogOpen}
+        onClose={() => setIsEditDialogOpen(false)}
+        activity={activity}
+        onSave={onActivityUpdate}
+      />
+    </>
+  );
+};
+
+const DayCard = ({ date, activities, onUpdateActivity }: { 
+  date: string; 
+  activities: DayActivities;
+  onUpdateActivity: (period: keyof DayActivities, activity: ItineraryActivity) => void;
+}) => {
   const localDate = new Date(date + 'T12:00:00');
 
   return (
@@ -38,7 +75,11 @@ const DayCard = ({ date, activities }: { date: string; activities: DayActivities
             <Clock className="w-4 h-4 mr-2 text-yellow-500" />
             <h4 className="font-medium">Manhã</h4>
           </div>
-          <ActivityCard title="Manhã" activity={activities.morning} />
+          <ActivityCard 
+            title="Manhã" 
+            activity={activities.morning} 
+            onActivityUpdate={(updatedActivity) => onUpdateActivity('morning', updatedActivity)}
+          />
         </div>
         
         <div>
@@ -46,7 +87,11 @@ const DayCard = ({ date, activities }: { date: string; activities: DayActivities
             <Clock className="w-4 h-4 mr-2 text-orange-500" />
             <h4 className="font-medium">Tarde</h4>
           </div>
-          <ActivityCard title="Tarde" activity={activities.afternoon} />
+          <ActivityCard 
+            title="Tarde" 
+            activity={activities.afternoon}
+            onActivityUpdate={(updatedActivity) => onUpdateActivity('afternoon', updatedActivity)}
+          />
         </div>
         
         <div>
@@ -54,15 +99,21 @@ const DayCard = ({ date, activities }: { date: string; activities: DayActivities
             <Clock className="w-4 h-4 mr-2 text-blue-500" />
             <h4 className="font-medium">Noite</h4>
           </div>
-          <ActivityCard title="Noite" activity={activities.evening} />
+          <ActivityCard 
+            title="Noite" 
+            activity={activities.evening}
+            onActivityUpdate={(updatedActivity) => onUpdateActivity('evening', updatedActivity)}
+          />
         </div>
       </CardContent>
     </Card>
   );
 };
 
-const ItineraryDisplay = ({ itinerary }: ItineraryDisplayProps) => {
-  if (!itinerary || !itinerary.destination || !itinerary.dates || !Array.isArray(itinerary.itinerary)) {
+const ItineraryDisplay = ({ itinerary, itineraryId }: ItineraryDisplayProps) => {
+  const [localItinerary, setLocalItinerary] = useState(itinerary);
+
+  if (!localItinerary || !localItinerary.destination || !localItinerary.dates || !Array.isArray(localItinerary.itinerary)) {
     return (
       <div className="text-center text-muted-foreground">
         Dados do roteiro incompletos ou inválidos
@@ -70,14 +121,35 @@ const ItineraryDisplay = ({ itinerary }: ItineraryDisplayProps) => {
     );
   }
 
-  // Garante que as datas sejam interpretadas corretamente no fuso horário local
-  const startDate = new Date(itinerary.dates.start + 'T12:00:00');
-  const endDate = new Date(itinerary.dates.end + 'T12:00:00');
+  const handleActivityUpdate = async (dayIndex: number, period: keyof DayActivities, updatedActivity: ItineraryActivity) => {
+    const newItinerary = { ...localItinerary };
+    newItinerary.itinerary[dayIndex].activities[period] = updatedActivity;
+    
+    try {
+      const { error } = await supabase
+        .from('itineraries')
+        .update({ 
+          itinerary_data: { itinerary: newItinerary.itinerary }
+        })
+        .eq('id', itineraryId);
+
+      if (error) throw error;
+
+      setLocalItinerary(newItinerary);
+      toast.success('Atividade atualizada com sucesso!');
+    } catch (error) {
+      console.error('Error updating activity:', error);
+      toast.error('Erro ao atualizar a atividade');
+    }
+  };
+
+  const startDate = new Date(localItinerary.dates.start + 'T12:00:00');
+  const endDate = new Date(localItinerary.dates.end + 'T12:00:00');
 
   return (
     <div className="space-y-8">
       <div className="text-center">
-        <h2 className="text-2xl font-bold mb-2">{itinerary.destination}</h2>
+        <h2 className="text-2xl font-bold mb-2">{localItinerary.destination}</h2>
         <p className="text-muted-foreground mb-4">
           {format(startDate, "dd 'de' MMMM", { locale: ptBR })} -{" "}
           {format(endDate, "dd 'de' MMMM, yyyy", { locale: ptBR })}
@@ -85,8 +157,13 @@ const ItineraryDisplay = ({ itinerary }: ItineraryDisplayProps) => {
       </div>
       
       <div className="grid gap-6">
-        {itinerary.itinerary.map((day) => (
-          <DayCard key={day.day} date={day.day} activities={day.activities} />
+        {localItinerary.itinerary.map((day, index) => (
+          <DayCard 
+            key={day.day} 
+            date={day.day} 
+            activities={day.activities}
+            onUpdateActivity={(period, activity) => handleActivityUpdate(index, period, activity)}
+          />
         ))}
       </div>
     </div>
