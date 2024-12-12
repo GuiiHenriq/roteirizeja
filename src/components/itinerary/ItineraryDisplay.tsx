@@ -74,7 +74,7 @@ const ItineraryDisplay = ({ itinerary, itineraryId }: ItineraryDisplayProps) => 
       };
 
       if (contentRef.current) {
-        await toPDF(contentRef.current, options);
+        await toPDF(() => contentRef.current!, options);
         toast.success('PDF exportado com sucesso!');
       }
     } catch (error) {
