@@ -9,7 +9,12 @@ const DesktopSidebar = () => {
   const navigate = useNavigate();
   const { signOut } = useAuth();
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => {
+    if (path === "/itineraries") {
+      return location.pathname.startsWith("/itineraries");
+    }
+    return location.pathname === path;
+  };
 
   const menuItems = [
     { path: "/", icon: Home, label: "Início" },

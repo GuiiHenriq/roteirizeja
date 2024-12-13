@@ -3,7 +3,13 @@ import { Home, Map, Calendar, Settings } from "lucide-react";
 
 const Navbar = () => {
   const location = useLocation();
-  const isActive = (path: string) => location.pathname === path;
+  
+  const isActive = (path: string) => {
+    if (path === "/itineraries") {
+      return location.pathname.startsWith("/itineraries");
+    }
+    return location.pathname === path;
+  };
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-lg border-t border-border p-4 z-50 lg:hidden">
