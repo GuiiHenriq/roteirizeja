@@ -95,8 +95,8 @@ const ItineraryDisplay = ({ itinerary, itineraryId }: ItineraryDisplayProps) => 
   const endDate = new Date(localItinerary.dates.end + 'T12:00:00');
 
   return (
-    <div className="space-y-8">
-      <div className="flex justify-between items-center mb-6">
+    <div className="space-y-8 mb-20 md:mb-0">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
         <div className="text-center flex-1">
           <h2 className="text-2xl font-bold mb-2">{localItinerary.destination}</h2>
           <p className="text-muted-foreground">
@@ -106,7 +106,7 @@ const ItineraryDisplay = ({ itinerary, itineraryId }: ItineraryDisplayProps) => 
         </div>
         <Button
           onClick={handleExportPDF}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 w-full md:w-auto"
           variant="outline"
         >
           <FileDown className="h-4 w-4" />
