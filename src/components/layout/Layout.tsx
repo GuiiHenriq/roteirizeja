@@ -1,12 +1,11 @@
 import { ReactNode, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import Navbar from "./Navbar";
-import DesktopSidebar from "./DesktopSidebar";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
-import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { useAuth } from "@/contexts/AuthContext";
-import { Link } from "react-router-dom";
 import { toast } from "sonner";
+import LoadingSpinner from "./LoadingSpinner";
+import HomeLayout from "./HomeLayout";
+import AppLayout from "./AppLayout";
 
 const Layout = ({ children }: { children: ReactNode }) => {
   const { user, isLoading } = useAuth();
@@ -39,105 +38,18 @@ const Layout = ({ children }: { children: ReactNode }) => {
   }, [location.pathname]);
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   // Se estamos na página inicial, não usamos o ThemeProvider e forçamos o light mode
   if (location.pathname === "/") {
-    return (
-      <div className="min-h-screen bg-white">
-        {!user && (
-          <header className="fixed top-0 left-0 right-0 h-16 bg-white/80 backdrop-blur-lg border-b border-gray-200 z-50">
-            <div className="container mx-auto h-full px-4 flex items-center justify-between">
-              <Link
-                to="/"
-                className="text-2xl font-bold text-emerald-600 hover:text-emerald-700 transition-colors"
-              >
-                Viajai
-              </Link>
-              <div className="flex items-center gap-4">
-                <Link
-                  to="/login"
-                  className="px-4 py-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition-colors"
-                >
-                  Entrar
-                </Link>
-              </div>
-            </div>
-          </header>
-        )}
-
-        <div className="flex">
-          {user && (
-            <div className="hidden lg:block">
-              <DesktopSidebar />
-            </div>
-          )}
-
-          <main className={`flex-1 ${user ? "lg:pl-64" : "pt-16"}`}>
-            <div className="mx-auto">{children}</div>
-          </main>
-        </div>
-
-        {user && (
-          <div className="lg:hidden">
-            <Navbar />
-          </div>
-        )}
-      </div>
-    );
+    return <HomeLayout user={user}>{children}</HomeLayout>;
   }
 
   // Para todas as outras páginas, mantemos o ThemeProvider
   return (
     <ThemeProvider defaultTheme="light" storageKey="app-theme">
-      <div className="min-h-screen bg-background">
-        {!user && (
-          <header className="fixed top-0 left-0 right-0 h-16 bg-background/80 backdrop-blur-lg border-b border-border z-50">
-            <div className="container mx-auto h-full px-4 flex items-center justify-between">
-              <Link
-                to="/"
-                className="text-2xl font-bold text-primary hover:text-primary/90 transition-colors"
-              >
-                Viajai
-              </Link>
-              <div className="flex items-center gap-4">
-                <Link
-                  to="/login"
-                  className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-                >
-                  Entrar
-                </Link>
-                <ThemeToggle />
-              </div>
-            </div>
-          </header>
-        )}
-
-        <div className="flex">
-          {user && (
-            <div className="hidden lg:block">
-              <DesktopSidebar />
-            </div>
-          )}
-
-          <main className={`flex-1 ${user ? "lg:pl-64" : "pt-16"}`}>
-            <div className="mx-auto">{children}</div>
-          </main>
-        </div>
-
-        {user && (
-          <div className="lg:hidden">
-            <Navbar />
-          </div>
-        )}
-
-        {user && <ThemeToggle className="fixed top-4 right-4 z-50" />}
-      </div>
+      <AppLayout user={user}>{children}</AppLayout>
     </ThemeProvider>
   );
 };
