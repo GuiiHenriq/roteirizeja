@@ -30,6 +30,14 @@ const Layout = ({ children }: { children: ReactNode }) => {
     }
   }, [user, location.pathname, navigate, isLoading]);
 
+  // Remove dark mode class when on home page
+  useEffect(() => {
+    const root = window.document.documentElement;
+    if (location.pathname === "/") {
+      root.classList.remove("dark");
+    }
+  }, [location.pathname]);
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -38,23 +46,23 @@ const Layout = ({ children }: { children: ReactNode }) => {
     );
   }
 
-  // Se estamos na página inicial, não usamos o ThemeProvider
+  // Se estamos na página inicial, não usamos o ThemeProvider e forçamos o light mode
   if (location.pathname === "/") {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-white">
         {!user && (
-          <header className="fixed top-0 left-0 right-0 h-16 bg-background/80 backdrop-blur-lg border-b border-border z-50">
+          <header className="fixed top-0 left-0 right-0 h-16 bg-white/80 backdrop-blur-lg border-b border-gray-200 z-50">
             <div className="container mx-auto h-full px-4 flex items-center justify-between">
               <Link
                 to="/"
-                className="text-2xl font-bold text-primary hover:text-primary/90 transition-colors"
+                className="text-2xl font-bold text-emerald-600 hover:text-emerald-700 transition-colors"
               >
                 Viajai
               </Link>
               <div className="flex items-center gap-4">
                 <Link
                   to="/login"
-                  className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                  className="px-4 py-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition-colors"
                 >
                   Entrar
                 </Link>
