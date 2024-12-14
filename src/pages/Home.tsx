@@ -13,6 +13,7 @@ import {
   Globe,
   Calendar,
 } from "lucide-react";
+import HomeHeader from "@/components/home/HomeHeader";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -41,31 +42,7 @@ const Home = () => {
 
   return (
     <div className="min-h-screen text-gray-900">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <Plane className="text-emerald-600" size={32} />
-            <span className="text-2xl font-bold text-emerald-800">
-              ViagemAI
-            </span>
-          </div>
-          <div className="space-x-4">
-            <a href="#" className="hover:text-emerald-600 transition">
-              Recursos
-            </a>
-            <a href="#" className="hover:text-emerald-600 transition">
-              Como Funciona
-            </a>
-            <a
-              href="#"
-              className="bg-emerald-600 text-white px-4 py-2 rounded-xl hover:bg-emerald-700 transition"
-            >
-              Cadastrar
-            </a>
-          </div>
-        </div>
-      </nav>
+      <HomeHeader />
 
       {/* Hero Section */}
       <header className="bg-gradient-to-br from-indigo-50 to-emerald-100 pt-24 pb-16">
@@ -78,15 +55,6 @@ const Home = () => {
               Chega de complicações para criar roteiros. Nossa IA transforma
               suas ideias em uma viagem inesquecível em poucos cliques.
             </p>
-            {/**<div className="flex space-x-4">
-              <button
-                className="bg-emerald-600 text-white px-6 py-3 rounded-xl hover:bg-emerald-700 transition flex items-center"
-                onClick={() => navigate("/login")}
-              >
-                Teste Agora 100% Grátis <ChevronRight className="ml-2" />
-              </button>
-            </div>**/}
-
             <form onSubmit={handleDestinationSubmit} className="flex space-x-4">
               <input
                 type="text"
@@ -180,9 +148,9 @@ const Home = () => {
                 stroke="currentColor"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
                 />
               </svg>
@@ -205,9 +173,9 @@ const Home = () => {
                 stroke="currentColor"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
                 />
               </svg>
@@ -230,10 +198,10 @@ const Home = () => {
                 stroke="currentColor"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M12 6V4m0 2a2 2 0 100-4m0 4a2 2 0 110-4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
                 />
               </svg>
             </div>
@@ -255,10 +223,10 @@ const Home = () => {
                 stroke="currentColor"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M12 6V4m0 2a2 2 0 100-4m0 4a2 2 0 110-4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
                 />
               </svg>
             </div>
@@ -280,10 +248,10 @@ const Home = () => {
                 stroke="currentColor"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M12 6V4m0 2a2 2 0 100-4m0 4a2 2 0 110-4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
                 />
               </svg>
             </div>
@@ -305,10 +273,10 @@ const Home = () => {
                 stroke="currentColor"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M12 6V4m0 2a2 2 0 100-4m0 4a2 2 0 110-4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
                 />
               </svg>
             </div>
@@ -381,29 +349,8 @@ const Home = () => {
               </div>
             ))}
           </div>
-          {/*<div className="text-center mt-12">
-            <button className="bg-emerald-600 text-white px-6 py-3 rounded-xl hover:bg-emerald-700 transition">
-              Teste Grátis Agora
-            </button>
-          </div>*/}
         </div>
       </section>
-
-      {/* Garantia e Segurança 
-      <section className="container mx-auto px-4 py-16 text-center">
-        <h2 className="text-4xl font-bold mb-6 text-emerald-900">
-          Sem Compromisso. Totalmente Seguro.
-        </h2>
-        <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-          Testar nosso app é grátis e não exige cartão de crédito. Garantimos
-          sua satisfação ou devolvemos seu dinheiro.
-        </p>
-        <div className="bg-emerald-100 p-6 rounded-2xl inline-block">
-          <p className="text-emerald-800 font-semibold">
-            Confiança garantida com IA de última geração
-          </p>
-        </div>
-      </section>*/}
 
       {/* Última CTA */}
       <section className="text-emerald py-20">
@@ -415,9 +362,6 @@ const Home = () => {
             Deixe nossa IA cuidar de tudo.
           </h3>
           <p className="text-xl mb-10">Experimente grátis agora!</p>
-          {/*<p className="text-xl mb-10">
-            Deixe nossa IA cuidar de tudo. Experimente grátis agora!
-          </p>*/}
           <div className="flex justify-center space-x-4">
             <button className="bg-emerald-600 text-white px-8 py-4 rounded-xl hover:bg-emerald-700 transition flex items-center">
               Teste Totalmente Gratuito <ChevronRight className="ml-2" />
