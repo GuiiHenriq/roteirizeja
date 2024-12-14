@@ -38,11 +38,10 @@ const Layout = ({ children }: { children: ReactNode }) => {
     );
   }
 
-  // If we're on the home page, don't wrap with ThemeProvider
+  // Se estamos na página inicial, não usamos o ThemeProvider
   if (location.pathname === "/") {
     return (
       <div className="min-h-screen bg-background">
-        {/* Header for logged out users */}
         {!user && (
           <header className="fixed top-0 left-0 right-0 h-16 bg-background/80 backdrop-blur-lg border-b border-border z-50">
             <div className="container mx-auto h-full px-4 flex items-center justify-between">
@@ -65,20 +64,17 @@ const Layout = ({ children }: { children: ReactNode }) => {
         )}
 
         <div className="flex">
-          {/* Desktop Sidebar - only shown when logged in */}
           {user && (
             <div className="hidden lg:block">
               <DesktopSidebar />
             </div>
           )}
 
-          {/* Main Content */}
           <main className={`flex-1 ${user ? "lg:pl-64" : "pt-16"}`}>
             <div className="mx-auto">{children}</div>
           </main>
         </div>
 
-        {/* Mobile Navigation - only shown when logged in */}
         {user && (
           <div className="lg:hidden">
             <Navbar />
@@ -88,11 +84,10 @@ const Layout = ({ children }: { children: ReactNode }) => {
     );
   }
 
-  // For all other pages, keep the ThemeProvider
+  // Para todas as outras páginas, mantemos o ThemeProvider
   return (
     <ThemeProvider defaultTheme="light" storageKey="app-theme">
       <div className="min-h-screen bg-background">
-        {/* Header for logged out users */}
         {!user && (
           <header className="fixed top-0 left-0 right-0 h-16 bg-background/80 backdrop-blur-lg border-b border-border z-50">
             <div className="container mx-auto h-full px-4 flex items-center justify-between">
@@ -116,27 +111,23 @@ const Layout = ({ children }: { children: ReactNode }) => {
         )}
 
         <div className="flex">
-          {/* Desktop Sidebar - only shown when logged in */}
           {user && (
             <div className="hidden lg:block">
               <DesktopSidebar />
             </div>
           )}
 
-          {/* Main Content */}
           <main className={`flex-1 ${user ? "lg:pl-64" : "pt-16"}`}>
             <div className="mx-auto">{children}</div>
           </main>
         </div>
 
-        {/* Mobile Navigation - only shown when logged in */}
         {user && (
           <div className="lg:hidden">
             <Navbar />
           </div>
         )}
 
-        {/* Theme toggle for logged in users */}
         {user && <ThemeToggle className="fixed top-4 right-4 z-50" />}
       </div>
     </ThemeProvider>
