@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Home, Map, Calendar, Settings, LogOut } from "lucide-react";
+import { Home, Map, Calendar, Settings, LogOut, Contact } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -60,14 +60,29 @@ const DesktopSidebar = () => {
           ))}
         </nav>
 
-        <Button
-          variant="ghost"
-          className="w-full justify-start space-x-3"
-          onClick={handleSignOut}
-        >
-          <LogOut className="w-5 h-5" />
-          <span>Sair</span>
-        </Button>
+        <div className="space-y-2">
+          <Link
+            to="/contact"
+            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200
+              ${
+                isActive("/contact")
+                  ? "bg-primary/10 text-primary"
+                  : "hover:bg-primary/5 text-foreground/80 hover:text-foreground"
+              }`}
+          >
+            <Contact className="w-5 h-5" />
+            <span>Contato</span>
+          </Link>
+
+          <Button
+            variant="ghost"
+            className="w-full justify-start space-x-3"
+            onClick={handleSignOut}
+          >
+            <LogOut className="w-5 h-5" />
+            <span>Sair</span>
+          </Button>
+        </div>
       </div>
     </aside>
   );
