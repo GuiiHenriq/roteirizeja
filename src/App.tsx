@@ -10,6 +10,7 @@ import CreateItinerary from "./pages/CreateItinerary";
 import Itineraries from "./pages/Itineraries";
 import ItineraryDetails from "./pages/ItineraryDetails";
 import Profile from "./pages/Profile";
+import Contact from "./pages/Contact";
 import Layout from "./components/layout/Layout";
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
             <Route path="/itineraries" element={<Itineraries />} />
             <Route path="/itineraries/:id" element={<ItineraryDetails />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/contact" element={<Contact />} />
           </Routes>
         </Layout>
         <Toaster />
