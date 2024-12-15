@@ -58,7 +58,7 @@ const handler = async (req: Request): Promise<Response> => {
       },
       body: JSON.stringify({
         from: "ViagemAI <onboarding@resend.dev>",
-        to: ["erba.guilherme@gmail.com"],
+        to: ["zik4gameplays@gmail.com"], // Alterado para o email verificado
         subject: `Novo contato: ${contactRequest.subject}`,
         html: `
           <h2>Novo contato recebido</h2>
