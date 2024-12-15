@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Map, Calendar, Settings } from "lucide-react";
+import { Home, Map, Calendar, Settings, Contact } from "lucide-react";
 
 const Navbar = () => {
   const location = useLocation();
@@ -25,6 +25,9 @@ const Navbar = () => {
         </Link>
         <Link to="/profile" className={`nav-link ${isActive("/profile") ? "active" : ""}`}>
           <Settings className="w-6 h-6" />
+        </Link>
+        <Link to="/contact" className={`nav-link ${isActive("/contact") ? "active" : ""}`}>
+          <Contact className="w-6 h-6" />
         </Link>
       </div>
     </nav>
