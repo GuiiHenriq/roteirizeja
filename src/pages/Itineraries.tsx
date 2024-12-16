@@ -8,6 +8,7 @@ import { ptBR } from "date-fns/locale";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import ItinerariesSkeleton from "@/components/skeletons/ItinerariesSkeleton";
 
 interface SavedItinerary {
   id: string;
@@ -55,32 +56,8 @@ const Itineraries = () => {
     fetchItineraries();
   }, [user]);
 
-  const handleDelete = async (id: string, e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    try {
-      const { error } = await supabase
-        .from('itineraries')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-
-      toast.success('Roteiro excluído com sucesso');
-      setItineraries(prev => prev.filter(itinerary => itinerary.id !== id));
-    } catch (error) {
-      console.error('Error deleting itinerary:', error);
-      toast.error('Erro ao excluir o roteiro');
-    }
-  };
-
   if (isLoading) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center">Carregando roteiros...</div>
-      </div>
-    );
+    return <ItinerariesSkeleton />;
   }
 
   if (itineraries.length === 0) {
@@ -100,7 +77,6 @@ const Itineraries = () => {
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {itineraries.map((itinerary) => {
-          // Garante que as datas sejam interpretadas corretamente no fuso horário local
           const departureDate = new Date(itinerary.departure_date + 'T12:00:00');
           const returnDate = new Date(itinerary.return_date + 'T12:00:00');
 
