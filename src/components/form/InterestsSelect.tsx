@@ -19,19 +19,23 @@ const interests = [
 
 export const InterestsSelect = ({ selectedInterests, toggleInterest }: InterestsSelectProps) => {
   return (
-    <div className="space-y-2">
-      <Label>Interesses</Label>
+    <div className="space-y-3">
+      <Label className="text-base">Interesses</Label>
       <div className="grid grid-cols-2 gap-4">
         {interests.map((interest) => (
-          <div key={interest} className="flex items-center space-x-2">
+          <div 
+            key={interest} 
+            className="flex items-center space-x-3 p-2 rounded-lg hover:bg-accent/50 transition-colors"
+          >
             <Checkbox
               id={interest}
               checked={selectedInterests.includes(interest)}
               onCheckedChange={() => toggleInterest(interest)}
+              className="h-5 w-5"
             />
             <label
               htmlFor={interest}
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 select-none"
             >
               {interest}
             </label>

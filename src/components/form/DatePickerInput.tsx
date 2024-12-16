@@ -23,15 +23,15 @@ export const DatePickerInput = ({ date, setDate, label }: DatePickerInputProps) 
           <Button
             variant="outline"
             className={cn(
-              "w-full justify-start text-left font-normal",
+              "w-full justify-start text-left font-normal h-12",
               !date && "text-muted-foreground"
             )}
           >
-            <CalendarIcon className="mr-2 h-4 w-4" />
+            <CalendarIcon className="mr-2 h-5 w-5" />
             {date ? format(date, "PPP", { locale: ptBR }) : <span>Selecione uma data</span>}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0 bg-background border">
+        <PopoverContent className="w-auto p-0 bg-background border" align="start">
           <Calendar
             mode="single"
             selected={date}

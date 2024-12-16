@@ -1,67 +1,52 @@
-import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
-import { Card } from "@/components/ui/card";
-import { Loader2 } from "lucide-react";
 import { CreateItineraryForm } from "@/components/itinerary/CreateItineraryForm";
 import { ItineraryStatus } from "@/components/itinerary/ItineraryStatus";
+import { Loader2 } from "lucide-react";
 
 const MAX_ITINERARIES = 3;
 
 const CreateItinerary = () => {
   const { user } = useAuth();
-  const [itineraryCount, setItineraryCount] = useState<number>(0);
-  const [isLoadingCount, setIsLoadingCount] = useState(true);
 
-  useEffect(() => {
-    const fetchItineraryCount = async () => {
-      if (!user) return;
-      
-      try {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('count_itineraries')
-          .eq('id', user.id)
-          .single();
+  const { data: profile, isLoading } = useQuery({
+    queryKey: ['profile', user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('profiles')
+        .select('count_itineraries')
+        .eq('id', user?.id)
+        .single();
+      return data;
+    },
+    enabled: !!user,
+  });
 
-        if (error) throw error;
-        setItineraryCount(data?.count_itineraries || 0);
-      } catch (error) {
-        console.error('Error fetching itinerary count:', error);
-        toast.error('Erro ao carregar informações do usuário');
-      } finally {
-        setIsLoadingCount(false);
-      }
-    };
-
-    fetchItineraryCount();
-  }, [user]);
-
-  if (isLoadingCount) {
+  if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-[200px]">
+      <div className="flex justify-center items-center min-h-[50vh]">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <h1 className="text-3xl font-bold mb-4">Criar Novo Roteiro</h1>
+    <div className="px-4 py-6 lg:py-8 max-w-2xl mx-auto">
+      <h1 className="text-2xl lg:text-3xl font-bold mb-6 text-center lg:text-left">
+        Criar Novo Roteiro
+      </h1>
       
       <ItineraryStatus 
-        itineraryCount={itineraryCount} 
+        itineraryCount={profile?.count_itineraries || 0} 
         maxItineraries={MAX_ITINERARIES} 
       />
 
-      <Card className="p-6">
-        <CreateItineraryForm 
-          itineraryCount={itineraryCount}
-          isLoadingCount={isLoadingCount}
-          maxItineraries={MAX_ITINERARIES}
-        />
-      </Card>
+      <CreateItineraryForm 
+        itineraryCount={profile?.count_itineraries || 0}
+        isLoadingCount={isLoading}
+        maxItineraries={MAX_ITINERARIES}
+      />
     </div>
   );
 };

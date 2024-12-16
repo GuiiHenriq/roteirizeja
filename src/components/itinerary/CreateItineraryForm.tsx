@@ -106,17 +106,18 @@ export const CreateItineraryForm = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-2">
-        <Label htmlFor="destination">Destino</Label>
+        <Label htmlFor="destination" className="text-base">Destino</Label>
         <Input
           id="destination"
           placeholder="Para onde você quer ir?"
           value={destination}
           onChange={(e) => setDestination(e.target.value)}
           required
+          className="h-12 text-base"
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <DatePickerInput
           date={startDate}
           setDate={setStartDate}
@@ -136,12 +137,12 @@ export const CreateItineraryForm = ({
 
       <Button 
         type="submit" 
-        className="w-full" 
+        className="w-full h-12 text-base font-semibold mt-8" 
         disabled={isLoading || itineraryCount >= maxItineraries}
       >
         {isLoading ? (
           <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
             Gerando roteiro...
           </>
         ) : (
