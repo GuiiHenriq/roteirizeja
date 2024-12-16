@@ -52,6 +52,26 @@ const Itineraries = () => {
     }
   };
 
+  const handleDelete = async (id: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    try {
+      const { error } = await supabase
+        .from('itineraries')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast.success('Roteiro excluído com sucesso');
+      setItineraries(prev => prev.filter(itinerary => itinerary.id !== id));
+    } catch (error) {
+      console.error('Error deleting itinerary:', error);
+      toast.error('Erro ao excluir o roteiro');
+    }
+  };
+
   useEffect(() => {
     fetchItineraries();
   }, [user]);
