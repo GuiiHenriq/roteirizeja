@@ -55,7 +55,7 @@ const Home = () => {
               Chega de complicações para criar roteiros. Nossa IA transforma
               suas ideias em uma viagem inesquecível em poucos cliques.
             </p>
-            <form onSubmit={handleDestinationSubmit} className="flex space-x-4">
+            <form onSubmit={handleDestinationSubmit} className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
               <input
                 type="text"
                 placeholder="Para onde você quer viajar?"
@@ -66,7 +66,7 @@ const Home = () => {
               />
               <button
                 onClick={() => navigate("/register")}
-                className="bg-emerald-600 text-white px-6 py-3 rounded-xl hover:bg-emerald-700 transition flex items-center"
+                className="bg-emerald-600 text-white px-6 py-3 rounded-xl hover:bg-emerald-700 transition flex items-center justify-center"
               >
                 Teste Agora 100% Grátis <ChevronRight className="ml-2" />
               </button>
