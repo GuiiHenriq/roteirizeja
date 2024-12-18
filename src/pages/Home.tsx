@@ -355,10 +355,10 @@ const Home = () => {
       {/* Última CTA */}
       <section className="text-emerald py-20">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-5xl font-bold emerald-to-pink-gradient-text">
+          <h2 className="text-3xl md:text-5xl font-bold emerald-to-pink-gradient-text">
             Pronto para Sua Próxima Aventura?
           </h2>
-          <h3 className="text-5xl font-bold mb-8">
+          <h3 className="text-3xl md:text-5xl font-bold mb-8">
             Deixe nossa IA cuidar de tudo.
           </h3>
           <p className="text-xl mb-10">Experimente grátis agora!</p>
