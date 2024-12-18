@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import HomeHeader from "@/components/home/HomeHeader";
 import HomeHero from "@/components/home/HomeHero";
 import CallToAction from "@/components/home/CallToAction";
+import { Clock, Globe, Compass, Smartphone, Calendar, Plane, Star } from 'lucide-react';
 
 const Home = () => {
   const navigate = useNavigate();
