@@ -12,6 +12,7 @@ import ItineraryDetails from "./pages/ItineraryDetails";
 import Profile from "./pages/Profile";
 import Contact from "./pages/Contact";
 import Layout from "./components/layout/Layout";
+import PrivateRoute from "./components/auth/PrivateRoute";
 
 function App() {
   return (
@@ -19,15 +20,60 @@ function App() {
       <AuthProvider>
         <Layout>
           <Routes>
+            {/* Rotas públicas */}
             <Route path="/" element={<Home />} />
-            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/create-itinerary" element={<CreateItinerary />} />
-            <Route path="/itineraries" element={<Itineraries />} />
-            <Route path="/itineraries/:id" element={<ItineraryDetails />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/contact" element={<Contact />} />
+
+            {/* Rotas protegidas */}
+            <Route
+              path="/dashboard"
+              element={
+                <PrivateRoute>
+                  <Dashboard />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/create-itinerary"
+              element={
+                <PrivateRoute>
+                  <CreateItinerary />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/itineraries"
+              element={
+                <PrivateRoute>
+                  <Itineraries />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/itineraries/:id"
+              element={
+                <PrivateRoute>
+                  <ItineraryDetails />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <PrivateRoute>
+                  <Profile />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/contact"
+              element={
+                <PrivateRoute>
+                  <Contact />
+                </PrivateRoute>
+              }
+            />
           </Routes>
         </Layout>
         <Toaster />
