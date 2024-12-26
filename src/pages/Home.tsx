@@ -55,7 +55,10 @@ const Home = () => {
               Chega de complicações para criar roteiros. Nossa IA transforma
               suas ideias em uma viagem inesquecível em poucos cliques.
             </p>
-            <form onSubmit={handleDestinationSubmit} className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
+            <form
+              onSubmit={handleDestinationSubmit}
+              className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0"
+            >
               <input
                 type="text"
                 placeholder="Para onde você quer viajar?"
@@ -133,160 +136,6 @@ const Home = () => {
           <button className="bg-emerald-600 text-white px-6 py-3 rounded-xl hover:bg-emerald-700 transition">
             Crie Seu Roteiro Agora
           </button>
-        </div>
-      </section>
-
-      <section className="container mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="bg-white border border-gray-200 p-6 rounded-3xl shadow-inner">
-            <div className="flex justify-center mb-4">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6 text-gray-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-                />
-              </svg>
-            </div>
-            <h3 className="text-2xl font-bold text-center mb-2 text-gray-800">
-              Feature 1
-            </h3>
-            <p className="text-gray-500 text-center">
-              Generic description of the feature.
-            </p>
-          </div>
-
-          <div className="bg-white border border-gray-200 p-6 rounded-3xl shadow-inner">
-            <div className="flex justify-center mb-4">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6 text-gray-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-                />
-              </svg>
-            </div>
-            <h3 className="text-2xl font-bold text-center mb-2 text-gray-800">
-              Feature 2
-            </h3>
-            <p className="text-gray-500 text-center">
-              Generic description of the feature.
-            </p>
-          </div>
-
-          <div className="bg-white border border-gray-200 p-6 rounded-3xl shadow-inner">
-            <div className="flex justify-center mb-4">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6 text-gray-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M12 6V4m0 2a2 2 0 100-4m0 4a2 2 0 110-4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-                />
-              </svg>
-            </div>
-            <h3 className="text-2xl font-bold text-center mb-2 text-gray-800">
-              Feature 3
-            </h3>
-            <p className="text-gray-500 text-center">
-              Generic description of the feature.
-            </p>
-          </div>
-
-          <div className="bg-white border border-gray-200 p-6 rounded-3xl shadow-inner">
-            <div className="flex justify-center mb-4">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6 text-gray-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M12 6V4m0 2a2 2 0 100-4m0 4a2 2 0 110-4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-                />
-              </svg>
-            </div>
-            <h3 className="text-2xl font-bold text-center mb-2 text-gray-800">
-              Feature 4
-            </h3>
-            <p className="text-gray-500 text-center">
-              Generic description of the feature.
-            </p>
-          </div>
-
-          <div className="bg-white border border-gray-200 p-6 rounded-3xl shadow-inner">
-            <div className="flex justify-center mb-4">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6 text-gray-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M12 6V4m0 2a2 2 0 100-4m0 4a2 2 0 110-4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-                />
-              </svg>
-            </div>
-            <h3 className="text-2xl font-bold text-center mb-2 text-gray-800">
-              Feature 5
-            </h3>
-            <p className="text-gray-500 text-center">
-              Generic description of the feature.
-            </p>
-          </div>
-
-          <div className="bg-white border border-gray-200 p-6 rounded-3xl shadow-inner">
-            <div className="flex justify-center mb-4">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6 text-gray-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M12 6V4m0 2a2 2 0 100-4m0 4a2 2 0 110-4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-                />
-              </svg>
-            </div>
-            <h3 className="text-2xl font-bold text-center mb-2 text-gray-800">
-              Feature 6
-            </h3>
-            <p className="text-gray-500 text-center">
-              Generic description of the feature.
-            </p>
-          </div>
         </div>
       </section>
 
