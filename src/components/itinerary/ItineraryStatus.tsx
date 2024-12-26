@@ -14,15 +14,6 @@ export const ItineraryStatus = ({ itineraryCount, maxItineraries }: ItinerarySta
       <p className="text-muted-foreground text-center lg:text-left text-sm lg:text-base">
         Você gerou {itineraryCount} de {maxItineraries} roteiros
       </p>
-
-      {hasReachedLimit && (
-        <Alert variant="destructive" className="mt-4">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription className="text-sm">
-            Você atingiu o limite de roteiros gratuitos. Entre em contato conosco para mais informações sobre o plano premium.
-          </AlertDescription>
-        </Alert>
-      )}
     </div>
   );
 };
