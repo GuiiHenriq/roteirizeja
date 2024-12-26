@@ -91,7 +91,7 @@ const CreateItinerary = () => {
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription className="text-sm">
-              Você atingiu o limite de roteiros gratuitos. Entre em contato conosco para mais informações sobre o plano premium.
+              Ops! Você já criou todos os seus 3 roteiros gratuitos. Quer continuar explorando o mundo? Assine nosso plano Premium e desbloqueie roteiros ilimitados!
             </AlertDescription>
           </Alert>
           <PremiumPlanCard />
