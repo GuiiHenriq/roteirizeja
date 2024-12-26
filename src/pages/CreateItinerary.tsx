@@ -4,10 +4,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { CreateItineraryForm } from "@/components/itinerary/CreateItineraryForm";
 import { ItineraryStatus } from "@/components/itinerary/ItineraryStatus";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 const MAX_ITINERARIES = 3;
 
@@ -37,6 +37,44 @@ const CreateItinerary = () => {
 
   const hasReachedLimit = (profile?.count_itineraries || 0) >= MAX_ITINERARIES;
 
+  const PremiumPlanCard = () => (
+    <Card className="mt-6 overflow-hidden bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-900/20 dark:to-emerald-800/20 border-emerald-200 dark:border-emerald-800">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-2xl font-bold text-center text-emerald-800 dark:text-emerald-400">
+          Plano Premium
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <p className="text-center text-muted-foreground mb-6">
+          Desbloqueie recursos exclusivos e crie roteiros ilimitados
+        </p>
+        <ul className="space-y-3">
+          {[
+            "Roteiros ilimitados",
+            "Personalização avançada",
+            "Suporte prioritário",
+            "Exportação em PDF",
+            "Compartilhamento com amigos"
+          ].map((benefit, index) => (
+            <li key={index} className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+              <span className="text-sm">{benefit}</span>
+            </li>
+          ))}
+        </ul>
+      </CardContent>
+      <CardFooter className="flex flex-col items-center gap-4 pt-6">
+        <div className="text-center">
+          <span className="text-3xl font-bold text-emerald-700 dark:text-emerald-400">R$ 19,90</span>
+          <span className="text-sm text-muted-foreground">/mês</span>
+        </div>
+        <Button className="w-full">
+          Assinar Agora
+        </Button>
+      </CardFooter>
+    </Card>
+  );
+
   return (
     <div className="px-4 py-6 lg:py-8 max-w-2xl mx-auto">
       <h1 className="text-2xl lg:text-3xl font-bold mb-6 text-center lg:text-left">
@@ -56,11 +94,7 @@ const CreateItinerary = () => {
               Você atingiu o limite de roteiros gratuitos. Entre em contato conosco para mais informações sobre o plano premium.
             </AlertDescription>
           </Alert>
-          <div className="flex justify-center">
-            <Button asChild>
-              <Link to="/contact">Entrar em Contato</Link>
-            </Button>
-          </div>
+          <PremiumPlanCard />
         </div>
       ) : (
         <CreateItineraryForm 
