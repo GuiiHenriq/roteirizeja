@@ -1,88 +1,107 @@
 import { supabase } from '@/integrations/supabase/client';
 import { Session } from '@supabase/supabase-js';
 import { toast } from 'sonner';
+import { userSchema, checkRateLimit, sanitizeInput } from '@/utils/validation';
 
 export const authService = {
   signUp: async (email: string, password: string, name: string) => {
-    const { data: existingUser } = await supabase
-      .from('profiles')
-      .select('id')
-      .eq('email', email)
-      .single();
+    try {
+      // Rate limiting
+      if (!checkRateLimit(`signup_${email}`, 3, 60000)) {
+        throw new Error('Muitas tentativas. Tente novamente em alguns minutos.');
+      }
 
-    if (existingUser) {
-      throw new Error('Este e-mail já está cadastrado.');
-    }
+      // Validação e sanitização
+      const sanitizedData = {
+        email: sanitizeInput(email),
+        password,
+        name: sanitizeInput(name),
+      };
 
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { 
-          name,
+      const validatedData = userSchema.parse(sanitizedData);
+
+      const { data: existingUser } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', validatedData.email)
+        .single();
+
+      if (existingUser) {
+        throw new Error('Este e-mail já está cadastrado.');
+      }
+
+      const { data, error } = await supabase.auth.signUp({
+        email: validatedData.email,
+        password: validatedData.password,
+        options: {
+          data: { 
+            name: validatedData.name,
+          },
+          emailRedirectTo: `${window.location.origin}/login`,
         },
-        emailRedirectTo: `${window.location.origin}/login`,
-      },
-    });
+      });
 
-    if (error) {
+      if (error) throw error;
+
+      if (data.user) {
+        const { error: updateError } = await supabase.auth.updateUser({
+          data: { name: validatedData.name }
+        });
+
+        if (updateError) throw updateError;
+
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert([{ id: data.user.id, name: validatedData.name }]);
+
+        if (profileError) throw profileError;
+      }
+
+      return data;
+    } catch (error: any) {
       console.error('Sign Up Error:', error);
       throw new Error(error.message || 'Erro ao realizar cadastro');
     }
-
-    if (data.user) {
-      // Update user metadata with display name
-      const { error: updateError } = await supabase.auth.updateUser({
-        data: { name }
-      });
-
-      if (updateError) {
-        console.error('Update User Error:', updateError);
-        throw new Error(updateError.message || 'Erro ao atualizar nome do usuário');
-      }
-
-      // Create profile entry
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert([{ id: data.user.id, name }]);
-
-      if (profileError) {
-        console.error('Profile Creation Error:', profileError);
-        throw new Error(profileError.message || 'Erro ao criar perfil');
-      }
-    }
-
-    return data;
   },
 
   signIn: async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (error) {
-      console.error('Sign In Error:', error);
-      
-      // Specific error handling
-      switch (error.message) {
-        case 'Email not confirmed':
-          throw new Error('Por favor, confirme seu e-mail antes de fazer login. Verifique sua caixa de entrada.');
-        case 'Invalid login credentials':
-          throw new Error('E-mail ou senha incorretos. Verifique suas credenciais.');
-        case 'User not found':
-          throw new Error('Usuário não encontrado. Verifique o e-mail digitado.');
-        default:
-          throw new Error(error.message || 'Erro ao realizar login');
+    try {
+      // Rate limiting
+      if (!checkRateLimit(`signin_${email}`, 5, 300000)) {
+        throw new Error('Muitas tentativas. Tente novamente em 5 minutos.');
       }
-    }
 
-    // Check if email is confirmed
-    if (!data.user?.email_confirmed_at) {
-      throw new Error('Por favor, confirme seu e-mail antes de fazer login. Verifique sua caixa de entrada.');
-    }
+      // Sanitização
+      const sanitizedEmail = sanitizeInput(email);
 
-    return data;
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: sanitizedEmail,
+        password,
+      });
+
+      if (error) {
+        console.error('Sign In Error:', error);
+        
+        switch (error.message) {
+          case 'Email not confirmed':
+            throw new Error('Por favor, confirme seu e-mail antes de fazer login.');
+          case 'Invalid login credentials':
+            throw new Error('E-mail ou senha incorretos.');
+          case 'User not found':
+            throw new Error('Usuário não encontrado.');
+          default:
+            throw new Error(error.message || 'Erro ao realizar login');
+        }
+      }
+
+      if (!data.user?.email_confirmed_at) {
+        throw new Error('Por favor, confirme seu e-mail antes de fazer login.');
+      }
+
+      return data;
+    } catch (error: any) {
+      throw error;
+    }
   },
 
   signOut: async () => {
