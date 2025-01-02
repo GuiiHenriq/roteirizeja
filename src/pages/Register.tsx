@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { UserPlus } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { CheckCircle2 } from "lucide-react";
 
 const Register = () => {
   const { signUp } = useAuth();
@@ -13,6 +15,7 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isRegistered, setIsRegistered] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,12 +23,41 @@ const Register = () => {
 
     try {
       await signUp(email, password, name);
+      setIsRegistered(true);
     } catch (error) {
       console.error("Registration error:", error);
     } finally {
       setIsLoading(false);
     }
   };
+
+  if (isRegistered) {
+    return (
+      <div className="container max-w-lg mx-auto p-4">
+        <Card className="p-6">
+          <div className="text-center space-y-4">
+            <CheckCircle2 className="w-16 h-16 text-green-500 mx-auto" />
+            <h1 className="text-2xl font-bold">Cadastro realizado com sucesso!</h1>
+            <p className="text-gray-600">
+              Enviamos um e-mail de confirmação para <strong>{email}</strong>. 
+              Por favor, verifique sua caixa de entrada e clique no link de confirmação 
+              para ativar sua conta.
+            </p>
+            <Alert>
+              <AlertDescription>
+                Não se esqueça de verificar também sua caixa de spam caso não encontre o e-mail.
+              </AlertDescription>
+            </Alert>
+            <Link to="/login">
+              <Button className="mt-4">
+                Voltar para o Login
+              </Button>
+            </Link>
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="container max-w-lg mx-auto p-4">

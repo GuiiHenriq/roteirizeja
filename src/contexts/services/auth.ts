@@ -4,6 +4,16 @@ import { toast } from 'sonner';
 
 export const authService = {
   signUp: async (email: string, password: string, name: string) => {
+    const { data: existingUser } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('email', email)
+      .single();
+
+    if (existingUser) {
+      throw new Error('Este e-mail já está cadastrado.');
+    }
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -11,6 +21,7 @@ export const authService = {
         data: { 
           name,
         },
+        emailRedirectTo: `${window.location.origin}/login`,
       },
     });
 
@@ -55,6 +66,8 @@ export const authService = {
       
       // Specific error handling
       switch (error.message) {
+        case 'Email not confirmed':
+          throw new Error('Por favor, confirme seu e-mail antes de fazer login. Verifique sua caixa de entrada.');
         case 'Invalid login credentials':
           throw new Error('E-mail ou senha incorretos. Verifique suas credenciais.');
         case 'User not found':
@@ -62,6 +75,11 @@ export const authService = {
         default:
           throw new Error(error.message || 'Erro ao realizar login');
       }
+    }
+
+    // Check if email is confirmed
+    if (!data.user?.email_confirmed_at) {
+      throw new Error('Por favor, confirme seu e-mail antes de fazer login. Verifique sua caixa de entrada.');
     }
 
     return data;
