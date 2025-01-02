@@ -1,8 +1,6 @@
-import { NextResponse } from 'next/server';
-
-export function SecurityMiddleware(response: NextResponse) {
-  // Security Headers
-  const headers = response.headers;
+// Middleware function to add security headers
+export function addSecurityHeaders(response: Response): Response {
+  const headers = new Headers(response.headers);
   
   // Previne clickjacking
   headers.set('X-Frame-Options', 'DENY');
@@ -21,6 +19,23 @@ export function SecurityMiddleware(response: NextResponse) {
     'Content-Security-Policy',
     "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline';"
   );
-  
-  return response;
+
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers
+  });
+}
+
+// Helper function to create a middleware that can be used with fetch
+export function createSecurityMiddleware() {
+  return async (request: Request) => {
+    try {
+      const response = await fetch(request);
+      return addSecurityHeaders(response);
+    } catch (error) {
+      console.error('Security middleware error:', error);
+      throw error;
+    }
+  };
 }
