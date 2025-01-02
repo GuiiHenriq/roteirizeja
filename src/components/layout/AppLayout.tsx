@@ -16,9 +16,9 @@ const AppLayout = ({ children, user }: AppLayoutProps) => {
           <div className="container mx-auto h-full px-4 flex items-center justify-between">
             <Link
               to="/"
-              className="text-2xl font-bold text-primary hover:text-primary/90 transition-colors"
+              className="text-2xl font-montserrat font-bold text-[#8B5CF6] hover:text-[#7C3AED] transition-colors"
             >
-              Viajai
+              Roteirize Já
             </Link>
             <div className="flex items-center gap-4">
               <Link
