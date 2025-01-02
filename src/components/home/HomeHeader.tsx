@@ -15,19 +15,19 @@ const HomeHeader = () => {
       <div className="container mx-auto px-4 py-4">
         {/* Desktop and Mobile Logo */}
         <div className="flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <Plane className="text-emerald-600" size={32} />
-            <span className="text-2xl font-montserrat font-bold text-emerald-800 tracking-tight">
+          <div className="flex items-center space-x-2 text-[#8B5CF6] hover:text-[#7C3AED] transition-colors">
+            <Plane className="h-8 w-8" />
+            <span className="text-2xl font-montserrat font-bold">
               Roteirize Já
             </span>
           </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-4">
-            <a href="#" className="hover:text-emerald-600 transition">
+            <a href="#" className="hover:text-[#8B5CF6] transition">
               Recursos
             </a>
-            <a href="#" className="hover:text-emerald-600 transition">
+            <a href="#" className="hover:text-[#8B5CF6] transition">
               Como Funciona
             </a>
             <button 
@@ -38,7 +38,7 @@ const HomeHeader = () => {
             </button>
             <button
               onClick={() => navigate("/register")}
-              className="bg-emerald-600 text-white px-4 py-2 rounded-xl hover:bg-emerald-700 transition"
+              className="bg-[#8B5CF6] text-white px-4 py-2 rounded-xl hover:bg-[#7C3AED] transition"
             >
               Cadastrar
             </button>
@@ -50,9 +50,9 @@ const HomeHeader = () => {
             className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition"
           >
             {isMenuOpen ? (
-              <X className="h-6 w-6 text-emerald-600" />
+              <X className="h-6 w-6 text-[#8B5CF6]" />
             ) : (
-              <Menu className="h-6 w-6 text-emerald-600" />
+              <Menu className="h-6 w-6 text-[#8B5CF6]" />
             )}
           </button>
         </div>
@@ -63,13 +63,13 @@ const HomeHeader = () => {
             <div className="flex flex-col space-y-4">
               <a 
                 href="#" 
-                className="px-4 py-2 hover:bg-emerald-50 rounded-lg transition text-center"
+                className="px-4 py-2 hover:bg-[#8B5CF6]/10 rounded-lg transition text-center"
               >
                 Recursos
               </a>
               <a 
                 href="#" 
-                className="px-4 py-2 hover:bg-emerald-50 rounded-lg transition text-center"
+                className="px-4 py-2 hover:bg-[#8B5CF6]/10 rounded-lg transition text-center"
               >
                 Como Funciona
               </a>
@@ -81,7 +81,7 @@ const HomeHeader = () => {
               </button>
               <button
                 onClick={() => navigate("/register")}
-                className="w-full bg-emerald-600 text-white px-4 py-2 rounded-xl hover:bg-emerald-700 transition"
+                className="w-full bg-[#8B5CF6] text-white px-4 py-2 rounded-xl hover:bg-[#7C3AED] transition"
               >
                 Cadastrar
               </button>

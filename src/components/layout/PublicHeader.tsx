@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Plane } from "lucide-react";
 
 const PublicHeader = () => {
   return (
@@ -6,9 +7,12 @@ const PublicHeader = () => {
       <div className="container mx-auto h-full px-4 flex items-center justify-between">
         <Link
           to="/"
-          className="text-2xl font-montserrat font-bold text-[#8B5CF6] hover:text-[#7C3AED] transition-colors"
+          className="flex items-center space-x-2 text-[#8B5CF6] hover:text-[#7C3AED] transition-colors"
         >
-          Roteirize Já
+          <Plane className="h-8 w-8" />
+          <span className="text-2xl font-montserrat font-bold">
+            Roteirize Já
+          </span>
         </Link>
         <div className="flex items-center gap-4">
           <Link
