@@ -18,6 +18,9 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        montserrat: ['Montserrat', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -25,11 +28,11 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#10B981", // emerald-500
-          dark: "#059669", // emerald-600
-          light: "#34D399", // emerald-400
+          DEFAULT: "#10B981",
+          dark: "#059669",
+          light: "#34D399",
           foreground: "hsl(var(--primary-foreground))",
-          hover: "#059669", // emerald-600
+          hover: "#059669",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",

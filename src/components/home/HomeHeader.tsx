@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plane, ChevronRight, Menu, X } from 'lucide-react';
+import { Plane, Menu, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const HomeHeader = () => {
@@ -17,8 +17,8 @@ const HomeHeader = () => {
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-2">
             <Plane className="text-emerald-600" size={32} />
-            <span className="text-2xl font-bold text-emerald-800">
-              ViagemAI
+            <span className="text-2xl font-montserrat font-bold text-emerald-800 tracking-tight">
+              Roteirize Já
             </span>
           </div>
 
