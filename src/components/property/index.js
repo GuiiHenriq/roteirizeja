@@ -1,0 +1,1 @@
+export { PropertyPrimRioWrapper } from "./PropertyPrimRioWrapper";

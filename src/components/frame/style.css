@@ -1,0 +1,26 @@
+.frame {
+    align-items: center;
+    border: 2px solid;
+    border-color: var(--primriarosa);
+    border-radius: 30px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    padding: 10px;
+    position: relative;
+    width: 95px;
+  }
+  
+  .frame .text-wrapper {
+    color: var(--primriarosa);
+    font-family: var(--button-font-family);
+    font-size: var(--button-font-size);
+    font-style: var(--button-font-style);
+    font-weight: var(--button-font-weight);
+    letter-spacing: var(--button-letter-spacing);
+    line-height: var(--button-line-height);
+    margin-top: -2.00px;
+    position: relative;
+    width: fit-content;
+  }
+  
