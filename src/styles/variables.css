@@ -1,0 +1,103 @@
+:root {
+  --body-1-font-family: "Inter", Helvetica;
+  --body-1-font-size: 15px;
+  --body-1-font-style: normal;
+  --body-1-font-weight: 400;
+  --body-1-letter-spacing: 0px;
+  --body-1-line-height: normal;
+  --body-2-font-family: "Inter", Helvetica;
+  --body-2-font-size: 13px;
+  --body-2-font-style: normal;
+  --body-2-font-weight: 400;
+  --body-2-letter-spacing: 0px;
+  --body-2-line-height: normal;
+  --borao-grande: 0px 0px 0px 0px rgba(0, 0, 0, 0.17), 0px 6px 12px 0px rgba(0, 0, 0, 0.17),
+    0px 23px 23px 0px rgba(0, 0, 0, 0.14), 0px 51px 31px 0px rgba(0, 0, 0, 0.08),
+    0px 91px 36px 0px rgba(0, 0, 0, 0.03), 0px 142px 40px 0px rgba(0, 0, 0, 0);
+  --botao: 0px 0px 0px 0px rgba(0, 0, 0, 0.42), 0px 1px 2px 0px rgba(0, 0, 0, 0.41),
+    0px 3px 3px 0px rgba(0, 0, 0, 0.36), 0px 8px 5px 0px rgba(0, 0, 0, 0.21),
+    0px 14px 6px 0px rgba(0, 0, 0, 0.06), 0px 22px 6px 0px rgba(0, 0, 0, 0.01);
+  --botao2: 0px 0px 0px 0px rgba(0, 0, 0, 0.12), 0px 8px 17px 0px rgba(0, 0, 0, 0.12),
+    0px 31px 31px 0px rgba(0, 0, 0, 0.1), 0px 70px 42px 0px rgba(0, 0, 0, 0.06),
+    0px 124px 50px 0px rgba(0, 0, 0, 0.02), 0px 193px 54px 0px rgba(0, 0, 0, 0);
+  --button-font-family: "Inter", Helvetica;
+  --button-font-size: 13px;
+  --button-font-style: normal;
+  --button-font-weight: 500;
+  --button-letter-spacing: 0px;
+  --button-line-height: normal;
+  --caption-font-family: "Inter", Helvetica;
+  --caption-font-size: 12px;
+  --caption-font-style: normal;
+  --caption-font-weight: 400;
+  --caption-letter-spacing: 0px;
+  --caption-line-height: normal;
+  --dropdown: 0px 0px 0px 0px rgba(0, 0, 0, 0.15), 0px 3px 6px 0px rgba(0, 0, 0, 0.15),
+    0px 11px 11px 0px rgba(0, 0, 0, 0.13), 0px 25px 15px 0px rgba(0, 0, 0, 0.07),
+    0px 44px 18px 0px rgba(0, 0, 0, 0.02), 0px 69px 19px 0px rgba(0, 0, 0, 0);
+  --estilo-botao-1: 0px 0px 0px 0px rgba(0, 0, 0, 0.17), 0px 2px 4px 0px rgba(0, 0, 0, 0.17),
+    0px 7px 7px 0px rgba(0, 0, 0, 0.15), 0px 15px 9px 0px rgba(0, 0, 0, 0.09),
+    0px 27px 11px 0px rgba(0, 0, 0, 0.03), 0px 42px 12px 0px rgba(0, 0, 0, 0);
+  --h1-font-family: "Volkhov", Helvetica;
+  --h1-font-size: 102px;
+  --h1-font-style: normal;
+  --h1-font-weight: 400;
+  --h1-letter-spacing: 0px;
+  --h1-line-height: normal;
+  --h2-font-family: "Volkhov", Helvetica;
+  --h2-font-size: 64px;
+  --h2-font-style: normal;
+  --h2-font-weight: 400;
+  --h2-letter-spacing: 0px;
+  --h2-line-height: normal;
+  --h3-font-family: "Volkhov", Helvetica;
+  --h3-font-size: 51px;
+  --h3-font-style: normal;
+  --h3-font-weight: 400;
+  --h3-letter-spacing: 0px;
+  --h3-line-height: normal;
+  --h4-font-family: "Volkhov", Helvetica;
+  --h4-font-size: 36px;
+  --h4-font-style: normal;
+  --h4-font-weight: 400;
+  --h4-letter-spacing: 0px;
+  --h4-line-height: normal;
+  --h5-font-family: "Volkhov", Helvetica;
+  --h5-font-size: 25px;
+  --h5-font-style: normal;
+  --h5-font-weight: 400;
+  --h5-letter-spacing: 0px;
+  --h5-line-height: normal;
+  --h6-font-family: "Volkhov", Helvetica;
+  --h6-font-size: 21px;
+  --h6-font-style: normal;
+  --h6-font-weight: 400;
+  --h6-letter-spacing: 0px;
+  --h6-line-height: normal;
+  --primriaazul: rgba(67, 97, 238, 1);
+  --primriaazul-claro: rgba(76, 201, 240, 1);
+  --primriaazul-escuro: rgba(58, 12, 163, 1);
+  --primriarosa: rgba(247, 37, 133, 1);
+  --primriaroxo: rgba(114, 9, 183, 1);
+  --secundriaazul: rgba(138, 156, 238, 1);
+  --secundriaazul-claro: rgba(173, 229, 246, 1);
+  --secundriaazul-escuro: rgba(92, 60, 163, 1);
+  --secundriarosa: rgba(247, 111, 173, 1);
+  --secundriaroxo: rgba(136, 64, 183, 1);
+  --SUBTITLE-font-family: "Volkhov", Helvetica;
+  --SUBTITLE-font-size: 17px;
+  --SUBTITLE-font-style: normal;
+  --SUBTITLE-font-weight: 400;
+  --SUBTITLE-letter-spacing: 0px;
+  --SUBTITLE-line-height: normal;
+  --terciriaazul-claro: rgba(52, 137, 163, 1);
+  --terciriaazul-escuro: rgba(31, 6, 87, 1);
+  --terciriarosa: rgba(171, 26, 92, 1);
+  --terciriaroxo: rgba(67, 5, 107, 1);
+  --texto-base-hero-font-family: "Inter", Helvetica;
+  --texto-base-hero-font-size: 15px;
+  --texto-base-hero-font-style: normal;
+  --texto-base-hero-font-weight: 500;
+  --texto-base-hero-letter-spacing: 0px;
+  --texto-base-hero-line-height: 181.02272748947144%;
+}
