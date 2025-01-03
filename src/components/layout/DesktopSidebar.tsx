@@ -11,7 +11,10 @@ const DesktopSidebar = () => {
 
   const isActive = (path: string) => {
     if (path === "/itineraries") {
-      return location.pathname === "/itineraries" || location.pathname.startsWith("/itineraries/");
+      return (
+        location.pathname === "/itineraries" ||
+        location.pathname.startsWith("/itineraries/")
+      );
     }
     return location.pathname === path;
   };
@@ -38,8 +41,11 @@ const DesktopSidebar = () => {
     <aside className="w-64 h-screen bg-card fixed left-0 top-0 border-r border-border p-6 z-50">
       <div className="flex flex-col h-full">
         <div className="mb-8">
-          <Link to="/" className="text-2xl font-bold text-primary hover:text-primary/90 transition-colors">
-            Viajai
+          <Link
+            to="/"
+            className="text-2xl font-bold text-primary hover:text-primary/90 transition-colors"
+          >
+            Roteirize Já
           </Link>
         </div>
 

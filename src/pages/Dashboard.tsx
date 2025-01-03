@@ -12,17 +12,23 @@ const Dashboard = () => {
     <div className="container mx-auto px-4 py-8 space-y-8">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">
-          Bem-vindo{user?.user_metadata?.name ? `, ${user.user_metadata.name}` : " ao Viajai"}
+          Bem-vindo
+          {user?.user_metadata?.name
+            ? `, ${user.user_metadata.name}`
+            : " ao Roteirize Já"}
         </h1>
       </div>
-      
+
       <div className="grid gap-6 md:grid-cols-2">
         <div className="p-6 rounded-lg bg-card shadow-lg">
           <h2 className="text-xl font-semibold mb-4">Criar Novo Roteiro</h2>
           <p className="text-muted-foreground mb-4">
             Planeje sua próxima aventura com nosso gerador de roteiros com IA.
           </p>
-          <Button onClick={() => navigate("/create-itinerary")} className="w-full">
+          <Button
+            onClick={() => navigate("/create-itinerary")}
+            className="w-full"
+          >
             Começar
           </Button>
         </div>
@@ -32,7 +38,11 @@ const Dashboard = () => {
           <p className="text-muted-foreground mb-4">
             Visualize e gerencie seus planos de viagem salvos.
           </p>
-          <Button onClick={() => navigate("/itineraries")} variant="outline" className="w-full">
+          <Button
+            onClick={() => navigate("/itineraries")}
+            variant="outline"
+            className="w-full"
+          >
             Ver Todos
           </Button>
         </div>
