@@ -2,9 +2,12 @@ import { Component } from "@/components/component";
 import { Frame } from "@/components/frame";
 import { Group } from "@/components/group";
 import { PropertyPrimRioWrapper } from "@/components/property";
+import { useState } from "react";
 import "./style.css";
 
 const Teste = () => {
+  const [destination, setDestination] = useState("");
+
   return (
     <div className="homepage-travelfy">
       <div className="div-2">
@@ -214,30 +217,14 @@ const Teste = () => {
               <div className="CONFIGURACAO-DE">
                 <div className="frame-27">
                   <div className="frame-28">
-                    <div className="text-wrapper-29">DESTINO</div>
-
-                    <img
-                      className="expand-more-fill"
-                      alt="Expand more"
-                      src="https://c.animaapp.com/iA1lbPU9/img/expand-more-fill0-wght400-grad0-opsz48-1-3.svg"
+                    <input
+                      type="text"
+                      value={destination}
+                      onChange={(e) => setDestination(e.target.value)}
+                      placeholder="Para onde você quer ir?"
+                      className="w-full px-4 py-2 text-base font-medium text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primriarosa focus:border-transparent"
                     />
                   </div>
-
-                  <div className="text-wrapper-30">Para onde quer ir?</div>
-                </div>
-
-                <div className="frame-29">
-                  <div className="frame-28">
-                    <div className="text-wrapper-29">DATAS</div>
-
-                    <img
-                      className="expand-more-fill"
-                      alt="Expand more"
-                      src="https://c.animaapp.com/iA1lbPU9/img/expand-more-fill0-wght400-grad0-opsz48-1-3.svg"
-                    />
-                  </div>
-
-                  <div className="text-wrapper-30">Quando quer ir?</div>
                 </div>
 
                 <div className="frame-30">
@@ -246,8 +233,7 @@ const Teste = () => {
                     alt="Search"
                     src="https://c.animaapp.com/iA1lbPU9/img/search-fill0-wght400-grad0-opsz48-1.svg"
                   />
-
-                  <div className="text-wrapper-31">BUSCAR</div>
+                  <div className="text-wrapper-31">Teste Agora</div>
                 </div>
               </div>
 
@@ -789,9 +775,9 @@ const Teste = () => {
               </div>
 
               <p className="text-wrapper-48">
-                “Lorem ipsum dolor sit amet consectetur. Aliquet malesuada
+                "Lorem ipsum dolor sit amet consectetur. Aliquet malesuada
                 tellus viverra ultricies egestas sociis gravida sem. Enim elit
-                massa ullamcorper erat. “
+                massa ullamcorper erat. "
               </p>
             </div>
           </div>
