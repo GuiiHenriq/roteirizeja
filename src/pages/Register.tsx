@@ -37,21 +37,22 @@ const Register = () => {
         <Card className="p-6">
           <div className="text-center space-y-4">
             <CheckCircle2 className="w-16 h-16 text-green-500 mx-auto" />
-            <h1 className="text-2xl font-bold">Cadastro realizado com sucesso!</h1>
+            <h1 className="text-2xl font-bold">
+              Cadastro realizado com sucesso!
+            </h1>
             <p className="text-gray-600">
-              Enviamos um e-mail de confirmação para <strong>{email}</strong>. 
-              Por favor, verifique sua caixa de entrada e clique no link de confirmação 
-              para ativar sua conta.
+              Enviamos um e-mail de confirmação para <strong>{email}</strong>.
+              Por favor, verifique sua caixa de entrada e clique no link de
+              confirmação para ativar sua conta.
             </p>
             <Alert>
               <AlertDescription>
-                Não se esqueça de verificar também sua caixa de spam caso não encontre o e-mail.
+                Não se esqueça de verificar também sua caixa de spam caso não
+                encontre o e-mail.
               </AlertDescription>
             </Alert>
             <Link to="/login">
-              <Button className="mt-4">
-                Voltar para o Login
-              </Button>
+              <Button className="mt-4">Voltar para o Login</Button>
             </Link>
           </div>
         </Card>
@@ -60,10 +61,13 @@ const Register = () => {
   }
 
   return (
-    <div className="container max-w-lg mx-auto p-4">
-      <Card className="p-6">
-        <h1 className="text-2xl font-bold mb-6">Criar Conta</h1>
-        
+    <div className="container mx-auto px-4 h-screen flex items-center justify-center">
+      <div className="w-full max-w-md space-y-8 glass-card p-8">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold">Criar sua Conta</h2>
+          <p className="text-muted-foreground mt-2">Registre-se agora mesmo</p>
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="name">Nome</Label>
@@ -113,7 +117,7 @@ const Register = () => {
             Entre
           </Link>
         </p>
-      </Card>
+      </div>
     </div>
   );
 };
