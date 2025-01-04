@@ -2,7 +2,7 @@ export const Footer = () => {
   return (
     <footer className="w-full bg-gray-100">
       <div className="max-w-6xl mx-auto px-4 lg:px-8 py-12 lg:py-24">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
             <img
               className="h-6 mb-6"
@@ -33,12 +33,12 @@ export const Footer = () => {
               links: ["Help Center", "Midias", "Chat ao vivo"],
             },
           ].map((section) => (
-            <div key={section.title}>
-              <h3 className="font-semibold mb-4">{section.title}</h3>
+            <div key={section.title} className="mt-8 sm:mt-0">
+              <h3 className="font-semibold mb-4 text-sm sm:text-base">{section.title}</h3>
               <ul className="space-y-2">
                 {section.links.map((link) => (
                   <li key={link}>
-                    <a href="#" className="text-sm hover:text-[var(--primriarosa)]">
+                    <a href="#" className="text-xs sm:text-sm hover:text-[var(--primriarosa)]">
                       {link}
                     </a>
                   </li>
@@ -49,7 +49,7 @@ export const Footer = () => {
         </div>
       </div>
       <div className="border-t border-gray-200">
-        <div className="max-w-6xl mx-auto px-4 lg:px-8 py-4 text-center text-sm text-gray-600">
+        <div className="max-w-6xl mx-auto px-4 lg:px-8 py-4 text-center text-xs sm:text-sm text-gray-600">
           Copyright © - Travelfy - Todos os direitos reservados. 2023
         </div>
       </div>
