@@ -63,13 +63,13 @@ export const Destinations = () => {
   ];
 
   return (
-    <section className="w-full px-4 lg:px-8 py-12 lg:py-24">
-      <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl lg:text-4xl font-[var(--h4-font-family)] text-center mb-12">
+    <section className="w-full py-12 lg:py-24 overflow-hidden">
+      <div className="max-w-6xl mx-auto px-4">
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-[var(--h4-font-family)] text-center mb-12">
           Destinos Internacionais
         </h2>
 
-        <div className="relative px-10">
+        <div className="relative">
           <Carousel
             opts={{
               align: "start",
@@ -79,20 +79,20 @@ export const Destinations = () => {
           >
             <CarouselContent className="-ml-2 md:-ml-4">
               {destinations.map((destination, index) => (
-                <CarouselItem key={index} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
-                  <div className="relative rounded-3xl overflow-hidden shadow-lg bg-white">
+                <CarouselItem key={index} className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
+                  <div className="relative rounded-3xl overflow-hidden shadow-lg bg-white h-full">
                     {destination.isPromo && (
                       <div className="absolute top-4 left-4 bg-[var(--primriarosa)] text-white px-4 py-1 rounded-full text-sm z-10">
                         PROMO
                       </div>
                     )}
                     <img
-                      className="w-full h-64 object-cover"
+                      className="w-full h-48 sm:h-64 object-cover"
                       src={`https://c.animaapp.com/iA1lbPU9/img/${destination.image}`}
                       alt={destination.name}
                     />
-                    <div className="p-6">
-                      <h3 className="text-xl font-[var(--h5-font-family)] mb-2">{destination.name}</h3>
+                    <div className="p-4 sm:p-6">
+                      <h3 className="text-lg sm:text-xl font-[var(--h5-font-family)] mb-2">{destination.name}</h3>
                       <div className="flex items-center space-x-2 mb-4">
                         <img
                           className="w-4 h-4"
@@ -101,7 +101,7 @@ export const Destinations = () => {
                         />
                         <span className="text-sm">{destination.country}</span>
                       </div>
-                      <div className="flex justify-between items-center">
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-2 sm:space-y-0">
                         <div className="flex items-center space-x-1">
                           <img
                             className="w-4 h-4"
@@ -119,8 +119,8 @@ export const Destinations = () => {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="absolute -left-4 lg:-left-8" />
-            <CarouselNext className="absolute -right-4 lg:-right-8" />
+            <CarouselPrevious className="hidden sm:flex absolute -left-4 lg:-left-8" />
+            <CarouselNext className="hidden sm:flex absolute -right-4 lg:-right-8" />
           </Carousel>
         </div>
       </div>
