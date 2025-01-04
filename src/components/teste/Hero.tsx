@@ -1,6 +1,6 @@
 export const Hero = () => {
   return (
-    <section className="relative w-full min-h-screen">
+    <section className="relative w-full min-h-screen overflow-hidden">
       {/* Background Image and Overlay */}
       <div className="absolute inset-0 z-0">
         <img
@@ -11,7 +11,7 @@ export const Hero = () => {
         <div className="absolute inset-0 bg-black/50" />
       </div>
 
-      <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between px-4 lg:px-8 py-12 lg:py-24 min-h-[calc(100vh-80px)] mt-20">
+      <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between px-4 lg:px-8 py-12 lg:py-24 min-h-[calc(100vh-4rem)] mt-16">
         <div className="w-full lg:w-1/2 mb-8 lg:mb-0 text-center lg:text-left">
           <img
             className="w-full max-w-md mx-auto lg:mx-0"
