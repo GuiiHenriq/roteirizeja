@@ -1,5 +1,4 @@
 import { Frame } from "@/components/frame";
-import { PropertyPrimRioWrapper } from "@/components/property";
 
 export const Header = () => {
   return (
@@ -11,18 +10,9 @@ export const Header = () => {
           src="https://c.animaapp.com/iA1lbPU9/img/travelfy.svg"
         />
 
-        <nav className="flex flex-col lg:flex-row items-center space-y-2 lg:space-y-0 lg:space-x-8">
-          <div className="text-sm font-semibold">INICIO</div>
-          <div className="text-sm">DESTINOS</div>
-          <div className="text-sm">PACOTES</div>
-          <div className="text-sm">CLIENTES</div>
-          <div className="text-sm">CONTATO</div>
-        </nav>
-
         <div className="mt-4 lg:mt-0 flex items-center space-x-4">
-          <div className="text-sm">LOGIN</div>
+          <div className="text-sm">ENTRAR</div>
           <Frame className="hidden lg:block" property1="original" />
-          <PropertyPrimRioWrapper className="hidden lg:block" property1="prim-rio" />
         </div>
       </div>
     </header>
