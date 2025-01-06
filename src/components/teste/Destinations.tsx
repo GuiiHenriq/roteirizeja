@@ -63,8 +63,8 @@ export const Destinations = () => {
   ];
 
   return (
-    <section className="w-full py-12 lg:py-24 overflow-hidden">
-      <div className="max-w-6xl mx-auto px-4">
+    <section className="w-full py-12 lg:py-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-2xl sm:text-3xl lg:text-4xl font-[var(--h4-font-family)] text-center mb-12">
           Destinos Internacionais
         </h2>

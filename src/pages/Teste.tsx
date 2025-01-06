@@ -7,9 +7,9 @@ import { Footer } from "@/components/teste/Footer";
 
 const Teste = () => {
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden">
+    <div className="w-full overflow-x-hidden">
       <Header />
-      <main className="overflow-x-hidden">
+      <main>
         <Hero />
         <Features />
         <Destinations />

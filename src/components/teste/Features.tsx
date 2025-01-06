@@ -1,7 +1,7 @@
 export const Features = () => {
   return (
-    <section className="w-full py-12 lg:py-24 bg-gray-50 overflow-hidden">
-      <div className="max-w-6xl mx-auto px-4">
+    <section className="w-full py-12 lg:py-24 bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl lg:text-4xl font-[var(--h4-font-family)] text-center mb-12">
           Porque escolher a Travelfy?
         </h2>
@@ -24,13 +24,13 @@ export const Features = () => {
               color: "var(--primriarosa)",
             },
           ].map((feature) => (
-            <div key={feature.title} className="flex flex-col items-center text-center">
+            <div key={feature.title} className="flex flex-col items-center text-center p-4">
               <div
-                className="w-24 h-24 rounded-full flex items-center justify-center mb-6"
+                className="w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center mb-6"
                 style={{ backgroundColor: feature.color }}
               >
                 <img
-                  className="w-12 h-12"
+                  className="w-10 h-10 sm:w-12 sm:h-12"
                   alt={feature.title}
                   src={`https://c.animaapp.com/iA1lbPU9/img/${feature.icon}.svg`}
                 />

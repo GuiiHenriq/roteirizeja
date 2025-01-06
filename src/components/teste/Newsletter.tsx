@@ -1,7 +1,7 @@
 export const Newsletter = () => {
   return (
     <section className="w-full py-12 lg:py-24 bg-[var(--primriarosa)]">
-      <div className="max-w-4xl mx-auto px-4 text-white text-center">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-white text-center">
         <h2 className="text-xl sm:text-2xl lg:text-3xl font-[var(--h4-font-family)] mb-6">
           Assine nossa Newsletter e<br className="hidden sm:block" />
           Receba promoções incríveis!

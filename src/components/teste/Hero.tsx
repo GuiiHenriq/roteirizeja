@@ -11,7 +11,7 @@ export const Hero = () => {
         <div className="absolute inset-0 bg-black/50" />
       </div>
 
-      <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between px-4 lg:px-8 py-12 lg:py-24 min-h-[calc(100vh-4rem)] mt-16">
+      <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-24 min-h-[calc(100vh-4rem)] mt-16">
         <div className="w-full lg:w-1/2 mb-8 lg:mb-0 text-center lg:text-left">
           <img
             className="w-full max-w-md mx-auto lg:mx-0"
@@ -31,8 +31,8 @@ export const Hero = () => {
           </button>
         </div>
 
-        <div className="w-full lg:w-1/2 px-4 sm:px-6 lg:px-8">
-          <div className="relative max-w-xl mx-auto">
+        <div className="w-full lg:w-1/2">
+          <div className="relative max-w-xl mx-auto lg:mx-0">
             <input
               type="text"
               placeholder="Para onde você quer ir?"
