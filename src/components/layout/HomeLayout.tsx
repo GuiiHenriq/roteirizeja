@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import PublicHeader from "./PublicHeader";
 import Navbar from "./Navbar";
 import DesktopSidebar from "./DesktopSidebar";
@@ -9,9 +9,12 @@ interface HomeLayoutProps {
 }
 
 const HomeLayout = ({ children, user }: HomeLayoutProps) => {
+  const location = useLocation();
+  const isHomePage = location.pathname === "/";
+
   return (
     <div className="min-h-screen bg-white">
-      {!user && <PublicHeader />}
+      {!user && !isHomePage && <PublicHeader />}
 
       <div className="flex">
         {user && (
@@ -20,7 +23,7 @@ const HomeLayout = ({ children, user }: HomeLayoutProps) => {
           </div>
         )}
 
-        <main className={`flex-1 ${user ? "lg:pl-64" : "pt-16"}`}>
+        <main className={`flex-1 ${user ? "lg:pl-64" : isHomePage ? "" : "pt-16"}`}>
           <div className="mx-auto">{children}</div>
         </main>
       </div>
