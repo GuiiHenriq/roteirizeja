@@ -1,13 +1,21 @@
 import { useNavigate } from "react-router-dom";
 import { ChevronRight, Plane, Menu, X } from "lucide-react";
 import { useState } from "react";
+import { Input } from "@/components/ui/input";
 
 const Hero = () => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [destination, setDestination] = useState("");
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleSearch = () => {
+    if (destination.trim()) {
+      navigate("/register", { state: { destination } });
+    }
   };
 
   return (
@@ -111,12 +119,21 @@ const Hero = () => {
               Chega de complicações para criar roteiros. Nossa IA transforma
               suas ideias em uma viagem inesquecível em poucos cliques.
             </p>
-            <button
-              onClick={() => navigate("/register")}
-              className="bg-emerald-600 text-white px-6 py-3 rounded-xl hover:bg-emerald-700 transition flex items-center justify-center"
-            >
-              Teste Agora 100% Grátis <ChevronRight className="ml-2" />
-            </button>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Input
+                type="text"
+                placeholder="Para onde você quer ir?"
+                value={destination}
+                onChange={(e) => setDestination(e.target.value)}
+                className="flex-grow bg-white/10 border-white/20 text-white placeholder:text-white/60 focus:ring-emerald-500"
+              />
+              <button
+                onClick={handleSearch}
+                className="bg-emerald-600 text-white px-6 py-3 rounded-xl hover:bg-emerald-700 transition flex items-center justify-center whitespace-nowrap"
+              >
+                Teste Agora 100% Grátis <ChevronRight className="ml-2" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
