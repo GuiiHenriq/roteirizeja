@@ -1,8 +1,14 @@
 import { useNavigate } from "react-router-dom";
-import { ChevronRight, Plane } from "lucide-react";
+import { ChevronRight, Plane, Menu, X } from "lucide-react";
+import { useState } from "react";
 
 const Hero = () => {
   const navigate = useNavigate();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
 
   return (
     <div className="relative min-h-screen flex flex-col">
@@ -50,7 +56,47 @@ const Hero = () => {
                 Cadastrar
               </button>
             </div>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={toggleMenu}
+              className="md:hidden text-white p-2 hover:bg-white/10 rounded-lg transition"
+            >
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
           </div>
+
+          {/* Mobile Navigation Menu */}
+          {isMenuOpen && (
+            <div className="md:hidden absolute top-full left-0 right-0 bg-black/80 backdrop-blur-md py-4 px-4">
+              <div className="flex flex-col space-y-4">
+                <a
+                  href="#recursos"
+                  className="text-white px-4 py-2 hover:bg-white/10 rounded-lg transition text-center"
+                >
+                  Recursos
+                </a>
+                <a
+                  href="#como-funciona"
+                  className="text-white px-4 py-2 hover:bg-white/10 rounded-lg transition text-center"
+                >
+                  Como Funciona
+                </a>
+                <button
+                  onClick={() => navigate("/login")}
+                  className="text-white w-full px-4 py-2 rounded-xl hover:bg-white/10 transition"
+                >
+                  Entrar
+                </button>
+                <button
+                  onClick={() => navigate("/register")}
+                  className="w-full bg-emerald-600 text-white px-4 py-2 rounded-xl hover:bg-emerald-700 transition"
+                >
+                  Cadastrar
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </nav>
 
