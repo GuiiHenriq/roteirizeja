@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   Clock,
@@ -13,7 +12,7 @@ import {
   Globe,
   Calendar,
 } from "lucide-react";
-import HomeHeader from "@/components/home/HomeHeader";
+import Hero from "@/components/home/Hero";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -25,66 +24,9 @@ const Home = () => {
     }
   }, [user, navigate]);
 
-  const [destination, setDestination] = useState("");
-  const [showModal, setShowModal] = useState(false);
-
-  const handleDestinationSubmit = (e) => {
-    e.preventDefault();
-    if (destination.trim()) {
-      setShowModal(true);
-    }
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setDestination("");
-  };
-
   return (
     <div className="min-h-screen text-gray-900">
-      <HomeHeader />
-
-      {/* Hero Section */}
-      <header className="bg-gradient-to-br from-indigo-50 to-emerald-100 pt-24 pb-16">
-        <div className="container mx-auto px-4 flex items-center">
-          <div className="md:w-1/2 space-y-6">
-            <h1 className="text-5xl font-bold leading-tight text-emerald-900">
-              Seu Próximo Destino, Planejado Perfeitamente com IA
-            </h1>
-            <p className="text-xl text-gray-600">
-              Chega de complicações para criar roteiros. Nossa IA transforma
-              suas ideias em uma viagem inesquecível em poucos cliques.
-            </p>
-            <form
-              onSubmit={handleDestinationSubmit}
-              className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0"
-            >
-              <input
-                type="text"
-                placeholder="Para onde você quer viajar?"
-                value={destination}
-                onChange={(e) => setDestination(e.target.value)}
-                className="flex-grow px-4 py-3 border-2 border-emerald-300 rounded-lg focus:outline-none focus:border-emerald-600"
-                required
-              />
-              <button
-                onClick={() => navigate("/register")}
-                className="bg-emerald-600 text-white px-6 py-3 rounded-xl hover:bg-emerald-700 transition flex items-center justify-center"
-              >
-                Teste Agora 100% Grátis <ChevronRight className="ml-2" />
-              </button>
-            </form>
-          </div>
-          <div className="md:w-1/2 hidden md:flex justify-center relative">
-            <div className="bg-emerald-100/50 w-[500px] h-[500px] rounded-xl absolute -z-10 blur-2xl"></div>
-            <img
-              src="/api/placeholder/400/600"
-              alt="App Mockup"
-              className="rounded-3xl shadow-2xl transform hover:scale-105 transition duration-300"
-            />
-          </div>
-        </div>
-      </header>
+      <Hero />
 
       {/* Proposta de Valor */}
       <section className="container mx-auto px-4 py-16">
@@ -225,24 +167,6 @@ const Home = () => {
           <p>&copy; 2024 ROTEIRIZE JÁ. Todos os direitos reservados.</p>
         </div>
       </footer>
-    </div>
-  );
-};
-
-const FeatureCard = ({
-  icon,
-  title,
-  description,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-}) => {
-  return (
-    <div className="p-6 rounded-lg bg-card text-center">
-      <div className="mb-4 flex justify-center">{icon}</div>
-      <h3 className="text-xl font-semibold mb-2">{title}</h3>
-      <p className="text-muted-foreground">{description}</p>
     </div>
   );
 };
