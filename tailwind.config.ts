@@ -19,7 +19,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        montserrat: ['Montserrat', 'sans-serif'],
+        outfit: ["Outfit", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",

@@ -20,8 +20,8 @@ const AppLayout = ({ children, user }: AppLayoutProps) => {
               className="flex items-center space-x-2 text-[#8B5CF6] hover:text-[#7C3AED] transition-colors"
             >
               <Plane className="h-8 w-8" />
-              <span className="text-2xl font-montserrat font-bold">
-                Roteirize Já
+              <span className="text-3xl font-outfit font-bold">
+                ROTEIRIZE<span className="font-thin">JÁ</span>
               </span>
             </Link>
             <div className="flex items-center gap-4">

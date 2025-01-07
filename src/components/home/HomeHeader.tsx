@@ -17,8 +17,8 @@ const HomeHeader = () => {
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-2 text-emerald-600 hover:text-emerald-700 transition-colors">
             <Plane className="h-8 w-8" />
-            <span className="text-2xl font-montserrat font-bold">
-              Roteirize Já
+            <span className="text-3xl font-outfit font-bold">
+              ROTEIRIZE<span className="font-thin">JÁ</span>
             </span>
           </div>
 

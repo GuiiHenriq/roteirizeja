@@ -21,12 +21,13 @@ const Hero = () => {
   return (
     <div className="relative min-h-screen flex flex-col">
       {/* Background Image with Overlay */}
-      <div 
+      <div
         className="absolute inset-0 z-0"
         style={{
-          backgroundImage: "url('/lovable-uploads/0cab4543-e132-478e-a77e-cc9bddc4941e.png')",
+          backgroundImage:
+            "url('/lovable-uploads/0cab4543-e132-478e-a77e-cc9bddc4941e.png')",
           backgroundSize: "cover",
-          backgroundPosition: "center"
+          backgroundPosition: "center",
         }}
       >
         <div className="absolute inset-0 bg-black/50" /> {/* Overlay */}
@@ -38,8 +39,8 @@ const Hero = () => {
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-2 text-white">
               <Plane className="h-8 w-8" />
-              <span className="text-2xl font-montserrat font-bold">
-                Roteirize Já
+              <span className="text-3xl font-outfit font-bold">
+                ROTEIRIZE<span className="font-thin">JÁ</span>
               </span>
             </div>
 
@@ -48,7 +49,10 @@ const Hero = () => {
               <a href="#recursos" className="hover:text-emerald-400 transition">
                 Recursos
               </a>
-              <a href="#como-funciona" className="hover:text-emerald-400 transition">
+              <a
+                href="#como-funciona"
+                className="hover:text-emerald-400 transition"
+              >
                 Como Funciona
               </a>
               <button
@@ -70,7 +74,11 @@ const Hero = () => {
               onClick={toggleMenu}
               className="md:hidden text-white p-2 hover:bg-white/10 rounded-lg transition"
             >
-              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {isMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
             </button>
           </div>
 
