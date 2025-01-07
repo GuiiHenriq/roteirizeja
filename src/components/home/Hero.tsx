@@ -137,7 +137,8 @@ const Hero = () => {
               />
               <button
                 onClick={handleSearch}
-                className="bg-emerald-600 text-white px-6 py-3 rounded-xl hover:bg-emerald-700 transition flex items-center justify-center whitespace-nowrap"
+                disabled={!destination.trim()}
+                className="bg-emerald-600 text-white px-6 py-3 rounded-xl hover:bg-emerald-700 transition flex items-center justify-center whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Teste Agora 100% Grátis <ChevronRight className="ml-2" />
               </button>

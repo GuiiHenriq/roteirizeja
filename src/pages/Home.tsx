@@ -149,7 +149,7 @@ const Home = () => {
           <h2 className="text-3xl md:text-5xl font-bold emerald-to-pink-gradient-text">
             Pronto para Sua Próxima Aventura?
           </h2>
-          <h3 className="text-3xl md:text-5xl font-bold mb-8">
+          <h3 className="text-3xl md:text-5xl font-bold mb-8 bg-gradient-to-r from-emerald-600 via-emerald-500 to-emerald-400 bg-clip-text text-transparent">
             Deixe nossa IA cuidar de tudo.
           </h3>
           <p className="text-xl mb-10">Experimente grátis agora!</p>
