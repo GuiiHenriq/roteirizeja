@@ -23,7 +23,7 @@ const DesktopSidebar = () => {
     { path: "/", icon: Home, label: "Início" },
     { path: "/create-itinerary", icon: Map, label: "Criar Roteiro" },
     { path: "/itineraries", icon: Calendar, label: "Meus Roteiros" },
-    { path: "/profile", icon: Settings, label: "Configurações" },
+    { path: "/profile", icon: Settings, label: "Perfil" },
     { path: "/contact", icon: Contact, label: "Contato" },
   ];
 
