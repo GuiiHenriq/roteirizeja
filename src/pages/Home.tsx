@@ -29,9 +29,9 @@ const Home = () => {
       <Hero />
 
       {/* Proposta de Valor */}
-      <section className="container mx-auto px-4 py-16">
+      <section className="container mx-auto px-4 py-16" aria-labelledby="value-proposition">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4 text-emerald-900">
+          <h2 id="value-proposition" className="text-4xl font-bold mb-4 text-emerald-900">
             Viajar Nunca Foi Tão Fácil e Divertido!
           </h2>
           <p className="text-xl text-gray-600">
@@ -42,27 +42,27 @@ const Home = () => {
         <div className="grid md:grid-cols-4 gap-8">
           {[
             {
-              icon: <Clock className="text-emerald-600" size={48} />,
+              icon: <Clock className="text-emerald-600" size={48} aria-hidden="true" />,
               title: "Planejamento Instantâneo",
               description: "Roteiros prontos em segundos.",
             },
             {
-              icon: <Globe className="text-emerald-600" size={48} />,
+              icon: <Globe className="text-emerald-600" size={48} aria-hidden="true" />,
               title: "Totalmente Personalizado",
               description: "Cada detalhe feito para você.",
             },
             {
-              icon: <Compass className="text-emerald-600" size={48} />,
+              icon: <Compass className="text-emerald-600" size={48} aria-hidden="true" />,
               title: "Descubra o Novo",
               description: "Sugestões exclusivas e locais escondidos.",
             },
             {
-              icon: <Smartphone className="text-emerald-600" size={48} />,
+              icon: <Smartphone className="text-emerald-600" size={48} aria-hidden="true" />,
               title: "Acesse em Qualquer Lugar",
               description: "Consulte ou edite seu roteiro a qualquer momento.",
             },
           ].map((feature, index) => (
-            <div
+            <article
               key={index}
               className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition group text-center"
             >
@@ -71,20 +71,23 @@ const Home = () => {
                 {feature.title}
               </h3>
               <p className="text-gray-600">{feature.description}</p>
-            </div>
+            </article>
           ))}
         </div>
         <div className="text-center mt-12">
-          <button className="bg-emerald-600 text-white px-6 py-3 rounded-xl hover:bg-emerald-700 transition">
+          <button 
+            className="bg-emerald-600 text-white px-6 py-3 rounded-xl hover:bg-emerald-700 transition"
+            aria-label="Começar a criar seu roteiro de viagem"
+          >
             Crie Seu Roteiro Agora
           </button>
         </div>
       </section>
 
       {/* Experiência Transformadora */}
-      <section className="bg-gray-50 py-16">
+      <section className="bg-gray-50 py-16" aria-labelledby="experience">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold mb-6 text-emerald-900">
+          <h2 id="experience" className="text-4xl font-bold mb-6 text-emerald-900">
             Deixe Sua Viagem Fluir com Perfeição
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
@@ -100,10 +103,10 @@ const Home = () => {
       </section>
 
       {/* Como Funciona */}
-      <section className="bg-gradient-to-br from-emerald-50 to-indigo-100 py-16">
+      <section className="bg-gradient-to-br from-emerald-50 to-indigo-100 py-16" aria-labelledby="how-it-works">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4 text-emerald-900">
+            <h2 id="how-it-works" className="text-4xl font-bold mb-4 text-emerald-900">
               Seu Roteiro em 3 Passos Simples
             </h2>
             <p className="text-xl text-gray-600">
@@ -113,22 +116,22 @@ const Home = () => {
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
-                icon: <Calendar className="text-emerald-600" size={48} />,
+                icon: <Calendar className="text-emerald-600" size={48} aria-hidden="true" />,
                 title: "Preencha os Dados da Viagem",
                 description: "Escolha seu destino, datas e preferências.",
               },
               {
-                icon: <Plane className="text-emerald-600" size={48} />,
+                icon: <Plane className="text-emerald-600" size={48} aria-hidden="true" />,
                 title: "Receba Sugestões da IA",
                 description: "Um roteiro completo em segundos.",
               },
               {
-                icon: <Star className="text-emerald-600" size={48} />,
+                icon: <Star className="text-emerald-600" size={48} aria-hidden="true" />,
                 title: "Aproveite ao Máximo",
                 description: "Viaje sem preocupações com um plano ideal.",
               },
             ].map((step, index) => (
-              <div
+              <article
                 key={index}
                 className="bg-white p-8 rounded-2xl shadow-lg text-center hover:shadow-xl transition"
               >
@@ -137,16 +140,16 @@ const Home = () => {
                   {step.title}
                 </h3>
                 <p className="text-gray-600">{step.description}</p>
-              </div>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
       {/* Última CTA */}
-      <section className="text-emerald py-20">
+      <section className="text-emerald py-20" aria-labelledby="cta">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-5xl font-bold emerald-to-pink-gradient-text">
+          <h2 id="cta" className="text-3xl md:text-5xl font-bold emerald-to-pink-gradient-text">
             Pronto para Sua Próxima Aventura?
           </h2>
           <h3 className="text-3xl md:text-5xl font-bold mb-8 bg-gradient-to-r from-emerald-600 via-emerald-500 to-emerald-400 bg-clip-text text-transparent">
@@ -154,15 +157,18 @@ const Home = () => {
           </h3>
           <p className="text-xl mb-10">Experimente grátis agora!</p>
           <div className="flex justify-center space-x-4">
-            <button className="bg-emerald-600 text-white px-8 py-4 rounded-xl hover:bg-emerald-700 transition flex items-center">
-              Teste Totalmente Gratuito <ChevronRight className="ml-2" />
+            <button 
+              className="bg-emerald-600 text-white px-8 py-4 rounded-xl hover:bg-emerald-700 transition flex items-center"
+              aria-label="Começar teste gratuito"
+            >
+              Teste Totalmente Gratuito <ChevronRight className="ml-2" aria-hidden="true" />
             </button>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-8">
+      <footer className="bg-gray-900 text-white py-8" role="contentinfo">
         <div className="container mx-auto px-4 text-center">
           <p>&copy; 2025 ROTEIRIZE JÁ. Todos os direitos reservados.</p>
         </div>
