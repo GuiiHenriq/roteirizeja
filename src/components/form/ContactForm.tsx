@@ -35,16 +35,33 @@ export function ContactForm() {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.functions.invoke("send-contact", {
+      // First, insert the contact in the database
+      const { data: contactData, error: insertError } = await supabase
+        .from("contacts")
+        .insert({
+          user_id: user?.id,
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+        })
+        .select()
+        .single();
+
+      if (insertError) throw insertError;
+
+      // Then send the email with the contact ID
+      const { error: emailError } = await supabase.functions.invoke("send-contact", {
         body: {
           ...formData,
           userId: user?.id,
+          contactId: contactData.id,
         },
       });
 
-      if (error) throw error;
+      if (emailError) throw emailError;
 
-      toast.success("Mensagem enviada com sucesso!");
+      toast.success(`Mensagem enviada com sucesso! ID do contato: ${contactData.id}`);
       setFormData({ ...formData, subject: "", message: "" });
     } catch (error: any) {
       console.error("Error sending contact:", error);
