@@ -1,4 +1,5 @@
 import { ContactForm } from "@/components/form/ContactForm";
+import { ContactInfo } from "@/components/contact/ContactInfo";
 
 export default function Contact() {
   return (
@@ -7,8 +8,9 @@ export default function Contact() {
         <h1 className="text-3xl font-bold text-center mb-8">Entre em Contato</h1>
         <p className="text-muted-foreground text-center mb-8">
           Tem alguma dúvida, sugestão ou reclamação? Preencha o formulário abaixo
-          e entraremos em contato o mais breve possível.
+          ou entre em contato por e-mail.
         </p>
+        <ContactInfo />
         <ContactForm />
       </div>
     </div>
