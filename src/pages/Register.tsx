@@ -8,6 +8,7 @@ import { UserPlus } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CheckCircle2 } from "lucide-react";
+import { toast } from "sonner";
 
 const Register = () => {
   const { signUp } = useAuth();
@@ -17,8 +18,36 @@ const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
 
+  const validatePassword = (password: string) => {
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumbers = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    const hasMinLength = password.length >= 8;
+
+    const errors = [];
+    if (!hasUpperCase) errors.push("uma letra maiúscula");
+    if (!hasLowerCase) errors.push("uma letra minúscula");
+    if (!hasNumbers) errors.push("um número");
+    if (!hasSpecialChar) errors.push("um caractere especial");
+    if (!hasMinLength) errors.push("mínimo de 8 caracteres");
+
+    return {
+      isValid: hasUpperCase && hasLowerCase && hasNumbers && hasSpecialChar && hasMinLength,
+      errors
+    };
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    const passwordValidation = validatePassword(password);
+    
+    if (!passwordValidation.isValid) {
+      toast.error(`A senha deve conter: ${passwordValidation.errors.join(", ")}`);
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -102,7 +131,12 @@ const Register = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              aria-describedby="password-requirements"
             />
+            <p id="password-requirements" className="text-sm text-muted-foreground">
+              A senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas,
+              minúsculas, números e caracteres especiais.
+            </p>
           </div>
 
           <Button type="submit" className="w-full" disabled={isLoading}>
