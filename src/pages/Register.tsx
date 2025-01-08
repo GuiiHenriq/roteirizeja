@@ -9,6 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 const Register = () => {
   const { signUp } = useAuth();
@@ -17,6 +18,7 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const validatePassword = (password: string) => {
     const hasUpperCase = /[A-Z]/.test(password);
@@ -38,13 +40,32 @@ const Register = () => {
     };
   };
 
+  const validateForm = () => {
+    const newErrors: { [key: string]: string } = {};
+
+    if (!name.trim()) {
+      newErrors.name = "Nome é obrigatório";
+    }
+
+    if (!email.trim()) {
+      newErrors.email = "E-mail é obrigatório";
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = "E-mail inválido";
+    }
+
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.isValid) {
+      newErrors.password = `A senha deve conter: ${passwordValidation.errors.join(", ")}`;
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const passwordValidation = validatePassword(password);
-    
-    if (!passwordValidation.isValid) {
-      toast.error(`A senha deve conter: ${passwordValidation.errors.join(", ")}`);
+    if (!validateForm()) {
       return;
     }
 
@@ -53,8 +74,9 @@ const Register = () => {
     try {
       await signUp(email, password, name);
       setIsRegistered(true);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Registration error:", error);
+      toast.error("Erro ao criar conta. Tente novamente mais tarde.");
     } finally {
       setIsLoading(false);
     }
@@ -105,9 +127,19 @@ const Register = () => {
               type="text"
               placeholder="Seu nome completo"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => {
+                setName(e.target.value);
+                if (errors.name) {
+                  setErrors({ ...errors, name: "" });
+                }
+              }}
+              className={cn(errors.name && "border-red-500 focus-visible:ring-red-500")}
+              aria-invalid={!!errors.name}
               required
             />
+            {errors.name && (
+              <p className="text-sm text-red-500 mt-1">{errors.name}</p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -117,9 +149,19 @@ const Register = () => {
               type="email"
               placeholder="seu@email.com"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (errors.email) {
+                  setErrors({ ...errors, email: "" });
+                }
+              }}
+              className={cn(errors.email && "border-red-500 focus-visible:ring-red-500")}
+              aria-invalid={!!errors.email}
               required
             />
+            {errors.email && (
+              <p className="text-sm text-red-500 mt-1">{errors.email}</p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -129,14 +171,24 @@ const Register = () => {
               type="password"
               placeholder="********"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
+              onChange={(e) => {
+                setPassword(e.target.value);
+                if (errors.password) {
+                  setErrors({ ...errors, password: "" });
+                }
+              }}
+              className={cn(errors.password && "border-red-500 focus-visible:ring-red-500")}
+              aria-invalid={!!errors.password}
               aria-describedby="password-requirements"
+              required
             />
             <p id="password-requirements" className="text-sm text-muted-foreground">
               A senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas,
               minúsculas, números e caracteres especiais.
             </p>
+            {errors.password && (
+              <p className="text-sm text-red-500 mt-1">{errors.password}</p>
+            )}
           </div>
 
           <Button type="submit" className="w-full" disabled={isLoading}>
