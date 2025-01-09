@@ -1,46 +1,38 @@
-import { useState } from "react";
-import { Menu, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { ChevronRight, Plane, Menu, X } from "lucide-react";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
 
 const Hero = () => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [destination, setDestination] = useState("");
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const handleSearch = () => {
+    if (destination.trim()) {
+      navigate("/register", { state: { destination } });
+    }
+  };
+
   return (
-    <div className="relative min-h-screen">
-      {/* Background Image */}
+    <div className="relative min-h-screen flex flex-col">
+      {/* Background Image with Overlay */}
       <div
         className="absolute inset-0 z-0"
         style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2021&auto=format&fit=crop')`,
+          backgroundImage:
+            "url('/lovable-uploads/0cab4543-e132-478e-a77e-cc9bddc4941e.png')",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
+        role="img"
+        aria-label="Imagem de fundo mostrando um destino turístico"
       >
-        <div className="absolute inset-0 bg-black/50" />
-      </div>
-
-      {/* Content */}
-      <div className="relative z-10">
-        <div className="container mx-auto px-4 py-20 text-center text-white">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            Planeje Sua Próxima Aventura
-          </h1>
-          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
-            Crie roteiros de viagem personalizados com inteligência artificial.
-            Planejamento instantâneo, totalmente personalizado e fácil de usar.
-          </p>
-          <button
-            onClick={() => navigate("/register")}
-            className="bg-emerald-600 text-white px-8 py-4 rounded-xl hover:bg-emerald-700 transition-colors text-lg font-medium"
-          >
-            Comece Gratuitamente
-          </button>
-        </div>
+        <div className="absolute inset-0 bg-black/50" /> {/* Overlay */}
       </div>
 
       {/* Navigation */}
@@ -48,34 +40,34 @@ const Hero = () => {
         <nav className="container mx-auto px-4 py-4" aria-label="Navegação principal">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-2 text-white">
+              <Plane className="h-8 w-8" aria-hidden="true" />
               <span className="text-3xl font-outfit font-bold">
                 ROTEIRIZE<span className="font-thin">JÁ</span>
               </span>
             </div>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
-              <a
-                href="#recursos"
-                className="text-white/90 hover:text-white transition-colors"
-              >
+            <div className="hidden md:flex items-center space-x-4 text-white">
+              <a href="#recursos" className="hover:text-emerald-400 transition">
                 Recursos
               </a>
               <a
                 href="#como-funciona"
-                className="text-white/90 hover:text-white transition-colors"
+                className="hover:text-emerald-400 transition"
               >
                 Como Funciona
               </a>
               <button
                 onClick={() => navigate("/login")}
-                className="text-white/90 hover:text-white transition-colors"
+                className="px-4 py-2 rounded-xl hover:bg-white/10 transition"
+                aria-label="Entrar na sua conta"
               >
                 Entrar
               </button>
               <button
                 onClick={() => navigate("/register")}
-                className="bg-white text-emerald-600 px-4 py-2 rounded-xl hover:bg-emerald-50 transition-colors"
+                className="bg-emerald-600 text-white px-4 py-2 rounded-xl hover:bg-emerald-700 transition"
+                aria-label="Criar uma nova conta"
               >
                 Cadastrar
               </button>
@@ -84,49 +76,46 @@ const Hero = () => {
             {/* Mobile Menu Button */}
             <button
               onClick={toggleMenu}
-              className="md:hidden text-white p-2 hover:bg-white/10 rounded-lg transition-colors"
+              className="md:hidden text-white p-2 hover:bg-white/10 rounded-lg transition"
               aria-expanded={isMenuOpen}
-              aria-label="Menu principal"
+              aria-label="Menu de navegação"
             >
               {isMenuOpen ? (
-                <X className="h-6 w-6" />
+                <X className="h-6 w-6" aria-hidden="true" />
               ) : (
-                <Menu className="h-6 w-6" />
+                <Menu className="h-6 w-6" aria-hidden="true" />
               )}
             </button>
           </div>
 
           {/* Mobile Navigation Menu */}
           {isMenuOpen && (
-            <div 
-              className="md:hidden fixed top-[72px] left-0 right-0 min-h-[calc(100vh-72px)] bg-gradient-to-b from-gray-900/95 to-gray-900/98 backdrop-blur-lg border-t border-white/10 z-50 animate-fadeIn" 
-              role="menu"
-            >
-              <div className="flex flex-col space-y-4 p-6">
+            <div className="md:hidden absolute top-full left-0 right-0 bg-black/80 backdrop-blur-md py-4 px-4 z-50" role="menu">
+              <div className="flex flex-col space-y-4">
                 <a
                   href="#recursos"
-                  className="text-white/90 hover:text-white transition-colors px-4 py-3 rounded-lg hover:bg-white/5"
+                  className="text-white px-4 py-2 hover:bg-white/10 rounded-lg transition text-center"
                   role="menuitem"
                 >
                   Recursos
                 </a>
                 <a
                   href="#como-funciona"
-                  className="text-white/90 hover:text-white transition-colors px-4 py-3 rounded-lg hover:bg-white/5"
+                  className="text-white px-4 py-2 hover:bg-white/10 rounded-lg transition text-center"
                   role="menuitem"
                 >
                   Como Funciona
                 </a>
                 <button
                   onClick={() => navigate("/login")}
-                  className="text-white/90 hover:text-white transition-colors px-4 py-3 rounded-lg hover:bg-white/5 text-left"
+                  className="text-white w-full px-4 py-2 rounded-xl hover:bg-white/10 transition"
                   role="menuitem"
                 >
                   Entrar
                 </button>
                 <button
                   onClick={() => navigate("/register")}
-                  className="bg-emerald-600 text-white px-4 py-3 rounded-lg hover:bg-emerald-700 transition-colors"
+                  className="w-full bg-emerald-600 text-white px-4 py-2 rounded-xl hover:bg-emerald-700 transition"
                   role="menuitem"
                 >
                   Cadastrar
@@ -136,6 +125,45 @@ const Hero = () => {
           )}
         </nav>
       </header>
+
+      {/* Hero Content */}
+      <main className="relative z-10 flex-grow flex items-center">
+        <div className="container mx-auto px-4">
+          <div className="max-w-2xl space-y-6 text-white">
+            <h1 className="text-5xl font-bold leading-tight">
+              Seu Próximo Destino, Planejado Perfeitamente com IA
+            </h1>
+            <p className="text-xl text-gray-200">
+              Chega de complicações para criar roteiros. Nossa IA transforma
+              suas ideias em uma viagem inesquecível em poucos cliques.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-grow">
+                <label htmlFor="destination" className="sr-only">
+                  Digite seu destino
+                </label>
+                <Input
+                  id="destination"
+                  type="text"
+                  placeholder="Para onde você quer ir?"
+                  value={destination}
+                  onChange={(e) => setDestination(e.target.value)}
+                  className="flex-grow bg-white/10 border-white/20 text-white placeholder:text-white/60 focus:ring-emerald-500"
+                  aria-required="true"
+                />
+              </div>
+              <button
+                onClick={handleSearch}
+                disabled={!destination.trim()}
+                className="bg-emerald-600 text-white px-6 py-3 rounded-xl hover:bg-emerald-700 transition flex items-center justify-center whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
+                aria-label="Iniciar planejamento da viagem"
+              >
+                Teste Agora 100% Grátis <ChevronRight className="ml-2" aria-hidden="true" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
   );
 };
