@@ -36,7 +36,7 @@ const Hero = () => {
       </div>
 
       {/* Navigation */}
-      <header className="relative z-10">
+      <header className="relative z-20">
         <nav className="container mx-auto px-4 py-4" aria-label="Navegação principal">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-2 text-white">
@@ -90,7 +90,7 @@ const Hero = () => {
 
           {/* Mobile Navigation Menu */}
           {isMenuOpen && (
-            <div className="md:hidden absolute top-full left-0 right-0 bg-black/80 backdrop-blur-md py-4 px-4" role="menu">
+            <div className="md:hidden absolute top-full left-0 right-0 bg-black/80 backdrop-blur-md py-4 px-4 z-50" role="menu">
               <div className="flex flex-col space-y-4">
                 <a
                   href="#recursos"
