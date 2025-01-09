@@ -13,7 +13,7 @@ export type Database = {
         Row: {
           created_at: string
           email: string
-          id: string
+          id: number
           message: string
           name: string
           subject: string
@@ -23,7 +23,7 @@ export type Database = {
         Insert: {
           created_at?: string
           email: string
-          id?: string
+          id?: number
           message: string
           name: string
           subject: string
@@ -33,7 +33,7 @@ export type Database = {
         Update: {
           created_at?: string
           email?: string
-          id?: string
+          id?: number
           message?: string
           name?: string
           subject?: string
