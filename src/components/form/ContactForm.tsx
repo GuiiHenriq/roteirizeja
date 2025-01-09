@@ -23,6 +23,8 @@ const subjects = [
 export function ContactForm() {
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [ticketId, setTicketId] = useState<number | null>(null);
   const [formData, setFormData] = useState({
     name: user?.user_metadata?.name || "",
     email: user?.email || "",
@@ -61,8 +63,8 @@ export function ContactForm() {
 
       if (emailError) throw emailError;
 
-      toast.success(`Mensagem enviada com sucesso! ID do contato: ${contactData.id}`);
-      setFormData({ ...formData, subject: "", message: "" });
+      setTicketId(contactData.id);
+      setIsSuccess(true);
     } catch (error: any) {
       console.error("Error sending contact:", error);
       toast.error("Erro ao enviar mensagem. Tente novamente mais tarde.");
@@ -71,8 +73,44 @@ export function ContactForm() {
     }
   };
 
+  if (isSuccess && ticketId) {
+    return (
+      <div className="max-w-xl mx-auto text-center animate-fade-in">
+        <div className="p-8 rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
+          <svg
+            className="w-16 h-16 mx-auto text-emerald-500 mb-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+          <h2 className="text-2xl font-semibold text-emerald-700 dark:text-emerald-300 mb-2">
+            Mensagem Enviada com Sucesso!
+          </h2>
+          <p className="text-emerald-600 dark:text-emerald-400 mb-4">
+            Seu ticket foi registrado com o número:
+          </p>
+          <div className="text-3xl font-bold text-emerald-500 mb-6">
+            #{ticketId}
+          </div>
+          <p className="text-sm text-emerald-600 dark:text-emerald-400">
+            Guardaremos esse número para referência futura.
+            <br />
+            Em breve entraremos em contato através do e-mail fornecido.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-xl mx-auto">
+    <form onSubmit={handleSubmit} className="space-y-6 max-w-xl mx-auto animate-fade-in">
       <div className="space-y-2">
         <Label htmlFor="name">Nome</Label>
         <Input
