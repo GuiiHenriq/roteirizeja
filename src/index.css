@@ -72,6 +72,16 @@
   .page-transition {
     @apply animate-fadeIn;
   }
+
+  .toaster {
+    --viewport-padding: 25px;
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    z-index: 100;
+  }
 }
 
 @layer components {
