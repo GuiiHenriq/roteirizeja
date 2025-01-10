@@ -25,9 +25,10 @@ const Hero = () => {
         className="absolute inset-0 z-0"
         style={{
           backgroundImage:
-            "url('/lovable-uploads/0cab4543-e132-478e-a77e-cc9bddc4941e.png')",
+            "url('/lovable-uploads/hero-background.webp')",
           backgroundSize: "cover",
           backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
         }}
         role="img"
         aria-label="Imagem de fundo mostrando um destino turístico"
