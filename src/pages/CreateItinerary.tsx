@@ -7,7 +7,13 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 const MAX_ITINERARIES = 3;
 
@@ -15,12 +21,12 @@ const CreateItinerary = () => {
   const { user } = useAuth();
 
   const { data: profile, isLoading } = useQuery({
-    queryKey: ['profile', user?.id],
+    queryKey: ["profile", user?.id],
     queryFn: async () => {
       const { data } = await supabase
-        .from('profiles')
-        .select('count_itineraries')
-        .eq('id', user?.id)
+        .from("profiles")
+        .select("count_itineraries")
+        .eq("id", user?.id)
         .single();
       return data;
     },
@@ -54,7 +60,7 @@ const CreateItinerary = () => {
             "Personalização avançada",
             "Suporte prioritário",
             "Exportação em PDF",
-            "Compartilhamento com amigos"
+            "Compartilhamento com amigos",
           ].map((benefit, index) => (
             <li key={index} className="flex items-center gap-2">
               <Check className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
@@ -65,12 +71,12 @@ const CreateItinerary = () => {
       </CardContent>
       <CardFooter className="flex flex-col items-center gap-4 pt-6">
         <div className="text-center">
-          <span className="text-3xl font-bold text-emerald-700 dark:text-emerald-400">R$ 19,90</span>
+          <span className="text-3xl font-bold text-emerald-700 dark:text-emerald-400">
+            R$ 19,90
+          </span>
           <span className="text-sm text-muted-foreground">/mês</span>
         </div>
-        <Button className="w-full">
-          Assinar Agora
-        </Button>
+        <Button className="w-full disabled">Em Breve</Button>
       </CardFooter>
     </Card>
   );
@@ -80,10 +86,10 @@ const CreateItinerary = () => {
       <h1 className="text-2xl lg:text-3xl font-bold mb-6 text-center lg:text-left">
         Criar Novo Roteiro
       </h1>
-      
-      <ItineraryStatus 
-        itineraryCount={profile?.count_itineraries || 0} 
-        maxItineraries={MAX_ITINERARIES} 
+
+      <ItineraryStatus
+        itineraryCount={profile?.count_itineraries || 0}
+        maxItineraries={MAX_ITINERARIES}
       />
 
       {hasReachedLimit ? (
@@ -91,13 +97,15 @@ const CreateItinerary = () => {
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription className="text-sm">
-              Ops! Você já criou todos os seus 3 roteiros gratuitos. Quer continuar explorando o mundo? Assine nosso plano Premium e desbloqueie roteiros ilimitados!
+              Ops! Você já criou todos os seus 3 roteiros gratuitos. Quer
+              continuar explorando o mundo? Assine nosso plano Premium e
+              desbloqueie roteiros ilimitados!
             </AlertDescription>
           </Alert>
           <PremiumPlanCard />
         </div>
       ) : (
-        <CreateItineraryForm 
+        <CreateItineraryForm
           itineraryCount={profile?.count_itineraries || 0}
           isLoadingCount={isLoading}
           maxItineraries={MAX_ITINERARIES}
