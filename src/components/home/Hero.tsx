@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { ChevronRight, Plane, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { toast } from "@/hooks/use-toast";
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -14,15 +13,9 @@ const Hero = () => {
   };
 
   const handleSearch = () => {
-    if (!destination.trim()) {
-      toast({
-        title: "Campo obrigatório",
-        description: "Por favor, informe o destino desejado.",
-        variant: "destructive",
-      });
-      return;
+    if (destination.trim()) {
+      navigate("/register", { state: { destination } });
     }
-    navigate("/register", { state: { destination } });
   };
 
   return (
@@ -162,7 +155,8 @@ const Hero = () => {
               </div>
               <button
                 onClick={handleSearch}
-                className="bg-emerald-600 text-white px-6 py-3 rounded-xl hover:bg-emerald-700 transition flex items-center justify-center whitespace-nowrap"
+                disabled={!destination.trim()}
+                className="bg-emerald-600 text-white px-6 py-3 rounded-xl hover:bg-emerald-700 transition flex items-center justify-center whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-label="Iniciar planejamento da viagem"
               >
                 Teste Agora 100% Grátis <ChevronRight className="ml-2" aria-hidden="true" />
