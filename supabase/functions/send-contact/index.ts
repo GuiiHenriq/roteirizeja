@@ -24,7 +24,7 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     const contactRequest: ContactRequest = await req.json();
-    
+
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -32,8 +32,8 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "ViagemAI <onboarding@resend.dev>",
-        to: ["zik4gameplays@gmail.com"],
+        from: "Roteirize Já <onboarding@resend.dev>",
+        to: ["contato@roteirizeja.com.br"],
         subject: `Novo contato: ${contactRequest.subject}`,
         html: `
           <h2>Novo contato recebido</h2>
