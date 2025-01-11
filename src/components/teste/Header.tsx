@@ -1,5 +1,3 @@
-import { Frame } from "@/components/frame";
-
 export const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 w-full bg-transparent z-50">
@@ -13,7 +11,9 @@ export const Header = () => {
 
           <div className="flex items-center space-x-4">
             <div className="text-sm text-white font-medium">ENTRAR</div>
-            <Frame className="block" property1="original" />
+            <button className="bg-white text-black px-6 py-2 rounded-full hover:bg-gray-100 transition">
+              CADASTRAR
+            </button>
           </div>
         </div>
       </div>
