@@ -76,7 +76,45 @@ const CreateItinerary = () => {
           </span>
           <span className="text-sm text-muted-foreground">/mês</span>
         </div>
-        <Button className="w-full disabled">Em Breve</Button>
+        <Button className="w-full" disabled>Em Breve</Button>
+      </CardFooter>
+    </Card>
+  );
+
+  const BasicPlanCard = () => (
+    <Card className="mt-6 overflow-hidden bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 border-blue-200 dark:border-blue-800">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-2xl font-bold text-center text-blue-800 dark:text-blue-400">
+          Plano Básico
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <p className="text-center text-muted-foreground mb-6">
+          Compra única para criar até 15 roteiros com recursos exclusivos
+        </p>
+        <ul className="space-y-3">
+          {[
+            "15 roteiros",
+            "Personalização avançada",
+            "Suporte prioritário",
+            "Exportação em PDF",
+            "Compartilhamento com amigos",
+          ].map((benefit, index) => (
+            <li key={index} className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              <span className="text-sm">{benefit}</span>
+            </li>
+          ))}
+        </ul>
+      </CardContent>
+      <CardFooter className="flex flex-col items-center gap-4 pt-6">
+        <div className="text-center">
+          <span className="text-3xl font-bold text-blue-700 dark:text-blue-400">
+            R$ 9,90
+          </span>
+          <span className="text-sm text-muted-foreground"> (pagamento único)</span>
+        </div>
+        <Button className="w-full">Comprar Agora</Button>
       </CardFooter>
     </Card>
   );
@@ -98,11 +136,13 @@ const CreateItinerary = () => {
             <AlertCircle className="h-4 w-4" />
             <AlertDescription className="text-sm">
               Ops! Você já criou todos os seus 3 roteiros gratuitos. Quer
-              continuar explorando o mundo? Assine nosso plano Premium e
-              desbloqueie roteiros ilimitados!
+              continuar explorando o mundo? Escolha um de nossos planos abaixo!
             </AlertDescription>
           </Alert>
-          <PremiumPlanCard />
+          <div className="grid gap-6 md:grid-cols-2">
+            <BasicPlanCard />
+            <PremiumPlanCard />
+          </div>
         </div>
       ) : (
         <CreateItineraryForm
