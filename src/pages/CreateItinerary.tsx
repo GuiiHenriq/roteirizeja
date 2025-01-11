@@ -83,7 +83,7 @@ const CreateItinerary = () => {
 
   const BasicPlanCard = () => (
     <Card className="mt-6 overflow-hidden bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 border-blue-200 dark:border-blue-800 relative">
-      <div className="absolute -right-8 top-6 rotate-45 bg-[#ea384c] text-white px-8 py-1 text-sm font-semibold shadow-md">
+      <div className="absolute -right-8 top-6 rotate-45 bg-[#ea384c] text-white px-8 py-1 text-sm font-semibold shadow-md z-10">
         OFERTA
       </div>
       <CardHeader className="pb-3">
