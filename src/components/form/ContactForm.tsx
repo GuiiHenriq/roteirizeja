@@ -33,7 +33,7 @@ export function ContactForm() {
     message: "",
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Rate limiting check
@@ -54,29 +54,33 @@ export function ContactForm() {
       };
 
       // Insert contact with timeout
+      const contactPromise = supabase
+        .from("contacts")
+        .insert({
+          user_id: user?.id,
+          ...sanitizedData,
+        })
+        .select()
+        .single();
+
       const { data: contactData, error: insertError } = await withTimeout(
-        supabase
-          .from("contacts")
-          .insert({
-            user_id: user?.id,
-            ...sanitizedData,
-          })
-          .select()
-          .single(),
+        contactPromise,
         5000 // 5 second timeout
       );
 
       if (insertError) throw insertError;
 
       // Send email with timeout
+      const emailPromise = supabase.functions.invoke("send-contact", {
+        body: {
+          ...sanitizedData,
+          userId: user?.id,
+          contactId: contactData.id,
+        },
+      });
+
       const { error: emailError } = await withTimeout(
-        supabase.functions.invoke("send-contact", {
-          body: {
-            ...sanitizedData,
-            userId: user?.id,
-            contactId: contactData.id,
-          },
-        }),
+        emailPromise,
         10000 // 10 second timeout
       );
 

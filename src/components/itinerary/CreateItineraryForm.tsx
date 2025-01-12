@@ -72,41 +72,47 @@ export const CreateItineraryForm = ({
       const sanitizedDestination = sanitizeInput(destination);
 
       // Generate itinerary with timeout
+      const generationPromise = supabase.functions.invoke('generate-itinerary', {
+        body: {
+          destination: sanitizedDestination,
+          departureDate,
+          returnDate,
+          interests: selectedInterests.map(sanitizeInput).join(", ")
+        }
+      });
+
       const { data: generatedItinerary, error: generationError } = await withTimeout(
-        supabase.functions.invoke('generate-itinerary', {
-          body: {
-            destination: sanitizedDestination,
-            departureDate,
-            returnDate,
-            interests: selectedInterests.map(sanitizeInput).join(", ")
-          }
-        }),
+        generationPromise,
         30000 // 30 second timeout for AI generation
       );
 
       if (generationError) throw generationError;
 
       // Save the itinerary with timeout
+      const savePromise = supabase.from('itineraries').insert({
+        user_id: user?.id,
+        destination: sanitizedDestination,
+        departure_date: departureDate,
+        return_date: returnDate,
+        interests: selectedInterests.map(sanitizeInput).join(", "),
+        itinerary_data: generatedItinerary
+      });
+
       const { error: saveError } = await withTimeout(
-        supabase.from('itineraries').insert({
-          user_id: user?.id,
-          destination: sanitizedDestination,
-          departure_date: departureDate,
-          return_date: returnDate,
-          interests: selectedInterests.map(sanitizeInput).join(", "),
-          itinerary_data: generatedItinerary
-        }),
+        savePromise,
         5000 // 5 second timeout
       );
 
       if (saveError) throw saveError;
 
       // Increment count with timeout
+      const updatePromise = supabase
+        .from('profiles')
+        .update({ count_itineraries: itineraryCount + 1 })
+        .eq('id', user?.id);
+
       const { error: updateError } = await withTimeout(
-        supabase
-          .from('profiles')
-          .update({ count_itineraries: itineraryCount + 1 })
-          .eq('id', user?.id),
+        updatePromise,
         5000 // 5 second timeout
       );
 

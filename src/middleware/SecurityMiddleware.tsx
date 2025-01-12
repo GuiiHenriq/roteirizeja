@@ -1,4 +1,4 @@
-import { Response } from '@supabase/supabase-js';
+import React from 'react';
 
 // Rate limiting implementation
 const rateLimits = new Map<string, { count: number; timestamp: number }>();
@@ -114,7 +114,7 @@ export const ErrorBoundary = ({ children }: { children: React.ReactNode }) => {
 
 // Request timeout wrapper
 export const withTimeout = async <T,>(
-  promise: Promise<T>,
+  promise: Promise<T> | { then: (onfulfilled: (value: T) => void) => void },
   timeoutMs: number = 10000
 ): Promise<T> => {
   const timeoutPromise = new Promise<never>((_, reject) => {
@@ -123,5 +123,5 @@ export const withTimeout = async <T,>(
     }, timeoutMs);
   });
 
-  return Promise.race([promise, timeoutPromise]);
+  return Promise.race([Promise.resolve(promise), timeoutPromise]);
 };
