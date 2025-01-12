@@ -113,4 +113,9 @@
   .desktop-sidebar-link {
     @apply flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200;
   }
+
+  /* Mobile Layout Utilities */
+  .mobile-container {
+    @apply pb-24 lg:pb-0; /* Add bottom padding on mobile for navbar spacing */
+  }
 }

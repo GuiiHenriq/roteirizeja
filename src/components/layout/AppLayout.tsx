@@ -45,7 +45,7 @@ const AppLayout = ({ children, user }: AppLayoutProps) => {
         )}
 
         <main className={`flex-1 ${user ? "lg:pl-64" : "pt-16"}`}>
-          <div className="mx-auto">{children}</div>
+          <div className={`mx-auto ${user ? "mobile-container" : ""}`}>{children}</div>
         </main>
       </div>
 
