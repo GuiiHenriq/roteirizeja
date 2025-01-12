@@ -5,9 +5,12 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { memo, lazy, Suspense } from "react";
 
-export const Destinations = () => {
-  const destinations = [
+// Lazy load images for better performance
+const LazyImage = lazy(() => import("../ui/LazyImage"));
+
+const destinations = [
     {
       name: "ZURICH",
       country: "SUIÇA",
@@ -60,8 +63,9 @@ export const Destinations = () => {
       image: "rectangle-26.svg",
       isPromo: true,
     },
-  ];
+];
 
+export const Destinations = memo(() => {
   return (
     <section className="w-full py-12 lg:py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -86,11 +90,13 @@ export const Destinations = () => {
                         PROMO
                       </div>
                     )}
-                    <img
-                      className="w-full h-48 sm:h-64 object-cover"
-                      src={`https://c.animaapp.com/iA1lbPU9/img/${destination.image}`}
-                      alt={destination.name}
-                    />
+                    <Suspense fallback={<div className="w-full h-48 sm:h-64 bg-gray-200 animate-pulse" />}>
+                      <LazyImage
+                        src={`https://c.animaapp.com/iA1lbPU9/img/${destination.image}`}
+                        alt={destination.name}
+                        className="w-full h-48 sm:h-64 object-cover"
+                      />
+                    </Suspense>
                     <div className="p-4 sm:p-6">
                       <h3 className="text-lg sm:text-xl font-[var(--h5-font-family)] mb-2">{destination.name}</h3>
                       <div className="flex items-center space-x-2 mb-4">
@@ -98,6 +104,7 @@ export const Destinations = () => {
                           className="w-4 h-4"
                           alt="Location"
                           src="https://c.animaapp.com/iA1lbPU9/img/location-on-fill0-wght400-grad0-opsz48-1-8.svg"
+                          loading="lazy"
                         />
                         <span className="text-sm">{destination.country}</span>
                       </div>
@@ -107,6 +114,7 @@ export const Destinations = () => {
                             className="w-4 h-4"
                             alt="Star"
                             src="https://c.animaapp.com/iA1lbPU9/img/star-5-9.svg"
+                            loading="lazy"
                           />
                           <span className="text-sm">4.8 (957 Reviews)</span>
                         </div>
@@ -126,4 +134,6 @@ export const Destinations = () => {
       </div>
     </section>
   );
-};
+});
+
+Destinations.displayName = "Destinations";

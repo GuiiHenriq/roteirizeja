@@ -2,21 +2,30 @@ import { GeneratedItinerary, ItineraryActivity, DayActivities } from "@/types/it
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { FileDown } from "lucide-react";
-import { useState, useRef } from "react";
+import { useState, useRef, memo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import toPDF from 'react-to-pdf';
 import { DayCard } from "./DayCard";
+import { useVirtualizer } from '@tanstack/react-virtual';
 
 interface ItineraryDisplayProps {
   itinerary: GeneratedItinerary;
   itineraryId: string;
 }
 
-const ItineraryDisplay = ({ itinerary, itineraryId }: ItineraryDisplayProps) => {
+const ItineraryDisplay = memo(({ itinerary, itineraryId }: ItineraryDisplayProps) => {
   const [localItinerary, setLocalItinerary] = useState(itinerary);
   const contentRef = useRef<HTMLDivElement>(null);
+  const parentRef = useRef<HTMLDivElement>(null);
+
+  const virtualizer = useVirtualizer({
+    count: localItinerary.itinerary.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 300, // Estimated height of each day card
+    overscan: 5, // Number of items to render outside of the visible area
+  });
 
   const handleActivityUpdate = async (dayIndex: number, period: keyof DayActivities, updatedActivity: ItineraryActivity) => {
     const newItinerary = { ...localItinerary };
@@ -114,18 +123,41 @@ const ItineraryDisplay = ({ itinerary, itineraryId }: ItineraryDisplayProps) => 
         </Button>
       </div>
       
-      <div ref={contentRef} className="grid gap-6">
-        {localItinerary.itinerary.map((day, index) => (
-          <DayCard
-            key={day.day}
-            date={day.day}
-            activities={day.activities}
-            onUpdateActivity={(period, activity) => handleActivityUpdate(index, period, activity)}
-          />
-        ))}
+      <div ref={contentRef}>
+        <div 
+          ref={parentRef} 
+          className="grid gap-6"
+          style={{ height: `${virtualizer.getTotalSize()}px`, position: 'relative' }}
+        >
+          {virtualizer.getVirtualItems().map((virtualItem) => {
+            const day = localItinerary.itinerary[virtualItem.index];
+            return (
+              <div
+                key={day.day}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  transform: `translateY(${virtualItem.start}px)`,
+                }}
+              >
+                <DayCard
+                  date={day.day}
+                  activities={day.activities}
+                  onUpdateActivity={(period, activity) => 
+                    handleActivityUpdate(virtualItem.index, period, activity)
+                  }
+                />
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
-};
+});
+
+ItineraryDisplay.displayName = "ItineraryDisplay";
 
 export default ItineraryDisplay;
