@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
 import { DatePickerInput } from "@/components/form/DatePickerInput";
 import { InterestsSelect } from "@/components/form/InterestsSelect";
+import { sanitizeInput, checkRateLimit, withTimeout } from "@/middleware/SecurityMiddleware";
 
 interface CreateItineraryFormProps {
   itineraryCount: number;
@@ -30,10 +31,11 @@ export const CreateItineraryForm = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const toggleInterest = (interest: string) => {
+    const sanitizedInterest = sanitizeInput(interest);
     setSelectedInterests(current =>
-      current.includes(interest)
-        ? current.filter(i => i !== interest)
-        : [...current, interest]
+      current.includes(sanitizedInterest)
+        ? current.filter(i => i !== sanitizedInterest)
+        : [...current, sanitizedInterest]
     );
   };
 
@@ -55,49 +57,70 @@ export const CreateItineraryForm = ({
       toast.error("Você atingiu o limite de roteiros gratuitos");
       return;
     }
+
+    // Rate limiting check
+    if (!checkRateLimit(`create_itinerary_${user?.id}`, 3, 300000)) { // 3 requests per 5 minutes
+      toast.error("Muitas tentativas. Por favor, aguarde alguns minutos.");
+      return;
+    }
     
     setIsLoading(true);
 
     try {
       const departureDate = formatDate(startDate);
       const returnDate = formatDate(endDate);
+      const sanitizedDestination = sanitizeInput(destination);
 
-      const { data: generatedItinerary, error: generationError } = await supabase.functions.invoke('generate-itinerary', {
-        body: {
-          destination,
-          departureDate,
-          returnDate,
-          interests: selectedInterests.join(", ")
-        }
-      });
+      // Generate itinerary with timeout
+      const { data: generatedItinerary, error: generationError } = await withTimeout(
+        supabase.functions.invoke('generate-itinerary', {
+          body: {
+            destination: sanitizedDestination,
+            departureDate,
+            returnDate,
+            interests: selectedInterests.map(sanitizeInput).join(", ")
+          }
+        }),
+        30000 // 30 second timeout for AI generation
+      );
 
       if (generationError) throw generationError;
 
-      // Save the itinerary
-      const { error: saveError } = await supabase.from('itineraries').insert({
-        user_id: user?.id,
-        destination,
-        departure_date: departureDate,
-        return_date: returnDate,
-        interests: selectedInterests.join(", "),
-        itinerary_data: generatedItinerary
-      });
+      // Save the itinerary with timeout
+      const { error: saveError } = await withTimeout(
+        supabase.from('itineraries').insert({
+          user_id: user?.id,
+          destination: sanitizedDestination,
+          departure_date: departureDate,
+          return_date: returnDate,
+          interests: selectedInterests.map(sanitizeInput).join(", "),
+          itinerary_data: generatedItinerary
+        }),
+        5000 // 5 second timeout
+      );
 
       if (saveError) throw saveError;
 
-      // Increment the count_itineraries in profiles
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ count_itineraries: itineraryCount + 1 })
-        .eq('id', user?.id);
+      // Increment count with timeout
+      const { error: updateError } = await withTimeout(
+        supabase
+          .from('profiles')
+          .update({ count_itineraries: itineraryCount + 1 })
+          .eq('id', user?.id),
+        5000 // 5 second timeout
+      );
 
       if (updateError) throw updateError;
 
       toast.success('Roteiro gerado com sucesso!');
       navigate('/itineraries');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error:', error);
-      toast.error('Erro ao gerar roteiro. Por favor, tente novamente.');
+      toast.error(
+        error.message === "Request timed out"
+          ? "Tempo limite excedido. Tente novamente."
+          : "Erro ao gerar roteiro. Por favor, tente novamente."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -114,6 +137,7 @@ export const CreateItineraryForm = ({
           onChange={(e) => setDestination(e.target.value)}
           required
           className="h-12 text-base"
+          maxLength={100}
         />
       </div>
 

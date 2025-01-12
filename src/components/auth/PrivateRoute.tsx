@@ -8,20 +8,28 @@ interface PrivateRouteProps {
 }
 
 const PrivateRoute = ({ children }: PrivateRouteProps) => {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, refreshSession } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    if (!isLoading && !user) {
-      toast.error("Faça login para acessar esta página");
-      // Store the attempted URL to redirect back after login
-      navigate("/login", { 
-        state: { from: location.pathname },
-        replace: true 
-      });
-    }
-  }, [user, isLoading, navigate, location]);
+    const checkSession = async () => {
+      if (!isLoading && !user) {
+        // Try to refresh the session before redirecting
+        try {
+          await refreshSession();
+        } catch (error) {
+          toast.error("Sua sessão expirou. Por favor, faça login novamente.");
+          navigate("/login", { 
+            state: { from: location.pathname },
+            replace: true 
+          });
+        }
+      }
+    };
+
+    checkSession();
+  }, [user, isLoading, navigate, location, refreshSession]);
 
   if (isLoading) {
     return (

@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import { sanitizeInput, checkRateLimit, withTimeout } from "@/middleware/SecurityMiddleware";
 
 const subjects = [
   { value: "reclamacao", label: "Reclamação" },
@@ -34,32 +35,50 @@ export function ContactForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Rate limiting check
+    if (!checkRateLimit(`contact_${user?.id}`, 5, 300000)) { // 5 requests per 5 minutes
+      toast.error("Muitas tentativas. Por favor, aguarde alguns minutos.");
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      // First, insert the contact in the database
-      const { data: contactData, error: insertError } = await supabase
-        .from("contacts")
-        .insert({
-          user_id: user?.id,
-          name: formData.name,
-          email: formData.email,
-          subject: formData.subject,
-          message: formData.message,
-        })
-        .select()
-        .single();
+      // Sanitize inputs
+      const sanitizedData = {
+        name: sanitizeInput(formData.name),
+        email: sanitizeInput(formData.email),
+        subject: sanitizeInput(formData.subject),
+        message: sanitizeInput(formData.message),
+      };
+
+      // Insert contact with timeout
+      const { data: contactData, error: insertError } = await withTimeout(
+        supabase
+          .from("contacts")
+          .insert({
+            user_id: user?.id,
+            ...sanitizedData,
+          })
+          .select()
+          .single(),
+        5000 // 5 second timeout
+      );
 
       if (insertError) throw insertError;
 
-      // Then send the email with the contact ID
-      const { error: emailError } = await supabase.functions.invoke("send-contact", {
-        body: {
-          ...formData,
-          userId: user?.id,
-          contactId: contactData.id,
-        },
-      });
+      // Send email with timeout
+      const { error: emailError } = await withTimeout(
+        supabase.functions.invoke("send-contact", {
+          body: {
+            ...sanitizedData,
+            userId: user?.id,
+            contactId: contactData.id,
+          },
+        }),
+        10000 // 10 second timeout
+      );
 
       if (emailError) throw emailError;
 
@@ -67,7 +86,11 @@ export function ContactForm() {
       setIsSuccess(true);
     } catch (error: any) {
       console.error("Error sending contact:", error);
-      toast.error("Erro ao enviar mensagem. Tente novamente mais tarde.");
+      toast.error(
+        error.message === "Request timed out"
+          ? "Tempo limite excedido. Tente novamente."
+          : "Erro ao enviar mensagem. Tente novamente mais tarde."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -118,6 +141,7 @@ export function ContactForm() {
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           required
+          maxLength={100}
         />
       </div>
 
@@ -129,6 +153,7 @@ export function ContactForm() {
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           required
+          maxLength={255}
         />
       </div>
 
@@ -160,6 +185,7 @@ export function ContactForm() {
           onChange={(e) => setFormData({ ...formData, message: e.target.value })}
           className="min-h-[150px]"
           required
+          maxLength={1000}
         />
       </div>
 
