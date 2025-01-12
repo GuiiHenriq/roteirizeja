@@ -23,8 +23,8 @@ const ItineraryDisplay = memo(({ itinerary, itineraryId }: ItineraryDisplayProps
   const virtualizer = useVirtualizer({
     count: localItinerary.itinerary.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 300, // Estimated height of each day card
-    overscan: 5, // Number of items to render outside of the visible area
+    estimateSize: () => 400, // Increased estimated height to prevent overlapping
+    overscan: 3,
   });
 
   const handleActivityUpdate = async (dayIndex: number, period: keyof DayActivities, updatedActivity: ItineraryActivity) => {
@@ -126,32 +126,39 @@ const ItineraryDisplay = memo(({ itinerary, itineraryId }: ItineraryDisplayProps
       <div ref={contentRef}>
         <div 
           ref={parentRef} 
-          className="grid gap-6"
-          style={{ height: `${virtualizer.getTotalSize()}px`, position: 'relative' }}
+          className="relative h-[800px] overflow-auto"
         >
-          {virtualizer.getVirtualItems().map((virtualItem) => {
-            const day = localItinerary.itinerary[virtualItem.index];
-            return (
-              <div
-                key={day.day}
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  transform: `translateY(${virtualItem.start}px)`,
-                }}
-              >
-                <DayCard
-                  date={day.day}
-                  activities={day.activities}
-                  onUpdateActivity={(period, activity) => 
-                    handleActivityUpdate(virtualItem.index, period, activity)
-                  }
-                />
-              </div>
-            );
-          })}
+          <div
+            style={{
+              height: `${virtualizer.getTotalSize()}px`,
+              width: '100%',
+              position: 'relative',
+            }}
+          >
+            {virtualizer.getVirtualItems().map((virtualItem) => {
+              const day = localItinerary.itinerary[virtualItem.index];
+              return (
+                <div
+                  key={virtualItem.key}
+                  data-index={virtualItem.index}
+                  ref={virtualizer.measureElement}
+                  className="absolute top-0 left-0 w-full"
+                  style={{
+                    transform: `translateY(${virtualItem.start}px)`,
+                    paddingBottom: '1rem',
+                  }}
+                >
+                  <DayCard
+                    date={day.day}
+                    activities={day.activities}
+                    onUpdateActivity={(period, activity) => 
+                      handleActivityUpdate(virtualItem.index, period, activity)
+                    }
+                  />
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
