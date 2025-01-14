@@ -76,16 +76,15 @@ const CreateItinerary = () => {
           </span>
           <span className="text-sm text-muted-foreground">/mês</span>
         </div>
-        <Button className="w-full" disabled>Em Breve</Button>
+        <Button className="w-full" disabled>
+          Em Breve
+        </Button>
       </CardFooter>
     </Card>
   );
 
   const BasicPlanCard = () => (
     <Card className="mt-6 overflow-hidden bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 border-blue-200 dark:border-blue-800 relative">
-      <div className="absolute -right-8 top-6 rotate-45 bg-[#ea384c] text-white px-8 py-1 text-sm font-semibold shadow-md z-10">
-        OFERTA
-      </div>
       <CardHeader className="pb-3">
         <CardTitle className="text-2xl font-bold text-center text-blue-800 dark:text-blue-400">
           Plano Básico
@@ -93,12 +92,11 @@ const CreateItinerary = () => {
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="text-center text-muted-foreground mb-6">
-          Compra única para criar até 15 roteiros com recursos exclusivos
+          Compra única para criar até 10 roteiros com recursos exclusivos
         </p>
         <ul className="space-y-3">
           {[
-            "15 roteiros",
-            "Personalização avançada",
+            "10 roteiros",
             "Suporte prioritário",
             "Exportação em PDF",
             "Compartilhamento com amigos",
@@ -115,9 +113,14 @@ const CreateItinerary = () => {
           <span className="text-3xl font-bold text-blue-700 dark:text-blue-400">
             R$ 9,90
           </span>
-          <span className="text-sm text-muted-foreground"> (pagamento único)</span>
+          <span className="text-sm text-muted-foreground">
+            {" "}
+            (pagamento único)
+          </span>
         </div>
-        <Button className="w-full">Comprar Agora</Button>
+        <Button className="w-full" disabled>
+          Em Breve
+        </Button>
       </CardFooter>
     </Card>
   );
