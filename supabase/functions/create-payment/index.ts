@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { corsHeaders } from "../_shared/cors.ts"
-import { v4 as uuidv4 } from 'https://deno.land/std@0.168.0/uuid/mod.ts'
+import { crypto } from "https://deno.land/std@0.168.0/crypto/mod.ts"
 
 const MERCADO_PAGO_ACCESS_TOKEN = Deno.env.get("MERCADO_PAGO_ACCESS_TOKEN")
 const WEBHOOK_URL = "https://webhook.site/ad04f696-bcc2-42e4-ab89-0cc725244676"
@@ -17,8 +17,8 @@ serve(async (req) => {
       throw new Error("MERCADO_PAGO_ACCESS_TOKEN is not defined")
     }
 
-    const idempotencyKey = uuidv4()
-    const externalReference = `pedido_${uuidv4()}`
+    const idempotencyKey = crypto.randomUUID()
+    const externalReference = `pedido_${crypto.randomUUID()}`
 
     const response = await fetch("https://api.mercadopago.com/v1/payments", {
       method: "POST",
