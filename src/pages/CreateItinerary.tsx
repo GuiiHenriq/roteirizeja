@@ -14,8 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
-const MAX_ITINERARIES = 3;
+import { CheckoutButton } from "@/components/CheckoutButton";
 
 const CreateItinerary = () => {
   const { user } = useAuth();
@@ -25,7 +24,7 @@ const CreateItinerary = () => {
     queryFn: async () => {
       const { data } = await supabase
         .from("profiles")
-        .select("count_itineraries")
+        .select("count_itineraries, is_subscribe")
         .eq("id", user?.id)
         .single();
       return data;
@@ -40,6 +39,8 @@ const CreateItinerary = () => {
       </div>
     );
   }
+
+  const MAX_ITINERARIES = profile?.is_subscribe ? 10 : 3;
 
   const hasReachedLimit = (profile?.count_itineraries || 0) >= MAX_ITINERARIES;
 
@@ -118,9 +119,7 @@ const CreateItinerary = () => {
             (pagamento único)
           </span>
         </div>
-        <Button className="w-full" disabled>
-          Em Breve
-        </Button>
+        <CheckoutButton />
       </CardFooter>
     </Card>
   );
@@ -141,8 +140,9 @@ const CreateItinerary = () => {
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription className="text-sm">
-              Ops! Você já criou todos os seus 3 roteiros gratuitos. Quer
-              continuar explorando o mundo? Escolha um de nossos planos abaixo!
+              {profile?.is_subscribe
+                ? "Ops! Você já criou todos os seus 10 roteiros. Assine o plano Básico novamente para liberar mais 10 roteiros!"
+                : "Ops! Você já criou todos os seus 3 roteiros gratuitos. Quer continuar explorando o mundo? Escolha um de nossos planos abaixo!"}
             </AlertDescription>
           </Alert>
           <div className="grid gap-6 md:grid-cols-2">
