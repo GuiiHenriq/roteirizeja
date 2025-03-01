@@ -78,6 +78,49 @@ export type Database = {
         };
         Relationships: [];
       };
+      orders: {
+        Row: {
+          id: string;
+          user_id: string;
+          status: string;
+          amount: number;
+          payment_method: string;
+          created_at: string;
+          updated_at: string;
+          external_reference: string | null;
+          payment_url: string | null;
+        };
+        Insert: {
+          id: string;
+          user_id: string;
+          status: string;
+          amount: number;
+          payment_method: string;
+          created_at?: string;
+          updated_at?: string;
+          external_reference?: string | null;
+          payment_url?: string | null;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          status?: string;
+          amount?: number;
+          payment_method?: string;
+          created_at?: string;
+          updated_at?: string;
+          external_reference?: string | null;
+          payment_url?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "orders_user_id_fkey";
+            columns: ["user_id"];
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
       profiles: {
         Row: {
           count_itineraries: number;

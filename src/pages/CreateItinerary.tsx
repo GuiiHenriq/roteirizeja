@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { CreateItineraryForm } from "@/components/itinerary/CreateItineraryForm";
 import { ItineraryStatus } from "@/components/itinerary/ItineraryStatus";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, Check } from "lucide-react";
+import { AlertCircle, Check, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import {
@@ -15,9 +15,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { CheckoutButton } from "@/components/CheckoutButton";
+import { useEffect, useState } from "react";
 
 const CreateItinerary = () => {
   const { user } = useAuth();
+  const [hasApprovedPayment, setHasApprovedPayment] = useState(false);
+  const [isCheckingPayment, setIsCheckingPayment] = useState(false);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
+  const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ["profile", user?.id],
@@ -32,7 +37,52 @@ const CreateItinerary = () => {
     enabled: !!user,
   });
 
-  if (isLoading) {
+  useEffect(() => {
+    if (!user) return;
+
+    const checkPaymentStatus = async () => {
+      setIsCheckingPayment(true);
+      setPaymentError(null);
+      
+      try {
+        const { data: orders, error } = await supabase
+          .from("orders")
+          .select("status, created_at")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(1);
+        
+        if (error) {
+          console.error("Erro ao verificar pagamento:", error);
+          setPaymentError("Não foi possível verificar seu status de pagamento.");
+          return;
+        }
+        
+        if (orders && orders.length > 0) {
+          const latestOrder = orders[0];
+          setPaymentStatus(latestOrder.status);
+          setHasApprovedPayment(latestOrder.status === "approved" || latestOrder.status !== null)
+          
+          if (latestOrder.status !== "approved" || latestOrder.status === null) {
+            console.log(`Pagamento encontrado com status: ${latestOrder.status}`);
+          } else {
+            console.log("Pagamento aprovado encontrado!");
+          }
+        } else {
+          console.log("Nenhum pagamento encontrado para este usuário.");
+        }
+      } catch (err) {
+        console.error("Erro ao verificar pagamento:", err);
+        setPaymentError("Ocorreu um erro ao verificar seu status de pagamento.");
+      } finally {
+        setIsCheckingPayment(false);
+      }
+    };
+    
+    checkPaymentStatus();
+  }, [user]);
+
+  if (isLoading || isCheckingPayment) {
     return (
       <div className="flex justify-center items-center min-h-[50vh]">
         <Loader2 className="h-8 w-8 animate-spin" />
@@ -43,6 +93,8 @@ const CreateItinerary = () => {
   const MAX_ITINERARIES = profile?.is_subscribe ? 10 : 3;
 
   const hasReachedLimit = (profile?.count_itineraries || 0) >= MAX_ITINERARIES;
+
+  const hasPendingPayment = paymentStatus && (paymentStatus !== "approved" || paymentStatus === null);
 
   const PremiumPlanCard = () => (
     <Card className="mt-6 overflow-hidden bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-900/20 dark:to-emerald-800/20 border-emerald-200 dark:border-emerald-800">
@@ -134,6 +186,22 @@ const CreateItinerary = () => {
         itineraryCount={profile?.count_itineraries || 0}
         maxItineraries={MAX_ITINERARIES}
       />
+
+      {paymentError && (
+        <Alert variant="destructive" className="mb-4">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{paymentError}</AlertDescription>
+        </Alert>
+      )}
+
+      {hasPendingPayment && (
+        <Alert className="mb-4">
+          <Info className="h-4 w-4" />
+          <AlertDescription>
+            Você tem um pagamento pendente com status "{paymentStatus}". Aguarde a confirmação do pagamento para continuar criando roteiros.
+          </AlertDescription>
+        </Alert>
+      )}
 
       {hasReachedLimit ? (
         <div className="space-y-6">

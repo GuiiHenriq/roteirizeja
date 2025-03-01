@@ -1,6 +1,7 @@
 import { ContactsTable } from './contacts'
 import { ItinerariesTable } from './itineraries'
 import { ProfilesTable } from './profiles'
+import { OrdersTable } from './orders'
 
 export type Database = {
   public: {
@@ -8,6 +9,7 @@ export type Database = {
       contacts: ContactsTable
       itineraries: ItinerariesTable
       profiles: ProfilesTable
+      orders: OrdersTable
     }
     Views: {
       [_ in never]: never

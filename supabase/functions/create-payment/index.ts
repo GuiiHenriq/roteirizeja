@@ -1,9 +1,15 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { corsHeaders } from "../_shared/cors.ts"
 import { crypto } from "https://deno.land/std@0.168.0/crypto/mod.ts"
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.7.1"
+
+const supabaseUrl = "https://vqvgiuabjfozqbgpnlwh.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZxdmdpdWFiamZvenFiZ3BubHdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE1MzUwODMsImV4cCI6MjA0NzExMTA4M30.da6ggSqFgyCcIfPI10iM4oDdr0WKlTVVSv9a8PftOaA";
+// Obtenha a service_role key do seu projeto Supabase (Dashboard > Settings > API)
+const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
 
 const MERCADO_PAGO_ACCESS_TOKEN = Deno.env.get("MERCADO_PAGO_ACCESS_TOKEN")
-const WEBHOOK_URL = "https://webhook.site/ad04f696-bcc2-42e4-ab89-0cc725244676"
+const WEBHOOK_URL = "https://vqvgiuabjfozqbgpnlwh.supabase.co/functions/v1/payment-webhook"
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -17,8 +23,24 @@ serve(async (req) => {
       throw new Error("MERCADO_PAGO_ACCESS_TOKEN is not defined")
     }
 
+    // Initialize Supabase client with anon key (for user context)
+    const supabase = createClient(supabaseUrl, supabaseKey)
+    
+    // Initialize admin client with service role key (bypasses RLS)
+    const adminSupabase = serviceRoleKey 
+      ? createClient(supabaseUrl, serviceRoleKey, { 
+          auth: { persistSession: false }
+        })
+      : supabase;
+
+    // Parse request body to get user information
+    const { user_id, email, name } = await req.json()
+
+    if (!user_id) {
+      throw new Error("user_id is required")
+    }
+
     const idempotencyKey = crypto.randomUUID()
-    const externalReference = `pedido_${crypto.randomUUID()}`
 
     const response = await fetch("https://api.mercadopago.com/v1/payments", {
       method: "POST",
@@ -28,19 +50,13 @@ serve(async (req) => {
         "X-Idempotency-Key": idempotencyKey
       },
       body: JSON.stringify({
-        external_reference: `pedido_${externalReference}`,
         transaction_amount: 9.90,
         installments: 1,
         description: "Plano Básico - Roteirize Já",
         payment_method_id: "pix",
         payer: {
-          email: "test@test.com",
-          first_name: "Joao da Silva",
-          last_name: "Santos",
-          identification: {
-            type: "CPF",
-            number: "11111111111"
-          }
+          email: email,
+          first_name: name,
         },
         notification_url: WEBHOOK_URL
       })
@@ -52,11 +68,38 @@ serve(async (req) => {
       throw new Error(result.message || 'Failed to create payment')
     }
 
+    console.log("Payment created successfully:", result.id)
+
+    // Prepare order data
+    const orderData = {
+      id: result.id.toString(),
+      user_id: user_id,
+      status: result.status,
+      amount: 9.90,
+      payment_method: "pix",
+      payment_url: result.point_of_interaction.transaction_data.ticket_url
+    }
+
+    console.log("Attempting to save order:", orderData)
+
+    // Save order information to the database using admin client to bypass RLS
+    const { data: insertData, error: insertError } = await adminSupabase
+      .from('orders')
+      .insert(orderData)
+      .select()
+
+    if (insertError) {
+      console.error("Error saving order details:", insertError)
+      throw new Error(`Failed to save order information: ${insertError.message}`)
+    }
+
+    console.log("Order saved successfully:", insertData)
+
     const responseData = {
       status: "ok",
       payment: {
         id: result.id,
-        status: result.status,
+        status: result.date_approved,
         url_payment: result.point_of_interaction.transaction_data.ticket_url
       }
     }
