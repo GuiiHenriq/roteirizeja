@@ -149,10 +149,11 @@ const CreateItinerary = () => {
         </p>
         <ul className="space-y-3">
           {[
-            "10 roteiros",
+            "Criar até 10 roteiros",
             "Suporte prioritário",
-            "Exportação em PDF",
-            "Compartilhamento com amigos",
+            "Exportar em PDF",
+            "Editar qualquer detalhe do roteiro",
+            "Compartilhar com os amigos",
           ].map((benefit, index) => (
             <li key={index} className="flex items-center gap-2">
               <Check className="h-5 w-5 text-blue-600 dark:text-blue-400" />
@@ -197,9 +198,18 @@ const CreateItinerary = () => {
       {hasPendingPayment && (
         <Alert className="mb-4">
           <Info className="h-4 w-4" />
-          <AlertDescription>
-            Você tem um pagamento pendente com status "{paymentStatus}". Aguarde a confirmação do pagamento para continuar criando roteiros.
-          </AlertDescription>
+          {paymentStatus === "cancelled" &&
+            <AlertDescription>
+              Você tem um pedido que não foi encontrado o pagamento.
+              <br />Caso tenha efetuado o pagamento, entre em contato conosco! 
+            </AlertDescription>
+          }
+          {paymentStatus === "pending" &&
+            <AlertDescription>
+              Você tem um pagamento pendente. Aguarde a confirmação do pagamento para continuar criando roteiros.
+              <br />Caso tenha efetuado o pagamento, entre em contato conosco! 
+            </AlertDescription>
+          }
         </Alert>
       )}
 
