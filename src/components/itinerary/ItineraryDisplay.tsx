@@ -6,12 +6,13 @@ import {
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { FileDown } from "lucide-react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import toPDF from "react-to-pdf";
 import { DayCard } from "./DayCard";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface ItineraryDisplayProps {
   itinerary: GeneratedItinerary;
@@ -24,6 +25,34 @@ const ItineraryDisplay = ({
 }: ItineraryDisplayProps) => {
   const [localItinerary, setLocalItinerary] = useState(itinerary);
   const contentRef = useRef<HTMLDivElement>(null);
+  const { user } = useAuth();
+  const [isSubscribed, setIsSubscribed] = useState(false);
+
+  // Verificar se o usuário tem assinatura ativa
+  useEffect(() => {
+    const checkSubscriptionStatus = async () => {
+      if (!user) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("is_subscribe")
+          .eq("id", user.id)
+          .single();
+        
+        if (error) {
+          console.error("Erro ao verificar status de assinatura:", error);
+          return;
+        }
+        
+        setIsSubscribed(data?.is_subscribe || false);
+      } catch (err) {
+        console.error("Erro ao verificar status de assinatura:", err);
+      }
+    };
+    
+    checkSubscriptionStatus();
+  }, [user]);
 
   const handleActivityUpdate = async (
     dayIndex: number,
@@ -122,14 +151,16 @@ const ItineraryDisplay = ({
             {format(endDate, "dd 'de' MMMM, yyyy", { locale: ptBR })}
           </p>
         </div>
-        <Button
-          onClick={handleExportPDF}
-          className="flex items-center gap-2 w-full md:w-auto"
-          variant="outline"
-        >
-          <FileDown className="h-4 w-4" />
-          Exportar PDF
-        </Button>
+        {isSubscribed && (
+          <Button
+            onClick={handleExportPDF}
+            className="flex items-center gap-2 w-full md:w-auto"
+            variant="outline"
+          >
+            <FileDown className="h-4 w-4" />
+            Exportar PDF
+          </Button>
+        )}
       </div>
 
       <div ref={contentRef} className="grid gap-6">
