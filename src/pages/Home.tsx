@@ -170,7 +170,7 @@ const Home = () => {
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-8" role="contentinfo">
         <div className="container mx-auto px-4 text-center">
-          <p>&copy; 2025 ROTEIRIZE JÁ. Todos os direitos reservados.</p>
+          <p>&copy; 2025 Roteirize Já.<br/>Todos os direitos reservados.</p>
         </div>
       </footer>
     </div>

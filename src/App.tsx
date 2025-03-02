@@ -12,7 +12,6 @@ import ItineraryDetails from "./pages/ItineraryDetails";
 import Profile from "./pages/Profile";
 import Contact from "./pages/Contact";
 import Layout from "./components/layout/Layout";
-import Teste from "./pages/Teste";
 import PrivateRoute from "./components/auth/PrivateRoute";
 
 function App() {
@@ -25,7 +24,6 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/teste" element={<Teste />} />
 
             {/* Rotas protegidas */}
             <Route
