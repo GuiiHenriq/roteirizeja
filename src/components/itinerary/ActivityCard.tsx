@@ -2,8 +2,10 @@ import { ItineraryActivity } from "@/types/itinerary";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DollarSign, Pencil } from "lucide-react";
 import { Button } from "../ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { EditActivityDialog } from "./EditActivityDialog";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ActivityCardProps {
   title: string;
@@ -13,6 +15,34 @@ interface ActivityCardProps {
 
 export const ActivityCard = ({ title, activity, onActivityUpdate }: ActivityCardProps) => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const { user } = useAuth();
+  const [isSubscribed, setIsSubscribed] = useState(false);
+
+  // Verificar se o usuário tem assinatura ativa
+  useEffect(() => {
+    const checkSubscriptionStatus = async () => {
+      if (!user) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("is_subscribe")
+          .eq("id", user.id)
+          .single();
+        
+        if (error) {
+          console.error("Erro ao verificar status de assinatura:", error);
+          return;
+        }
+        
+        setIsSubscribed(data?.is_subscribe || false);
+      } catch (err) {
+        console.error("Erro ao verificar status de assinatura:", err);
+      }
+    };
+    
+    checkSubscriptionStatus();
+  }, [user]);
 
   return (
     <>
@@ -20,14 +50,16 @@ export const ActivityCard = ({ title, activity, onActivityUpdate }: ActivityCard
         <CardHeader className="pb-2">
           <div className="flex justify-between items-start">
             <CardTitle className="text-lg font-medium">{activity.Name}</CardTitle>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsEditDialogOpen(true)}
-              className="h-8 w-8"
-            >
-              <Pencil className="h-4 w-4" />
-            </Button>
+            {isSubscribed && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsEditDialogOpen(true)}
+                className="h-8 w-8"
+              >
+                <Pencil className="h-4 w-4" />
+              </Button>
+            )}
           </div>
         </CardHeader>
         <CardContent>
@@ -38,12 +70,15 @@ export const ActivityCard = ({ title, activity, onActivityUpdate }: ActivityCard
           </div>
         </CardContent>
       </Card>
-      <EditActivityDialog
-        isOpen={isEditDialogOpen}
-        onClose={() => setIsEditDialogOpen(false)}
-        activity={activity}
-        onSave={onActivityUpdate}
-      />
+
+      {isSubscribed && (
+        <EditActivityDialog
+          isOpen={isEditDialogOpen}
+          onClose={() => setIsEditDialogOpen(false)}
+          activity={activity}
+          onSave={onActivityUpdate}
+        />
+      )}
     </>
   );
 };
