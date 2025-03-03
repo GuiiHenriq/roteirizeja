@@ -11,6 +11,7 @@ import Itineraries from "./pages/Itineraries";
 import ItineraryDetails from "./pages/ItineraryDetails";
 import Profile from "./pages/Profile";
 import Contact from "./pages/Contact";
+import Terms from "./pages/Terms";
 import Layout from "./components/layout/Layout";
 import PrivateRoute from "./components/auth/PrivateRoute";
 
@@ -24,6 +25,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/terms" element={<Terms />} />
 
             {/* Rotas protegidas */}
             <Route

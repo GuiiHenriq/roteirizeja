@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /login
+Disallow: /register
+Disallow: /dashboard
+Disallow: /create-itinerary
+Disallow: /itineraries
+Disallow: /profile
+Disallow: /contact
