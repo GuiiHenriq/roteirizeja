@@ -15,7 +15,7 @@ const Terms = () => {
             <section>
               <h2 className="text-2xl font-bold text-emerald-800 mb-4">1. Introdução</h2>
               <p className="text-gray-700">
-                Este documento estabelece os Termos de Uso e a Política de Privacidade do site de Roteiros de Viagens Personalizados ("Serviço"). 
+                Este documento estabelece os Termos de Uso e a Política de Privacidade do site Roteirize Já. 
                 Ao utilizar nosso serviço, você concorda com os termos aqui estabelecidos.
               </p>
             </section>
@@ -52,7 +52,7 @@ const Terms = () => {
                 4.1. Devido à natureza digital do serviço, não oferecemos reembolsos após a confirmação do pagamento.
               </p>
               <p className="text-gray-700 mb-3">
-                4.2. Caso o serviço não seja entregue corretamente por problemas técnicos, o usuário poderá entrar em contato conosco para que um novo roteiro seja gerado sem custos adicionais.
+                4.2. Caso o serviço não seja entregue corretamente por problemas técnicos, o usuário deverá entrar em contato conosco para que um novo roteiro seja gerado sem custos adicionais.
               </p>
               <p className="text-gray-700">
                 4.3. Reembolsos serão considerados apenas em situações excepcionais, mediante análise da equipe de suporte.
@@ -65,10 +65,10 @@ const Terms = () => {
                 5.1. Os dados de cadastro dos usuários são armazenados e criptografados em nosso banco de dados.
               </p>
               <p className="text-gray-700 mb-3">
-                5.2. Não compartilhamos dados pessoais com terceiros, exceto quando necessário para processar pagamentos (Mercado Pago).
+                5.2. Não compartilhamos dados pessoais com terceiros, exceto quando necessário para processar os pagamentos.
               </p>
               <p className="text-gray-700 mb-3">
-                5.3. Os dados de viagem fornecidos pelo usuário (Data de Ida, Data de Volta, Destino, Orçamento e Interesses) são compartilhados com a OpenAI para a geração dos roteiros personalizados.
+                5.3. Os dados de viagem fornecidos pelo usuário (Data de Ida, Data de Volta, Destino, Orçamento e Interesses) são compartilhados com a inteligência artificial para a geração dos roteiros personalizados.
               </p>
               <p className="text-gray-700">
                 5.4. Nosso site não utiliza cookies ou ferramentas de rastreamento de terceiros.

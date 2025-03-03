@@ -2,9 +2,8 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { corsHeaders } from "../_shared/cors.ts"
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.7.1"
 
-
-const SUPABASE_URL = "https://vqvgiuabjfozqbgpnlwh.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZxdmdpdWFiamZvenFiZ3BubHdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE1MzUwODMsImV4cCI6MjA0NzExMTA4M30.da6ggSqFgyCcIfPI10iM4oDdr0WKlTVVSv9a8PftOaA";
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL")
+const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")
 
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
 const MERCADO_PAGO_ACCESS_TOKEN = Deno.env.get("MERCADO_PAGO_ACCESS_TOKEN")

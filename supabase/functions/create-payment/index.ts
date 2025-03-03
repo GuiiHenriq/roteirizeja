@@ -3,9 +3,8 @@ import { corsHeaders } from "../_shared/cors.ts"
 import { crypto } from "https://deno.land/std@0.168.0/crypto/mod.ts"
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.7.1"
 
-const supabaseUrl = "https://vqvgiuabjfozqbgpnlwh.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZxdmdpdWFiamZvenFiZ3BubHdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE1MzUwODMsImV4cCI6MjA0NzExMTA4M30.da6ggSqFgyCcIfPI10iM4oDdr0WKlTVVSv9a8PftOaA";
-// Obtenha a service_role key do seu projeto Supabase (Dashboard > Settings > API)
+const supabaseUrl = Deno.env.get("SUPABASE_URL")
+const supabaseKey = Deno.env.get("SUPABASE_ANON_KEY")
 const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
 
 const MERCADO_PAGO_ACCESS_TOKEN = Deno.env.get("MERCADO_PAGO_ACCESS_TOKEN")
