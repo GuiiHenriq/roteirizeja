@@ -12,6 +12,7 @@ import ItineraryDetails from "./pages/ItineraryDetails";
 import Profile from "./pages/Profile";
 import Contact from "./pages/Contact";
 import Terms from "./pages/Terms";
+import NotFound from "./pages/NotFound";
 import Layout from "./components/layout/Layout";
 import PrivateRoute from "./components/auth/PrivateRoute";
 
@@ -76,6 +77,8 @@ function App() {
                 </PrivateRoute>
               }
             />
+            
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>
         <Toaster />

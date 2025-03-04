@@ -33,7 +33,7 @@ const Terms = () => {
             <section>
               <h2 className="text-2xl font-bold text-emerald-800 mb-4">3. Planos, Pagamento e Acesso ao Serviço</h2>
               <p className="text-gray-700 mb-3">
-                3.1. O site oferece um plano gratuito e um plano pago de R$ 9,90, que permite a geração de até 10 roteiros.
+                3.1. O site oferece um plano gratuito limitado em 1 roteiro e um plano pago que permite a geração de até 10 roteiros.
               </p>
               <p className="text-gray-700 mb-3">
                 3.2. Quando o limite de 10 roteiros é atingido, o usuário precisará renovar sua assinatura para continuar utilizando o serviço.

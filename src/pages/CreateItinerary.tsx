@@ -223,7 +223,7 @@ const CreateItinerary = () => {
             <AlertDescription className="text-sm">
               {profile?.is_subscribe
                 ? `Ops! Você já criou todos os seus ${ITINERARIES_PAID} roteiros. Assine o plano Básico novamente para liberar mais ${ITINERARIES_PAID} roteiros!`
-                : `Ops! Você já criou todos os seus ${ITINERARIES_FREE} roteiros gratuitos. Quer continuar explorando o mundo? Escolha um de nossos planos abaixo!`}
+                : `Ops! Você já criou o seu roteiro gratuito. Quer continuar explorando o mundo? Escolha um de nossos planos abaixo!`}
             </AlertDescription>
           </Alert>
           <div className="grid gap-6 md:grid-cols-2">
