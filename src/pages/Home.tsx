@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -11,25 +11,45 @@ import {
   Smartphone,
   Globe,
   Calendar,
-  ArrowRight,
   CheckCircle2,
   Sparkles,
+  ArrowRight,
 } from "lucide-react";
 import Hero from "@/components/home/Hero";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 const Home = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [hoveredFeature, setHoveredFeature] = useState<number | null>(null);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  
+  const recursosRef = useRef<HTMLElement>(null);
+  const comoFuncionaRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     if (user) {
       navigate("/dashboard");
     }
   }, [user, navigate]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Mostrar/ocultar botão de voltar ao topo
+      setShowScrollTop(window.scrollY > 500);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
 
   const handleGetStarted = () => {
     navigate("/register");
@@ -63,7 +83,12 @@ const Home = () => {
       <Hero />
 
       {/* Proposta de Valor */}
-      <section className="container mx-auto px-4 py-16" aria-labelledby="value-proposition">
+      <section 
+        className="container mx-auto px-4 py-16" 
+        id="recursos" 
+        aria-labelledby="value-proposition"
+        ref={recursosRef}
+      >
         <motion.div 
           className="text-center mb-12"
           initial={{ opacity: 0, y: 20 }}
@@ -280,7 +305,12 @@ const Home = () => {
       </section>
 
       {/* Como Funciona */}
-      <section className="bg-gradient-to-br from-emerald-50 to-indigo-100 py-16" aria-labelledby="how-it-works">
+      <section 
+        className="bg-gradient-to-br from-emerald-50 to-indigo-100 py-16" 
+        id="como-funciona" 
+        aria-labelledby="how-it-works"
+        ref={comoFuncionaRef}
+      >
         <div className="container mx-auto px-4">
           <motion.div 
             className="text-center mb-12"
