@@ -32,7 +32,7 @@ const Home = () => {
   }, [user, navigate]);
 
   const handleGetStarted = () => {
-    navigate("/signup");
+    navigate("/register");
   };
 
   // Animação para os ícones
@@ -394,6 +394,8 @@ const Home = () => {
         <div className="container mx-auto px-4 text-center">
           <p>&copy; 2025 Roteirize Já.<br/>Todos os direitos reservados.</p>
           <div className="mt-4 flex justify-center space-x-4 text-sm">
+            <a href="/login" className="text-gray-400 hover:text-white transition">Fazer login</a>
+            <a href="/register" className="text-gray-400 hover:text-white transition">Criar conta</a>
             <a href="/terms" className="text-gray-400 hover:text-white transition">Termos e Condições</a>
           </div>
         </div>
