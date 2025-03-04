@@ -17,6 +17,9 @@ import {
 import { CheckoutButton } from "@/components/CheckoutButton";
 import { useEffect, useState } from "react";
 
+const ITINERARIES_FREE = parseInt(import.meta.env.VITE_ITINERARIES_FREE);
+const ITINERARIES_PAID = parseInt(import.meta.env.VITE_ITINERARIES_PAID);
+
 const CreateItinerary = () => {
   const { user } = useAuth();
   const [hasApprovedPayment, setHasApprovedPayment] = useState(false);
@@ -90,7 +93,7 @@ const CreateItinerary = () => {
     );
   }
 
-  const MAX_ITINERARIES = profile?.is_subscribe ? 10 : 3;
+  const MAX_ITINERARIES = profile?.is_subscribe ? ITINERARIES_PAID : ITINERARIES_FREE;
 
   const hasReachedLimit = (profile?.count_itineraries || 0) >= MAX_ITINERARIES;
 
@@ -145,11 +148,11 @@ const CreateItinerary = () => {
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="text-center text-muted-foreground mb-6">
-          Compra única para criar até 10 roteiros com recursos exclusivos
+          Compra única para criar até {ITINERARIES_PAID} roteiros com recursos exclusivos
         </p>
         <ul className="space-y-3">
           {[
-            "Criar até 10 roteiros",
+            `Criar até ${ITINERARIES_PAID} roteiros`,
             "Suporte prioritário",
             "Exportar em PDF",
             "Editar qualquer detalhe do roteiro",
@@ -219,8 +222,8 @@ const CreateItinerary = () => {
             <AlertCircle className="h-4 w-4" />
             <AlertDescription className="text-sm">
               {profile?.is_subscribe
-                ? "Ops! Você já criou todos os seus 10 roteiros. Assine o plano Básico novamente para liberar mais 10 roteiros!"
-                : "Ops! Você já criou todos os seus 3 roteiros gratuitos. Quer continuar explorando o mundo? Escolha um de nossos planos abaixo!"}
+                ? `Ops! Você já criou todos os seus ${ITINERARIES_PAID} roteiros. Assine o plano Básico novamente para liberar mais ${ITINERARIES_PAID} roteiros!`
+                : `Ops! Você já criou todos os seus ${ITINERARIES_FREE} roteiros gratuitos. Quer continuar explorando o mundo? Escolha um de nossos planos abaixo!`}
             </AlertDescription>
           </Alert>
           <div className="grid gap-6 md:grid-cols-2">
