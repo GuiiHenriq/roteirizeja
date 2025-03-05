@@ -15,6 +15,7 @@ import Terms from "./pages/Terms";
 import NotFound from "./pages/NotFound";
 import Layout from "./components/layout/Layout";
 import PrivateRoute from "./components/auth/PrivateRoute";
+import PublicRoute from "./components/auth/PublicRoute";
 
 function App() {
   return (
@@ -22,10 +23,33 @@ function App() {
       <AuthProvider>
         <Layout>
           <Routes>
-            {/* Rotas públicas */}
-            <Route path="/" element={<Home />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/login" element={<Login />} />
+            {/* Rotas públicas protegidas contra usuários autenticados */}
+            <Route 
+              path="/" 
+              element={
+                <PublicRoute>
+                  <Home />
+                </PublicRoute>
+              } 
+            />
+            <Route 
+              path="/register" 
+              element={
+                <PublicRoute>
+                  <Register />
+                </PublicRoute>
+              } 
+            />
+            <Route 
+              path="/login" 
+              element={
+                <PublicRoute>
+                  <Login />
+                </PublicRoute>
+              } 
+            />
+            
+            {/* Rota pública que pode ser acessada por todos */}
             <Route path="/terms" element={<Terms />} />
 
             {/* Rotas protegidas */}

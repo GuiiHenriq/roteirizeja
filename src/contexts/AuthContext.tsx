@@ -54,7 +54,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       await authService.signIn(email, password);
       toast.success('Login realizado com sucesso!');
-      navigate('/');
+      navigate('/dashboard');
     } catch (error: any) {
       console.error('Erro no login:', error);
       toast.error(error.message);

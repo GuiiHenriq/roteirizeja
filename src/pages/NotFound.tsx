@@ -1,9 +1,20 @@
 import { useNavigate } from "react-router-dom";
 import { MapPin, Home, ArrowLeft, Compass } from "lucide-react";
 import { motion } from "framer-motion";
+import { useAuth } from "@/contexts/AuthContext";
 
 const NotFound = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  // Função para redirecionar para a página inicial ou dashboard
+  const handleHomeNavigation = () => {
+    if (user) {
+      navigate("/dashboard");
+    } else {
+      navigate("/");
+    }
+  };
 
   return (
     <div className="flex-grow flex items-center justify-center p-6 md:p-8">
@@ -75,7 +86,7 @@ const NotFound = () => {
                   transition={{ duration: 0.5, delay: 0.4 }}
                 >
                   <motion.button
-                    onClick={() => navigate("/")}
+                    onClick={handleHomeNavigation}
                     className="bg-emerald-600 text-white px-6 py-3 rounded-xl hover:bg-emerald-700 transition flex items-center justify-center shadow-lg shadow-emerald-600/20"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -108,7 +119,7 @@ const NotFound = () => {
           <h2 className="text-lg md:text-xl font-semibold mb-4 text-gray-900">Talvez você esteja procurando por:</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
             <motion.button
-              onClick={() => navigate("/")}
+              onClick={handleHomeNavigation}
               className="text-left p-4 md:p-6 rounded-lg hover:bg-gray-50 transition flex items-start"
               whileHover={{ x: 5 }}
             >
