@@ -2,6 +2,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { Session } from '@supabase/supabase-js';
 import { toast } from 'sonner';
 import { userSchema, checkRateLimit, sanitizeInput } from '@/utils/validation';
+import { initCSRFProtection, addCSRFToken, clearCSRFToken } from '@/utils/security';
+
+// Inicializa proteção CSRF
+initCSRFProtection();
 
 export const authService = {
   signUp: async (email: string, password: string, name: string) => {
@@ -30,6 +34,11 @@ export const authService = {
         throw new Error('Este e-mail já está cadastrado.');
       }
 
+      // Adiciona token CSRF
+      const secureData = addCSRFToken({
+        name: validatedData.name,
+      });
+
       const { data, error } = await supabase.auth.signUp({
         email: validatedData.email,
         password: validatedData.password,
@@ -44,17 +53,12 @@ export const authService = {
       if (error) throw error;
 
       if (data.user) {
-        const { error: updateError } = await supabase.auth.updateUser({
-          data: { name: validatedData.name }
+        await supabase.auth.updateUser({
+          data: { 
+            name: validatedData.name,
+            last_login: new Date().toISOString(),
+          }
         });
-
-        if (updateError) throw updateError;
-
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .insert([{ id: data.user.id, name: validatedData.name }]);
-
-        if (profileError) throw profileError;
       }
 
       return data;
@@ -73,6 +77,9 @@ export const authService = {
 
       // Sanitização
       const sanitizedEmail = sanitizeInput(email);
+
+      // Gera novo token CSRF para esta sessão
+      const secureData = addCSRFToken({});
 
       const { data, error } = await supabase.auth.signInWithPassword({
         email: sanitizedEmail,
@@ -98,6 +105,15 @@ export const authService = {
         throw new Error('Por favor, confirme seu e-mail antes de fazer login.');
       }
 
+      // Atualiza os dados do usuário sem o token CSRF
+      if (data.user) {
+        await supabase.auth.updateUser({
+          data: { 
+            last_login: new Date().toISOString(),
+          }
+        });
+      }
+
       return data;
     } catch (error: any) {
       throw error;
@@ -105,8 +121,15 @@ export const authService = {
   },
 
   signOut: async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      
+      // Limpa o token CSRF ao fazer logout
+      clearCSRFToken();
+    } catch (error) {
+      throw error;
+    }
   },
 
   refreshSession: async () => {

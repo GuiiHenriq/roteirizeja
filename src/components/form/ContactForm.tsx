@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { sanitizeInput, checkRateLimit, withTimeout } from "@/middleware/SecurityMiddleware";
+import { sanitizeInput, checkRateLimit } from "@/utils/validation";
+import { withTimeout } from "@/middleware/SecurityMiddleware";
+import { initCSRFProtection, addCSRFToken } from "@/utils/security";
 
 const subjects = [
   { value: "reclamacao", label: "Reclamação" },
@@ -33,11 +35,35 @@ export function ContactForm() {
     message: "",
   });
 
-const handleSubmit = async (e: React.FormEvent) => {
+  // Inicializa proteção CSRF quando o componente é montado
+  useEffect(() => {
+    initCSRFProtection();
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Validação básica do lado do cliente
+    if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+      toast.error("Por favor, preencha todos os campos obrigatórios");
+      return;
+    }
+
+    // Validação de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast.error("Por favor, insira um endereço de email válido");
+      return;
+    }
+
+    // Validação de tamanho
+    if (formData.message.length < 10) {
+      toast.error("A mensagem deve ter pelo menos 10 caracteres");
+      return;
+    }
+
     // Rate limiting check
-    if (!checkRateLimit(`contact_${user?.id}`, 5, 300000)) { // 5 requests per 5 minutes
+    if (!checkRateLimit(`contact_${user?.id || formData.email}`, 5, 300000)) { // 5 requests per 5 minutes
       toast.error("Muitas tentativas. Por favor, aguarde alguns minutos.");
       return;
     }
@@ -53,12 +79,16 @@ const handleSubmit = async (e: React.FormEvent) => {
         message: sanitizeInput(formData.message),
       };
 
+      // Adiciona token CSRF aos dados para validação no frontend
+      // mas não enviamos para o banco de dados
+      const secureData = addCSRFToken(sanitizedData);
+
       // Insert contact with timeout
       const contactPromise = supabase
         .from("contacts")
         .insert({
           user_id: user?.id,
-          ...sanitizedData,
+          ...sanitizedData, // Enviamos apenas os dados sanitizados sem o token CSRF
         })
         .select()
         .single();
@@ -73,7 +103,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       // Send email with timeout
       const emailPromise = supabase.functions.invoke("send-contact", {
         body: {
-          ...sanitizedData,
+          ...secureData, // Inclui o token CSRF
           userId: user?.id,
           contactId: contactData.id,
         },

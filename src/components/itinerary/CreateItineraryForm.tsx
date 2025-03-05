@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,7 +9,9 @@ import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
 import { DatePickerInput } from "@/components/form/DatePickerInput";
 import { InterestsSelect } from "@/components/form/InterestsSelect";
-import { sanitizeInput, checkRateLimit, withTimeout } from "@/middleware/SecurityMiddleware";
+import { sanitizeInput, checkRateLimit } from "@/utils/validation";
+import { withTimeout } from "@/middleware/SecurityMiddleware";
+import { initCSRFProtection, addCSRFToken } from "@/utils/security";
 
 interface CreateItineraryFormProps {
   itineraryCount: number;
@@ -30,6 +32,11 @@ export const CreateItineraryForm = ({
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Inicializa proteção CSRF quando o componente é montado
+  useEffect(() => {
+    initCSRFProtection();
+  }, []);
+
   const toggleInterest = (interest: string) => {
     const sanitizedInterest = sanitizeInput(interest);
     setSelectedInterests(current =>
@@ -48,8 +55,37 @@ export const CreateItineraryForm = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Validação básica do lado do cliente
+    if (!destination.trim()) {
+      toast.error("Por favor, informe o destino da viagem");
+      return;
+    }
+
     if (!startDate || !endDate) {
       toast.error("Por favor, selecione as datas de ida e volta");
+      return;
+    }
+
+    // Validação de datas
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    if (startDate < today) {
+      toast.error("A data de ida não pode ser no passado");
+      return;
+    }
+    
+    if (endDate < startDate) {
+      toast.error("A data de volta deve ser posterior à data de ida");
+      return;
+    }
+
+    // Validação de duração máxima
+    const maxDays = 30; // Máximo de 30 dias de viagem
+    const tripDuration = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+    
+    if (tripDuration > maxDays) {
+      toast.error(`A duração máxima da viagem é de ${maxDays} dias`);
       return;
     }
 
@@ -59,7 +95,7 @@ export const CreateItineraryForm = ({
     }
 
     // Rate limiting check
-    if (!checkRateLimit(`create_itinerary_${user?.id}`, 3, 300000)) { // 3 requests per 5 minutes
+    if (!checkRateLimit(`create_itinerary_${user?.id || 'anonymous'}`, 3, 300000)) { // 3 requests per 5 minutes
       toast.error("Muitas tentativas. Por favor, aguarde alguns minutos.");
       return;
     }
@@ -71,14 +107,25 @@ export const CreateItineraryForm = ({
       const returnDate = formatDate(endDate);
       const sanitizedDestination = sanitizeInput(destination);
 
+      // Prepara dados com proteção CSRF para o frontend
+      const secureData = addCSRFToken({
+        destination: sanitizedDestination,
+        departureDate,
+        returnDate,
+        interests: selectedInterests.map(sanitizeInput).join(", ")
+      });
+
+      // Dados para enviar para a API (sem o token CSRF)
+      const apiData = {
+        destination: sanitizedDestination,
+        departureDate,
+        returnDate,
+        interests: selectedInterests.map(sanitizeInput).join(", ")
+      };
+
       // Generate itinerary with timeout
       const generationPromise = supabase.functions.invoke('generate-itinerary', {
-        body: {
-          destination: sanitizedDestination,
-          departureDate,
-          returnDate,
-          interests: selectedInterests.map(sanitizeInput).join(", ")
-        }
+        body: apiData // Enviamos os dados sem o token CSRF
       });
 
       const { data: generatedItinerary, error: generationError } = await withTimeout(
@@ -95,7 +142,7 @@ export const CreateItineraryForm = ({
         departure_date: departureDate,
         return_date: returnDate,
         interests: selectedInterests.map(sanitizeInput).join(", "),
-        itinerary_data: generatedItinerary
+        itinerary_data: generatedItinerary,
       });
 
       const { error: saveError } = await withTimeout(
