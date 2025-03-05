@@ -27,8 +27,8 @@ export const CreateItineraryForm = ({
   const navigate = useNavigate();
   const { user } = useAuth();
   const [destination, setDestination] = useState("");
-  const [startDate, setStartDate] = useState<Date>();
-  const [endDate, setEndDate] = useState<Date>();
+  const [startDate, setStartDate] = useState<Date>(new Date());
+  const [endDate, setEndDate] = useState<Date>(new Date());
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -52,6 +52,68 @@ export const CreateItineraryForm = ({
     return localDate.toISOString().split('T')[0];
   };
 
+  // Função para validar o período entre as datas
+  const validateDateRange = (start: Date, end: Date) => {
+    const maxDays = 30; // Máximo de 30 dias de viagem
+    const tripDuration = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+    
+    if (tripDuration > maxDays) {
+      toast.error(`A duração máxima da viagem é de ${maxDays} dias`);
+      return false;
+    }
+    
+    return true;
+  };
+
+  // Função para validar se a data de início é válida
+  const validateStartDate = (date: Date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    if (date < today) {
+      toast.error("A data de ida não pode ser no passado");
+      return false;
+    }
+    
+    return true;
+  };
+
+  // Função para validar se a data de retorno é válida
+  const validateEndDate = (start: Date, end: Date) => {
+    if (end < start) {
+      toast.error("A data de volta deve ser posterior à data de ida");
+      return false;
+    }
+    
+    return validateDateRange(start, end);
+  };
+
+  // Atualiza a função de alteração da data de retorno para incluir a validação
+  const handleEndDateChange = (date: Date | undefined) => {
+    if (!date) return;
+    
+    if (validateEndDate(startDate, date)) {
+      setEndDate(date);
+    }
+  };
+  
+  // Atualiza a função de alteração da data de início para ajustar a data de retorno se necessário
+  const handleStartDateChange = (date: Date | undefined) => {
+    if (!date) return;
+    
+    if (validateStartDate(date)) {
+      setStartDate(date);
+      
+      // Se a nova data de início tornar o período inválido, ajusta a data de retorno
+      if (!validateDateRange(date, endDate)) {
+        // Ajusta a data de retorno para o máximo permitido
+        const maxEndDate = new Date(date);
+        maxEndDate.setDate(date.getDate() + 30);
+        setEndDate(maxEndDate);
+      }
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -66,26 +128,8 @@ export const CreateItineraryForm = ({
       return;
     }
 
-    // Validação de datas
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    
-    if (startDate < today) {
-      toast.error("A data de ida não pode ser no passado");
-      return;
-    }
-    
-    if (endDate < startDate) {
-      toast.error("A data de volta deve ser posterior à data de ida");
-      return;
-    }
-
-    // Validação de duração máxima
-    const maxDays = 30; // Máximo de 30 dias de viagem
-    const tripDuration = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
-    
-    if (tripDuration > maxDays) {
-      toast.error(`A duração máxima da viagem é de ${maxDays} dias`);
+    // Validação de datas usando as funções de validação
+    if (!validateStartDate(startDate) || !validateEndDate(startDate, endDate)) {
       return;
     }
 
@@ -197,12 +241,12 @@ export const CreateItineraryForm = ({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <DatePickerInput
           date={startDate}
-          setDate={setStartDate}
+          setDate={handleStartDateChange}
           label="Data de Ida"
         />
         <DatePickerInput
           date={endDate}
-          setDate={setEndDate}
+          setDate={handleEndDateChange}
           label="Data de Volta"
         />
       </div>
