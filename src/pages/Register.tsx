@@ -4,20 +4,20 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { UserPlus } from "lucide-react";
+import { UserPlus, CheckCircle2, Mail, Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 const Register = () => {
-  const { signUp } = useAuth();
+  const { signUp, resendConfirmationEmail } = useAuth();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
+  const [isResendingEmail, setIsResendingEmail] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const validatePassword = (password: string) => {
@@ -82,29 +82,89 @@ const Register = () => {
     }
   };
 
+  const handleResendEmail = async () => {
+    setIsResendingEmail(true);
+    try {
+      await resendConfirmationEmail(email);
+    } finally {
+      setIsResendingEmail(false);
+    }
+  };
+
   if (isRegistered) {
     return (
       <div className="container max-w-lg mx-auto p-4">
-        <Card className="p-6">
-          <div className="text-center space-y-4">
-            <CheckCircle2 className="w-16 h-16 text-green-500 mx-auto" />
-            <h1 className="text-2xl font-bold">
+        <Card className="p-8 border-2 border-emerald-500 shadow-lg">
+          <div className="text-center space-y-6">
+            <div className="bg-emerald-100 p-4 rounded-full w-24 h-24 mx-auto flex items-center justify-center">
+              <CheckCircle2 className="w-16 h-16 text-emerald-600" />
+            </div>
+            
+            <h1 className="text-2xl font-bold text-emerald-700">
               Cadastro realizado com sucesso!
             </h1>
-            <p className="text-gray-600">
-              Enviamos um e-mail de confirmação para <strong>{email}</strong>.
-              Por favor, verifique sua caixa de entrada e clique no link de
-              confirmação para ativar sua conta.
-            </p>
-            <Alert>
-              <AlertDescription>
-                Não se esqueça de verificar também sua caixa de spam caso não
-                encontre o e-mail.
+            
+            <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 text-left">
+              <h2 className="font-bold text-lg text-yellow-700">ATENÇÃO: Confirmação necessária</h2>
+              <p className="text-gray-700 mt-2">
+                Enviamos um e-mail de confirmação para <strong className="text-black">{email}</strong>.
+              </p>
+              <p className="text-gray-700 mt-2">
+                <strong>Você precisa confirmar seu e-mail antes de fazer login.</strong> Sem esta confirmação, 
+                não será possível acessar sua conta.
+              </p>
+            </div>
+            
+            <div className="space-y-4 text-left">
+              <h3 className="font-semibold text-lg">Próximos passos:</h3>
+              <ol className="list-decimal pl-5 space-y-2">
+                <li>Abra seu e-mail</li>
+                <li>Procure por um e-mail de "Roteirize Já"</li>
+                <li>Clique no botão ou link de confirmação no e-mail</li>
+                <li>Após confirmar, você poderá fazer login na plataforma</li>
+              </ol>
+            </div>
+            
+            <Alert className="bg-blue-50 border border-blue-200">
+              <AlertDescription className="text-blue-700">
+                <strong>Dica:</strong> Não se esqueça de verificar também sua caixa de spam ou promoções 
+                caso não encontre o e-mail na caixa de entrada.
               </AlertDescription>
             </Alert>
-            <Link to="/login">
-              <Button className="mt-4">Voltar para o Login</Button>
-            </Link>
+            
+            <div className="pt-4 flex flex-col gap-3">
+              <Button 
+                variant="outline" 
+                className="border-emerald-500 text-emerald-700 hover:bg-emerald-50 w-full"
+                onClick={() => window.location.href = `mailto:${email}`}
+              >
+                <Mail className="mr-2 h-4 w-4" />
+                Abrir meu e-mail
+              </Button>
+              <Button
+                variant="outline"
+                className="border-blue-500 text-blue-700 hover:bg-blue-50 w-full"
+                onClick={handleResendEmail}
+                disabled={isResendingEmail}
+              >
+                {isResendingEmail ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Reenviando...
+                  </>
+                ) : (
+                  <>
+                    <Mail className="mr-2 h-4 w-4" />
+                    Reenviar e-mail
+                  </>
+                )}
+              </Button>
+              <Link to="/login" className="w-full">
+                <Button className="bg-emerald-600 hover:bg-emerald-700 w-full">
+                  Ir para o Login
+                </Button>
+              </Link>
+            </div>
           </div>
         </Card>
       </div>

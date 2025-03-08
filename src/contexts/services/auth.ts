@@ -74,7 +74,7 @@ export const authService = {
 
         if (profileError) {
           console.error('Erro ao criar perfil:', profileError);
-          throw new Error('Erro ao criar perfil do usuário');
+          //throw new Error('Erro ao criar perfil do usuário');
         }
       }
 
@@ -188,5 +188,32 @@ export const authService = {
       console.error('Error updating user name:', error);
       throw new Error(error.message || 'Erro ao atualizar nome do usuário');
     }
-  }
+  },
+
+  resendConfirmationEmail: async (email: string) => {
+    try {
+      // Rate limiting
+      if (!checkRateLimit(`resend_${email}`, 3, 300000)) { // 3 tentativas a cada 5 minutos
+        throw new Error('Muitas tentativas. Tente novamente em alguns minutos.');
+      }
+
+      // Sanitização
+      const sanitizedEmail = sanitizeInput(email);
+      
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: sanitizedEmail,
+        options: {
+          emailRedirectTo: `${window.location.origin}/login`,
+        },
+      });
+
+      if (error) throw error;
+      
+      return true;
+    } catch (error: any) {
+      console.error('Erro ao reenviar e-mail:', error);
+      throw new Error(error.message || 'Erro ao reenviar e-mail de confirmação');
+    }
+  },
 };

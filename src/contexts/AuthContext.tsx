@@ -39,11 +39,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const resendConfirmationEmail = async (email: string) => {
+    try {
+      const result = await authService.resendConfirmationEmail(email);
+      toast.success('E-mail de confirmação reenviado com sucesso!');
+      return result;
+    } catch (error: any) {
+      console.error('Erro ao reenviar e-mail:', error);
+      toast.error(error.message);
+      return false;
+    }
+  };
+
   const signUp = async (email: string, password: string, name: string) => {
     try {
       await authService.signUp(email, password, name);
-      toast.success('Cadastro realizado com sucesso! Verifique seu email.');
-      navigate('/login');
     } catch (error: any) {
       console.error('Erro no cadastro:', error);
       toast.error(error.message);
@@ -82,7 +92,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signUp, 
         signIn, 
         signOut, 
-        refreshSession, 
+        refreshSession,
+        resendConfirmationEmail,
         isLoading 
       }}
     >
