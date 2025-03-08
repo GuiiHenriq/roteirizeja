@@ -59,6 +59,23 @@ export const authService = {
             last_login: new Date().toISOString(),
           }
         });
+
+        // Inserir dados na tabela profiles
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert({
+            id: data.user.id,
+            name: validatedData.name,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            count_itineraries: 0,
+            is_subscribe: false
+          });
+
+        if (profileError) {
+          console.error('Erro ao criar perfil:', profileError);
+          throw new Error('Erro ao criar perfil do usuário');
+        }
       }
 
       return data;
