@@ -2,6 +2,7 @@ export type ProfilesTable = {
   Row: {
     id: string;
     name: string | null;
+    email: string | null;
     created_at: string;
     updated_at: string;
     count_itineraries: number;
@@ -10,6 +11,7 @@ export type ProfilesTable = {
   Insert: {
     id: string;
     name?: string | null;
+    email?: string | null;
     created_at?: string;
     updated_at?: string;
     count_itineraries?: number;
@@ -18,6 +20,7 @@ export type ProfilesTable = {
   Update: {
     id?: string;
     name?: string | null;
+    email?: string | null;
     created_at?: string;
     updated_at?: string;
     count_itineraries?: number;
