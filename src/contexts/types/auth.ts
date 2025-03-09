@@ -7,5 +7,6 @@ export interface AuthContextType {
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   refreshSession: () => Promise<void>;
+  resendConfirmationEmail: (email: string) => Promise<boolean>;
   isLoading: boolean;
 }

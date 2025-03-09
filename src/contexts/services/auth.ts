@@ -3,6 +3,7 @@ import { Session } from '@supabase/supabase-js';
 import { toast } from 'sonner';
 import { userSchema, checkRateLimit, sanitizeInput } from '@/utils/validation';
 import { initCSRFProtection, addCSRFToken, clearCSRFToken } from '@/utils/security';
+import { createUserProfile, savePendingProfile } from '@/utils/profileManager';
 
 // Inicializa proteção CSRF
 initCSRFProtection();
@@ -60,21 +61,22 @@ export const authService = {
           }
         });
 
-        // Inserir dados na tabela profiles
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .insert({
+        // Tentar criar o perfil do usuário usando o gerenciador de perfis
+        const profileCreated = await createUserProfile(
+          data.user.id,
+          validatedData.name,
+          validatedData.email,
+          new Date().toISOString()
+        );
+
+        // Se não conseguir criar o perfil, salvar como pendente para tentar mais tarde
+        if (!profileCreated) {
+          savePendingProfile({
             id: data.user.id,
             name: validatedData.name,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-            count_itineraries: 0,
-            is_subscribe: false
+            email: validatedData.email,
+            created_at: new Date().toISOString()
           });
-
-        if (profileError) {
-          console.error('Erro ao criar perfil:', profileError);
-          throw new Error('Erro ao criar perfil do usuário');
         }
       }
 
@@ -188,5 +190,32 @@ export const authService = {
       console.error('Error updating user name:', error);
       throw new Error(error.message || 'Erro ao atualizar nome do usuário');
     }
-  }
+  },
+
+  resendConfirmationEmail: async (email: string) => {
+    try {
+      // Rate limiting
+      if (!checkRateLimit(`resend_${email}`, 3, 300000)) { // 3 tentativas a cada 5 minutos
+        throw new Error('Muitas tentativas. Tente novamente em alguns minutos.');
+      }
+
+      // Sanitização
+      const sanitizedEmail = sanitizeInput(email);
+      
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: sanitizedEmail,
+        options: {
+          emailRedirectTo: `${window.location.origin}/login`,
+        },
+      });
+
+      if (error) throw error;
+      
+      return true;
+    } catch (error: any) {
+      console.error('Erro ao reenviar e-mail:', error);
+      throw new Error(error.message || 'Erro ao reenviar e-mail de confirmação');
+    }
+  },
 };
