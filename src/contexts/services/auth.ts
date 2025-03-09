@@ -3,7 +3,7 @@ import { Session } from '@supabase/supabase-js';
 import { toast } from 'sonner';
 import { userSchema, checkRateLimit, sanitizeInput } from '@/utils/validation';
 import { initCSRFProtection, addCSRFToken, clearCSRFToken } from '@/utils/security';
-import { createUserProfile, savePendingProfile } from '@/utils/profileManager';
+import { createProfileWithServiceRole } from '@/integrations/supabase/serviceClient';
 
 // Inicializa proteção CSRF
 initCSRFProtection();
@@ -61,22 +61,16 @@ export const authService = {
           }
         });
 
-        // Tentar criar o perfil do usuário usando o gerenciador de perfis
-        const profileCreated = await createUserProfile(
+        // Tentar criar o perfil do usuário usando o serviceClient
+        const profileCreated = await createProfileWithServiceRole(
           data.user.id,
           validatedData.name,
           validatedData.email,
           new Date().toISOString()
         );
 
-        // Se não conseguir criar o perfil, salvar como pendente para tentar mais tarde
         if (!profileCreated) {
-          savePendingProfile({
-            id: data.user.id,
-            name: validatedData.name,
-            email: validatedData.email,
-            created_at: new Date().toISOString()
-          });
+          console.warn('Não foi possível criar o perfil do usuário imediatamente. Será tentado novamente mais tarde.');
         }
       }
 

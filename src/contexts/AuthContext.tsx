@@ -4,7 +4,7 @@ import { Session, User } from '@supabase/supabase-js';
 import { toast } from 'sonner';
 import { AuthContextType } from './types/auth';
 import { authService } from './services/auth';
-import { processProfileQueue, ensureUserProfile } from '@/utils/profileManager';
+import { processPendingProfiles } from '@/integrations/supabase/serviceClient';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -21,8 +21,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(session?.user ?? null);
       setIsLoading(false);
       
-      // Processar fila de perfis pendentes ao iniciar
-      processProfileQueue();
+      // Processar perfis pendentes ao iniciar
+      processPendingProfiles();
     });
 
     // Inscreve para mudanças de autenticação
@@ -31,17 +31,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(session?.user ?? null);
       setIsLoading(false);
       
-      // Se o usuário estiver logado, garantir que ele tenha um perfil
+      // Se o usuário estiver logado, processar perfis pendentes
       if (session?.user) {
-        const userName = session.user.user_metadata?.name || 'Usuário';
-        const userEmail = session.user.email || '';
-        ensureUserProfile(session.user.id, userName, userEmail);
+        processPendingProfiles();
       }
     });
 
-    // Configurar um intervalo para processar a fila periodicamente
+    // Configurar um intervalo para processar perfis pendentes periodicamente
     const intervalId = setInterval(() => {
-      processProfileQueue();
+      processPendingProfiles();
     }, 60000); // Tentar a cada minuto
 
     return () => {
@@ -85,8 +83,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       toast.success('Login realizado com sucesso!');
       navigate('/dashboard');
       
-      // Processar fila de perfis pendentes após login bem-sucedido
-      processProfileQueue();
+      // Processar perfis pendentes após login bem-sucedido
+      processPendingProfiles();
     } catch (error: any) {
       console.error('Erro no login:', error);
       toast.error(error.message);
