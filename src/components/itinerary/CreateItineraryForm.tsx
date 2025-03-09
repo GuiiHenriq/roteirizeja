@@ -164,7 +164,8 @@ export const CreateItineraryForm = ({
         destination: sanitizedDestination,
         departureDate,
         returnDate,
-        interests: selectedInterests.map(sanitizeInput).join(", ")
+        interests: selectedInterests.map(sanitizeInput).join(", "),
+        userId: user?.id // Adicionando o userId para a função Edge Function
       };
 
       // Generate itinerary with timeout
@@ -195,19 +196,6 @@ export const CreateItineraryForm = ({
       );
 
       if (saveError) throw saveError;
-
-      // Increment count with timeout
-      const updatePromise = supabase
-        .from('profiles')
-        .update({ count_itineraries: itineraryCount + 1 })
-        .eq('id', user?.id);
-
-      const { error: updateError } = await withTimeout(
-        updatePromise,
-        5000 // 5 second timeout
-      );
-
-      if (updateError) throw updateError;
 
       toast.success('Roteiro gerado com sucesso!');
       navigate('/itineraries');

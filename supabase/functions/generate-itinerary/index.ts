@@ -1,10 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { corsHeaders } from '../_shared/cors.ts';
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -12,8 +9,13 @@ serve(async (req) => {
   }
 
   try {
-    const { destination, departureDate, returnDate, interests } = await req.json();
-    console.log('Generating itinerary for:', { destination, departureDate, returnDate, interests });
+    const { destination, departureDate, returnDate, interests, userId } = await req.json();
+    console.log('Generating itinerary for:', { destination, departureDate, returnDate, interests, userId });
+
+    // Criar cliente Supabase com a chave anônima
+    const supabaseUrl = Deno.env.get('SUPABASE_URL') || '';
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY') || '';
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
     const systemPrompt = `Assistente de viagens especializado em roteiros detalhados em PT-BR.
     Regras:
@@ -126,6 +128,38 @@ serve(async (req) => {
 
     const itineraryData = JSON.parse(data.choices[0].message.function_call.arguments);
     console.log('Parsed itinerary data:', itineraryData);
+
+    // Se temos um userId, atualizar o contador de roteiros
+    if (userId) {
+      try {
+        // Primeiro, obter o contador atual
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('count_itineraries')
+          .eq('id', userId)
+          .single();
+
+        if (profileError) {
+          console.error('Error fetching profile:', profileError);
+        } else {
+          const currentCount = profileData?.count_itineraries || 0;
+          
+          // Atualizar o contador
+          const { error: updateError } = await supabase
+            .from('profiles')
+            .update({ count_itineraries: currentCount + 1 })
+            .eq('id', userId);
+
+          if (updateError) {
+            console.error('Error updating profile count:', updateError);
+          } else {
+            console.log('Successfully updated itinerary count for user:', userId);
+          }
+        }
+      } catch (countError) {
+        console.error('Error in count update process:', countError);
+      }
+    }
 
     return new Response(JSON.stringify(itineraryData), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
