@@ -180,22 +180,26 @@ export const CreateItineraryForm = ({
 
       if (generationError) throw generationError;
 
-      // Save the itinerary with timeout
-      const savePromise = supabase.from('itineraries').insert({
-        user_id: user?.id,
-        destination: sanitizedDestination,
-        departure_date: departureDate,
-        return_date: returnDate,
-        interests: selectedInterests.map(sanitizeInput).join(", "),
-        itinerary_data: generatedItinerary,
+      // Usar a função RPC save_itinerary para salvar o roteiro e atualizar o contador
+      // @ts-ignore - Ignorando erros de tipagem para a chamada RPC
+      const rpcResult = await supabase.rpc('save_itinerary', {
+        p_user_id: user?.id,
+        p_destination: sanitizedDestination,
+        p_departure_date: departureDate,
+        p_return_date: returnDate,
+        p_interests: selectedInterests.map(sanitizeInput).join(", "),
+        p_itinerary_data: generatedItinerary
       });
 
-      const { error: saveError } = await withTimeout(
-        savePromise,
-        5000 // 5 second timeout
-      );
-
-      if (saveError) throw saveError;
+      if (rpcResult.error) {
+        throw rpcResult.error;
+      }
+      
+      // Verificar se temos dados e se a operação foi bem-sucedida
+      const resultData = rpcResult.data as any || {};
+      if (!resultData.success) {
+        throw new Error(resultData.error || 'Erro ao salvar roteiro');
+      }
 
       toast.success('Roteiro gerado com sucesso!');
       navigate('/itineraries');
