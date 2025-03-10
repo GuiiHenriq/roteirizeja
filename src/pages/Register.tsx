@@ -9,6 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const Register = () => {
   const { signUp, resendConfirmationEmail } = useAuth();
@@ -19,6 +20,7 @@ const Register = () => {
   const [isRegistered, setIsRegistered] = useState(false);
   const [isResendingEmail, setIsResendingEmail] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [acceptTerms, setAcceptTerms] = useState(false);
 
   const validatePassword = (password: string) => {
     const hasUpperCase = /[A-Z]/.test(password);
@@ -56,6 +58,10 @@ const Register = () => {
     const passwordValidation = validatePassword(password);
     if (!passwordValidation.isValid) {
       newErrors.password = `A senha deve conter: ${passwordValidation.errors.join(", ")}`;
+    }
+
+    if (!acceptTerms) {
+      newErrors.terms = "Você precisa aceitar os termos de uso para continuar";
     }
 
     setErrors(newErrors);
@@ -251,7 +257,39 @@ const Register = () => {
             )}
           </div>
 
-          <Button type="submit" className="w-full" disabled={isLoading}>
+          <div className="flex items-start space-x-2 mt-6">
+            <Checkbox 
+              id="terms" 
+              checked={acceptTerms}
+              onCheckedChange={(checked) => {
+                setAcceptTerms(checked as boolean);
+                if (errors.terms) {
+                  setErrors({ ...errors, terms: "" });
+                }
+              }}
+              className={cn(errors.terms && "border-red-500")}
+            />
+            <div className="grid gap-1.5 leading-none">
+              <label
+                htmlFor="terms"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Eu li e concordo com os{" "}
+                <Link to="/terms" className="text-primary hover:underline" target="_blank">
+                  Termos de Uso e Política de Privacidade
+                </Link>
+              </label>
+              {errors.terms && (
+                <p className="text-sm text-red-500">{errors.terms}</p>
+              )}
+            </div>
+          </div>
+
+          <Button 
+            type="submit" 
+            className="w-full" 
+            disabled={isLoading || !acceptTerms}
+          >
             <UserPlus className="w-4 h-4 mr-2" />
             {isLoading ? "Criando conta..." : "Criar Conta"}
           </Button>
