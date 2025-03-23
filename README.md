@@ -26,7 +26,7 @@ Roteirize Já is a platform that generates personalized travel itineraries using
 - [ ] Translation to English and Spanish
 
 ## ✉ Contact
-For more information, contact us at: **contact@roteirizeja.com**
+For more information, contact us at: **contato@roteirizeja.com**
 
 ---
 
