@@ -18,9 +18,11 @@ import {
 import Hero from "@/components/home/Hero";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { useTranslation } from "react-i18next";
 
 const Home = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [hoveredFeature, setHoveredFeature] = useState<number | null>(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -96,34 +98,31 @@ const Home = () => {
           transition={{ duration: 0.6 }}
         >
           <h2 id="value-proposition" className="text-4xl font-bold mb-4 text-emerald-900">
-            Viajar Nunca Foi Tão Fácil e Divertido!
+            {t("home.valueTitle")}
           </h2>
-          <p className="text-xl text-gray-600">
-            Com a inteligência artificial, planejamos o roteiro ideal para você,
-            economizando tempo e maximizando sua experiência.
-          </p>
+          <p className="text-xl text-gray-600">{t("home.valueSubtitle")}</p>
         </motion.div>
         <div className="grid md:grid-cols-4 gap-8">
           {[
             {
               icon: <Clock className="text-emerald-600" size={48} aria-hidden="true" />,
-              title: "Planejamento Instantâneo",
-              description: "Roteiros prontos em segundos.",
+              title: t("home.features.instantPlanning"),
+              description: t("home.features.instantPlanningDesc"),
             },
             {
               icon: <Globe className="text-emerald-600" size={48} aria-hidden="true" />,
-              title: "Totalmente Personalizado",
-              description: "Cada detalhe feito para você.",
+              title: t("home.features.personalized"),
+              description: t("home.features.personalizedDesc"),
             },
             {
               icon: <Compass className="text-emerald-600" size={48} aria-hidden="true" />,
-              title: "Descubra o Novo",
-              description: "Sugestões exclusivas e locais escondidos.",
+              title: t("home.features.discover"),
+              description: t("home.features.discoverDesc"),
             },
             {
               icon: <Smartphone className="text-emerald-600" size={48} aria-hidden="true" />,
-              title: "Acesse em Qualquer Lugar",
-              description: "Consulte ou edite seu roteiro a qualquer momento.",
+              title: t("home.features.anywhere"),
+              description: t("home.features.anywhereDesc"),
             },
           ].map((feature, index) => (
             <motion.article
@@ -144,9 +143,7 @@ const Home = () => {
               >
                 {feature.icon}
               </motion.div>
-              <h3 className="font-bold text-xl mb-4 text-emerald-900">
-                {feature.title}
-              </h3>
+              <h3 className="font-bold text-xl mb-4 text-emerald-900">{feature.title}</h3>
               <p className="text-gray-600">{feature.description}</p>
             </motion.article>
           ))}
@@ -160,7 +157,7 @@ const Home = () => {
             whileHover="hover"
             onClick={handleGetStarted}
           >
-            Crie Seu Roteiro Agora
+            {t("home.ctaPrimary")}
             <motion.div
               animate={{ x: [0, 5, 0] }}
               transition={{ repeat: Infinity, duration: 1 }}
@@ -180,12 +177,8 @@ const Home = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-4xl font-bold mb-4 text-emerald-900">
-              Escolha o Plano Perfeito Para Você
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Comece gratuitamente ou desbloqueie recursos premium com nosso plano Básico
-            </p>
+            <h2 className="text-4xl font-bold mb-4 text-emerald-900">{t("home.plansTitle")}</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">{t("home.plansSubtitle")}</p>
           </motion.div>
           
           <div className="max-w-md mx-auto">
@@ -197,14 +190,10 @@ const Home = () => {
             >
               <Card className="overflow-hidden bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200 shadow-xl">
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-2xl font-bold text-center text-blue-800">
-                    Plano Básico
-                  </CardTitle>
+                  <CardTitle className="text-2xl font-bold text-center text-blue-800">{t("home.basicPlan")}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <p className="text-center text-muted-foreground mb-6">
-                    Compra única para criar até 10 roteiros com recursos exclusivos
-                  </p>
+                  <p className="text-center text-muted-foreground mb-6">{t("home.basicPlanDesc")}</p>
                   <ul className="space-y-3">
                     {[
                       "10 roteiros personalizados",
@@ -241,13 +230,8 @@ const Home = () => {
                 </CardContent>
                 <CardFooter className="flex flex-col items-center gap-4 pt-6">
                   <div className="text-center">
-                    <span className="text-3xl font-bold text-blue-700">
-                      R$ 9,90
-                    </span>
-                    <span className="text-sm text-muted-foreground">
-                      {" "}
-                      (pagamento único)
-                    </span>
+                    <span className="text-3xl font-bold text-blue-700">{t("home.basicPlanPrice")}</span>
+                    <span className="text-sm text-muted-foreground"> {t("home.basicPlanNote")}</span>
                   </div>
                   <motion.button
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center"
@@ -255,7 +239,7 @@ const Home = () => {
                     whileTap={{ scale: 0.95 }}
                     onClick={handleGetStarted}
                   >
-                    Começar Agora
+                    {t("home.basicPlanButton")}
                     <motion.div
                       animate={{ x: [0, 5, 0] }}
                       transition={{ repeat: Infinity, duration: 1 }}
@@ -279,15 +263,8 @@ const Home = () => {
             transition={{ duration: 0.7 }}
             viewport={{ once: true }}
           >
-            <h2 id="experience" className="text-4xl font-bold mb-6 text-emerald-900">
-              Deixe Sua Viagem Fluir com Perfeição
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-              Sabemos o quanto planejar uma viagem pode ser estressante e
-              demorado. Com nosso app, você tem a tranquilidade de um roteiro
-              perfeito na palma da sua mão, para aproveitar cada segundo do seu
-              destino.
-            </p>
+            <h2 id="experience" className="text-4xl font-bold mb-6 text-emerald-900">{t("home.experienceTitle")}</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">{t("home.experienceSubtitle")}</p>
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               whileInView={{ opacity: 1, scale: 1 }}
@@ -296,7 +273,7 @@ const Home = () => {
             >
               <p className="text-2xl italic text-emerald-700 font-semibold flex items-center justify-center gap-2">
                 <Sparkles className="text-yellow-500" />
-                "Mais momentos incríveis, menos preocupações."
+                "{t("home.experienceQuote")}" 
                 <Sparkles className="text-yellow-500" />
               </p>
             </motion.div>
@@ -319,30 +296,26 @@ const Home = () => {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <h2 id="how-it-works" className="text-4xl font-bold mb-4 text-emerald-900">
-              Seu Roteiro em 3 Passos Simples
-            </h2>
-            <p className="text-xl text-gray-600">
-              Planeje sua viagem com facilidade e rapidez
-            </p>
+            <h2 id="how-it-works" className="text-4xl font-bold mb-4 text-emerald-900">{t("home.howItWorksTitle")}</h2>
+            <p className="text-xl text-gray-600">{t("home.howItWorksSubtitle")}</p>
           </motion.div>
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              {
-                icon: <Calendar className="text-emerald-600" size={48} aria-hidden="true" />,
-                title: "Preencha os Dados da Viagem",
-                description: "Escolha seu destino, datas e preferências.",
-              },
-              {
-                icon: <Plane className="text-emerald-600" size={48} aria-hidden="true" />,
-                title: "Receba Sugestões da IA",
-                description: "Um roteiro completo em segundos.",
-              },
-              {
-                icon: <Star className="text-emerald-600" size={48} aria-hidden="true" />,
-                title: "Aproveite ao Máximo",
-                description: "Viaje sem preocupações com um plano ideal.",
-              },
+            {
+              icon: <Calendar className="text-emerald-600" size={48} aria-hidden="true" />,
+              title: t("home.step1Title"),
+              description: t("home.step1Desc"),
+            },
+            {
+              icon: <Plane className="text-emerald-600" size={48} aria-hidden="true" />,
+              title: t("home.step2Title"),
+              description: t("home.step2Desc"),
+            },
+            {
+              icon: <Star className="text-emerald-600" size={48} aria-hidden="true" />,
+              title: t("home.step3Title"),
+              description: t("home.step3Desc"),
+            },
             ].map((step, index) => (
               <motion.article
                 key={index}
@@ -369,10 +342,8 @@ const Home = () => {
                 >
                   {step.icon}
                 </motion.div>
-                <h3 className="font-bold text-xl mb-4 text-emerald-900 relative z-10">
-                  {step.title}
-                </h3>
-                <p className="text-gray-600 relative z-10">{step.description}</p>
+              <h3 className="font-bold text-xl mb-4 text-emerald-900 relative z-10">{step.title}</h3>
+              <p className="text-gray-600 relative z-10">{step.description}</p>
                 <div className="absolute top-4 left-4 bg-emerald-100 rounded-full w-8 h-8 flex items-center justify-center font-bold text-emerald-700">
                   {index + 1}
                 </div>
@@ -391,22 +362,18 @@ const Home = () => {
             transition={{ duration: 0.7 }}
             viewport={{ once: true }}
           >
-            <h2 id="cta" className="text-3xl md:text-5xl font-bold emerald-to-pink-gradient-text">
-              Pronto para Sua Próxima Aventura?
-            </h2>
-            <h3 className="text-3xl md:text-5xl font-bold mb-8 bg-gradient-to-r from-emerald-600 via-emerald-500 to-emerald-400 bg-clip-text text-transparent">
-              Deixe nossa IA cuidar de tudo.
-            </h3>
-            <p className="text-xl mb-10">Experimente grátis agora!</p>
+            <h2 id="cta" className="text-3xl md:text-5xl font-bold emerald-to-pink-gradient-text">{t("home.finalCtaTitle")}</h2>
+            <h3 className="text-3xl md:text-5xl font-bold mb-8 bg-gradient-to-r from-emerald-600 via-emerald-500 to-emerald-400 bg-clip-text text-transparent">{t("home.finalCtaSubtitle")}</h3>
+            <p className="text-xl mb-10">{t("home.finalCtaButton")}</p>
             <div className="flex justify-center space-x-4">
               <motion.button 
                 className="bg-emerald-600 text-white px-8 py-4 rounded-xl hover:bg-emerald-700 transition flex items-center"
-                aria-label="Começar teste gratuito"
+                aria-label={t("home.finalCtaButton")}
                 whileHover={{ scale: 1.05, boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)" }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleGetStarted}
               >
-                Teste Totalmente Gratuito 
+                {t("home.finalCtaButton")} 
                 <motion.div
                   animate={{ x: [0, 5, 0] }}
                   transition={{ repeat: Infinity, duration: 1 }}
@@ -422,11 +389,11 @@ const Home = () => {
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-8" role="contentinfo">
         <div className="container mx-auto px-4 text-center">
-          <p>&copy; 2025 Roteirize Já.<br/>Todos os direitos reservados.</p>
+          <p>&copy; 2025 Roteirize Já.<br/>{t("home.footer.rights")}</p>
           <div className="mt-4 flex justify-center space-x-4 text-sm">
-            <a href="/login" className="text-gray-400 hover:text-white transition">Fazer login</a>
-            <a href="/register" className="text-gray-400 hover:text-white transition">Criar conta</a>
-            <a href="/terms" className="text-gray-400 hover:text-white transition">Termos e Condições</a>
+            <a href="/login" className="text-gray-400 hover:text-white transition">{t("home.footer.login")}</a>
+            <a href="/register" className="text-gray-400 hover:text-white transition">{t("home.footer.register")}</a>
+            <a href="/terms" className="text-gray-400 hover:text-white transition">{t("home.footer.terms")}</a>
           </div>
         </div>
       </footer>

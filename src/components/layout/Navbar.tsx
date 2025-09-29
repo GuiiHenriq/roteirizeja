@@ -2,11 +2,13 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Home, Map, Calendar, Settings, Contact, LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { signOut } = useAuth();
+  const { t } = useTranslation();
 
   const isActive = (path: string) => {
     if (path === "/itineraries") {
@@ -21,10 +23,10 @@ const Navbar = () => {
   const handleSignOut = async () => {
     try {
       await signOut();
-      toast.success("Sessão encerrada com sucesso");
+      toast.success(t("auth.sessionEnded"));
       navigate("/login");
     } catch (error) {
-      toast.error("Erro ao sair da sessão");
+      toast.error(t("auth.logoutError"));
     }
   };
 
@@ -38,7 +40,7 @@ const Navbar = () => {
           }`}
         >
           <Home className="w-5 h-5" />
-          <span>Início</span>
+          <span>{t("nav.home")}</span>
         </Link>
 
         <Link
@@ -50,7 +52,7 @@ const Navbar = () => {
           }`}
         >
           <Map className="w-5 h-5" />
-          <span>Criar</span>
+          <span>{t("nav.create")}</span>
         </Link>
 
         <Link
@@ -60,7 +62,7 @@ const Navbar = () => {
           }`}
         >
           <Calendar className="w-5 h-5" />
-          <span>Roteiros</span>
+          <span>{t("nav.itineraries")}</span>
         </Link>
 
         <Link
@@ -70,7 +72,7 @@ const Navbar = () => {
           }`}
         >
           <Settings className="w-5 h-5" />
-          <span>Perfil</span>
+          <span>{t("nav.profile")}</span>
         </Link>
 
         <Link
@@ -80,7 +82,7 @@ const Navbar = () => {
           }`}
         >
           <Contact className="w-5 h-5" />
-          <span>Contato</span>
+          <span>{t("nav.contact")}</span>
         </Link>
 
         <button
@@ -88,7 +90,7 @@ const Navbar = () => {
           className="flex flex-col items-center gap-1 text-sm text-foreground/60"
         >
           <LogOut className="w-5 h-5" />
-          <span>Sair</span>
+          <span>{t("auth.logout")}</span>
         </button>
       </div>
     </nav>

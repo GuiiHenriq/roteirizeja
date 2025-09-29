@@ -1,0 +1,64 @@
+{
+  "brand": "ROTEIRIZEJÁ",
+  "auth": {
+    "login": "Entrar",
+    "logout": "Sair",
+    "sessionEnded": "Sessão encerrada com sucesso",
+    "logoutError": "Erro ao sair da sessão"
+  },
+  "nav": {
+    "home": "Início",
+    "create": "Criar",
+    "itineraries": "Roteiros",
+    "profile": "Perfil",
+    "contact": "Contato"
+  },
+  "home": {
+    "valueTitle": "Viajar Nunca Foi Tão Fácil e Divertido!",
+    "valueSubtitle": "Com a inteligência artificial, planejamos o roteiro ideal para você, economizando tempo e maximizando sua experiência.",
+    "features": {
+      "instantPlanning": "Planejamento Instantâneo",
+      "instantPlanningDesc": "Roteiros prontos em segundos.",
+      "personalized": "Totalmente Personalizado",
+      "personalizedDesc": "Cada detalhe feito para você.",
+      "discover": "Descubra o Novo",
+      "discoverDesc": "Sugestões exclusivas e locais escondidos.",
+      "anywhere": "Acesse em Qualquer Lugar",
+      "anywhereDesc": "Consulte ou edite seu roteiro a qualquer momento."
+    },
+    "ctaPrimary": "Crie Seu Roteiro Agora",
+    "plansTitle": "Escolha o Plano Perfeito Para Você",
+    "plansSubtitle": "Comece gratuitamente ou desbloqueie recursos premium com nosso plano Básico",
+    "basicPlan": "Plano Básico",
+    "basicPlanDesc": "Compra única para criar até 10 roteiros com recursos exclusivos",
+    "basicPlanPrice": "R$ 9,90",
+    "basicPlanNote": "(pagamento único)",
+    "basicPlanButton": "Começar Agora",
+    "experienceTitle": "Deixe Sua Viagem Fluir com Perfeição",
+    "experienceSubtitle": "Sabemos o quanto planejar uma viagem pode ser estressante e demorado. Com nosso app, você tem a tranquilidade de um roteiro perfeito na palma da sua mão, para aproveitar cada segundo do seu destino.",
+    "experienceQuote": "Mais momentos incríveis, menos preocupações.",
+    "howItWorksTitle": "Seu Roteiro em 3 Passos Simples",
+    "howItWorksSubtitle": "Planeje sua viagem com facilidade e rapidez",
+    "step1Title": "Preencha os Dados da Viagem",
+    "step1Desc": "Escolha seu destino, datas e preferências.",
+    "step2Title": "Receba Sugestões da IA",
+    "step2Desc": "Um roteiro completo em segundos.",
+    "step3Title": "Aproveite ao Máximo",
+    "step3Desc": "Viaje sem preocupações com um plano ideal.",
+    "finalCtaTitle": "Pronto para Sua Próxima Aventura?",
+    "finalCtaSubtitle": "Deixe nossa IA cuidar de tudo.",
+    "finalCtaButton": "Teste Totalmente Gratuito",
+    "footer": {
+      "rights": "Todos os direitos reservados.",
+      "login": "Fazer login",
+      "register": "Criar conta",
+      "terms": "Termos e Condições"
+    }
+  },
+  "language": {
+    "ptBR": "Português",
+    "enUS": "Inglês"
+  }
+}
+
+

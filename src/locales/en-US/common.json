@@ -1,0 +1,64 @@
+{
+  "brand": "ROTEIRIZEJÁ",
+  "auth": {
+    "login": "Sign in",
+    "logout": "Sign out",
+    "sessionEnded": "Signed out successfully",
+    "logoutError": "Error signing out"
+  },
+  "nav": {
+    "home": "Home",
+    "create": "Create",
+    "itineraries": "Itineraries",
+    "profile": "Profile",
+    "contact": "Contact"
+  },
+  "home": {
+    "valueTitle": "Travel Has Never Been So Easy and Fun!",
+    "valueSubtitle": "With artificial intelligence, we plan the ideal itinerary for you, saving time and maximizing your experience.",
+    "features": {
+      "instantPlanning": "Instant Planning",
+      "instantPlanningDesc": "Itineraries ready in seconds.",
+      "personalized": "Fully Personalized",
+      "personalizedDesc": "Every detail made for you.",
+      "discover": "Discover the New",
+      "discoverDesc": "Exclusive suggestions and hidden gems.",
+      "anywhere": "Access Anywhere",
+      "anywhereDesc": "View or edit your itinerary at any time."
+    },
+    "ctaPrimary": "Create Your Itinerary Now",
+    "plansTitle": "Choose the Perfect Plan for You",
+    "plansSubtitle": "Start for free or unlock premium features with our Basic plan",
+    "basicPlan": "Basic Plan",
+    "basicPlanDesc": "One-time purchase to create up to 10 itineraries with exclusive features",
+    "basicPlanPrice": "$ 1.99",
+    "basicPlanNote": "(one-time payment)",
+    "basicPlanButton": "Start Now",
+    "experienceTitle": "Let Your Trip Flow Perfectly",
+    "experienceSubtitle": "We know how stressful and time-consuming planning a trip can be. With our app, you have the peace of mind of a perfect itinerary in the palm of your hand, so you can enjoy every second of your destination.",
+    "experienceQuote": "More amazing moments, fewer worries.",
+    "howItWorksTitle": "Your Itinerary in 3 Simple Steps",
+    "howItWorksSubtitle": "Plan your trip with ease and speed",
+    "step1Title": "Fill in the Trip Details",
+    "step1Desc": "Choose your destination, dates, and preferences.",
+    "step2Title": "Get AI Suggestions",
+    "step2Desc": "A complete itinerary in seconds.",
+    "step3Title": "Make the Most of It",
+    "step3Desc": "Travel worry-free with the ideal plan.",
+    "finalCtaTitle": "Ready for Your Next Adventure?",
+    "finalCtaSubtitle": "Let our AI take care of everything.",
+    "finalCtaButton": "Try It Free",
+    "footer": {
+      "rights": "All rights reserved.",
+      "login": "Sign in",
+      "register": "Create account",
+      "terms": "Terms & Conditions"
+    }
+  },
+  "language": {
+    "ptBR": "Portuguese",
+    "enUS": "English"
+  }
+}
+
+
